@@ -13,7 +13,7 @@ namespace LW.BkEndModel
 	{
 		[Key]
 		[JsonProperty("id")]
-		public string Id { get; set; } = Guid.NewGuid().ToString();
+		public Guid Id { get; set; } = Guid.NewGuid();
 		public string? FileName { get; set; }
 		public string? FileExtension { get; set; }
 		public string Identifier { get; set; } = Guid.NewGuid().ToString();
@@ -22,7 +22,7 @@ namespace LW.BkEndModel
 		// Foreign Keys
 		[ForeignKey("Documente")]
 		[JsonProperty("documenteId")]
-		public string? DocumenteId { get; set; }
+		public Guid? DocumenteId { get; set; }
 
 		// Relations
 		[JsonIgnore]

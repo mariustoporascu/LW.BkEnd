@@ -14,7 +14,7 @@ namespace LW.BkEndModel
 	{
 		[Key]
 		[JsonProperty("id")]
-		public string Id { get; set; } = Guid.NewGuid().ToString();
+		public Guid Id { get; set; } = Guid.NewGuid();
 		[JsonProperty("name")]
 		public string? Name { get; set; }
 		[JsonProperty("cuiNumber")]

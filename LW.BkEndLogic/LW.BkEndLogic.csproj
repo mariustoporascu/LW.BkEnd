@@ -10,4 +10,11 @@
     <ProjectReference Include="..\LW.BkEndDb\LW.BkEndDb.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="HybridUser\" />
+    <Folder Include="FirmaDiscUser\" />
+    <Folder Include="Commons\" />
+    <Folder Include="RegularUser\" />
+  </ItemGroup>
+
 </Project>

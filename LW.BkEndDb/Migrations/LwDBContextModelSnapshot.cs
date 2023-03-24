@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LW.BkEndDb.Migrations
 {
-    [DbContext(typeof(LwDatabase))]
-    partial class LwDatabaseModelSnapshot : ModelSnapshot
+    [DbContext(typeof(LwDBContext))]
+    partial class LwDBContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -24,14 +24,15 @@ namespace LW.BkEndDb.Migrations
 
             modelBuilder.Entity("LW.BkEndModel.ConexiuniConturi", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("FirmaDiscountId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid?>("FirmaDiscountId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("HybridId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid?>("HybridId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -51,11 +52,12 @@ namespace LW.BkEndDb.Migrations
 
             modelBuilder.Entity("LW.BkEndModel.Documente", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ConexId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid?>("ConexId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("DiscountValue")
                         .HasColumnType("decimal(18,2)");
@@ -69,8 +71,8 @@ namespace LW.BkEndDb.Migrations
                     b.Property<string>("ExtractedBusinessData")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FirmaDiscountId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid?>("FirmaDiscountId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
@@ -78,8 +80,8 @@ namespace LW.BkEndDb.Migrations
                     b.Property<bool>("IsInvoice")
                         .HasColumnType("bit");
 
-                    b.Property<string>("NextConexId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("NextConexId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ReceiptId")
                         .HasColumnType("nvarchar(max)");
@@ -101,8 +103,9 @@ namespace LW.BkEndDb.Migrations
 
             modelBuilder.Entity("LW.BkEndModel.FirmaDiscount", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
@@ -147,14 +150,15 @@ namespace LW.BkEndDb.Migrations
 
             modelBuilder.Entity("LW.BkEndModel.FisiereDocumente", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DocumenteId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid?>("DocumenteId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FileExtension")
                         .HasColumnType("nvarchar(max)");
@@ -177,8 +181,9 @@ namespace LW.BkEndDb.Migrations
 
             modelBuilder.Entity("LW.BkEndModel.Hybrid", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -196,14 +201,15 @@ namespace LW.BkEndDb.Migrations
 
             modelBuilder.Entity("LW.BkEndModel.PreferinteHybrid", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ConexId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid?>("ConexId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("HybridId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid?>("HybridId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -216,11 +222,12 @@ namespace LW.BkEndDb.Migrations
 
             modelBuilder.Entity("LW.BkEndModel.ProfilCont", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ConexId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid?>("ConexId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -251,20 +258,21 @@ namespace LW.BkEndDb.Migrations
 
             modelBuilder.Entity("LW.BkEndModel.Tranzactii", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("ConexId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid?>("ConexId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DocumenteId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid?>("DocumenteId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("isWithdraw")
                         .HasColumnType("bit");

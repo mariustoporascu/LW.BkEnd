@@ -13,7 +13,7 @@ namespace LW.BkEndModel
 	{
 		[Key]
 		[JsonProperty("id")]
-		public string Id { get; set; } = Guid.NewGuid().ToString();
+		public Guid Id { get; set; } = Guid.NewGuid();
 		[JsonProperty("docNumber")]
 		public string? DocNumber { get; set; }
 		[JsonProperty("total")]
@@ -38,12 +38,12 @@ namespace LW.BkEndModel
 		// Foreign Keys
 		[ForeignKey("FirmaDiscount")]
 		[JsonProperty("firmaDiscountId")]
-		public string? FirmaDiscountId { get; set; }
+		public Guid? FirmaDiscountId { get; set; }
 		[ForeignKey("ConexiuniConturi")]
 		[JsonProperty("conexId")]
-		public string? ConexId { get; set; }
+		public Guid? ConexId { get; set; }
 		[JsonProperty("nextConexId")]
-		public string? NextConexId { get; set; }
+		public Guid? NextConexId { get; set; }
 
 		// Relations
 		[JsonIgnore]

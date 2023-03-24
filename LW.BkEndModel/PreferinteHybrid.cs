@@ -14,14 +14,15 @@ namespace LW.BkEndModel
 	{
 		[Key]
 		[JsonProperty("id")]
-		public string Id { get; set; } = Guid.NewGuid().ToString();
+		public Guid Id { get; set; } = Guid.NewGuid();
+
 		// Foreign Keys
 		[ForeignKey("Hybrid")]
 		[JsonProperty("hybridId")]
-		public string? HybridId { get; set; }
+		public Guid? HybridId { get; set; }
 		[ForeignKey("ConexiuniConturi")]
 		[JsonProperty("conexId")]
-		public string? ConexId { get; set; }
+		public Guid? ConexId { get; set; }
 
 
 		// Relations

@@ -7,7 +7,7 @@ using System.Diagnostics.Contracts;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<LwDatabase>(options =>
+builder.Services.AddDbContext<LwDBContext>(options =>
 	{
 		options.UseSqlServer(builder.Configuration
 			.GetConnectionString("DefaultConnection"),
@@ -26,7 +26,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 		options.Password.RequireUppercase = true;
 		options.SignIn.RequireConfirmedEmail = true;
 	})
-	.AddEntityFrameworkStores<LwDatabase>()
+	.AddEntityFrameworkStores<LwDBContext>()
 	.AddDefaultTokenProviders();
 
 builder.Services.AddControllers();

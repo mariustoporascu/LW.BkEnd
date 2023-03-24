@@ -13,18 +13,18 @@ namespace LW.BkEndModel
 	{
 		[Key]
 		[JsonProperty("id")]
-		public string Id { get; set; } = Guid.NewGuid().ToString();
+		public Guid Id { get; set; } = Guid.NewGuid();
 
 		// Foreign Keys
 		[ForeignKey("User")]
 		[JsonProperty("userId")]
-		public string? UserId { get; set; } = "";
+		public string? UserId { get; set; }
 		[ForeignKey("Hybrid")]
 		[JsonProperty("hybridId")]
-		public string? HybridId { get; set; }
+		public Guid? HybridId { get; set; }
 		[ForeignKey("FirmaDiscount")]
 		[JsonProperty("firmaDiscountId")]
-		public string? FirmaDiscountId { get; set; }
+		public Guid? FirmaDiscountId { get; set; }
 
 		// Relations
 		[JsonIgnore]

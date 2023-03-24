@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace LW.BkEndDb
 {
-	public partial class LwDatabase : IdentityDbContext<User>
+	public partial class LwDBContext : IdentityDbContext<User>
 	{
-		public LwDatabase(DbContextOptions<LwDatabase> options)
+		public LwDBContext(DbContextOptions<LwDBContext> options)
 			: base(options)
 		{
 		}
