@@ -32,7 +32,7 @@ namespace SqlDummyData
 			var context = new LwDBContext(optionsBuilder.Options);
 			context.Database.EnsureCreated();
 
-			var userStore = new UserStore<User>(context);
+			var userStore = new UserStore<User, Role, LwDBContext, Guid>(context);
 			var hasher = new PasswordHasher<User>();
 			var lookupNormalizer = new UpperInvariantLookupNormalizer();
 			var userManager = new UserManager<User>(userStore, null, hasher, null, null, lookupNormalizer, null, null, null);

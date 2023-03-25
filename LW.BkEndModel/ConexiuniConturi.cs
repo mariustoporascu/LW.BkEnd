@@ -18,7 +18,7 @@ namespace LW.BkEndModel
 		// Foreign Keys
 		[ForeignKey("User")]
 		[JsonProperty("userId")]
-		public string? UserId { get; set; }
+		public Guid? UserId { get; set; }
 		[ForeignKey("Hybrid")]
 		[JsonProperty("hybridId")]
 		public Guid? HybridId { get; set; }

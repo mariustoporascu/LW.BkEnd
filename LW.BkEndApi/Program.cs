@@ -1,8 +1,14 @@
 using LW.BkEndDb;
 using LW.BkEndModel;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics.Contracts;
+using System.Security.Cryptography;
+
+var rsaKey = RSA.Create();
+rsaKey.ImportRSAPrivateKey(File.ReadAllBytes("key"), out _);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +24,7 @@ builder.Services.AddDbContext<LwDBContext>(options =>
 		);
 	});
 
-builder.Services.AddIdentity<User, IdentityRole>(options =>
+builder.Services.AddIdentity<User, Role>(options =>
 	{
 		options.Password.RequiredLength = 8;
 		options.Password.RequireDigit = true;
@@ -34,6 +40,26 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configure JWT authentication
+builder.Services.AddAuthentication(options =>
+	{
+		options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+		options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+	}).AddJwtBearer(options =>
+	{
+		options.TokenValidationParameters = new TokenValidationParameters
+		{
+			ValidateIssuer = false,
+			ValidateAudience = false,
+			ValidateLifetime = true,
+			ValidateIssuerSigningKey = true,
+			ValidIssuer = "http://localhost:5000",
+			ValidAudience = "http://localhost:5000",
+			IssuerSigningKey = new RsaSecurityKey(rsaKey)
+		};
+	});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -43,6 +69,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

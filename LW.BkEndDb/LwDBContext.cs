@@ -1,4 +1,5 @@
 ﻿using LW.BkEndModel;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LW.BkEndDb
 {
-	public partial class LwDBContext : IdentityDbContext<User>
+	public partial class LwDBContext : IdentityDbContext<User, Role, Guid>
 	{
 		public LwDBContext(DbContextOptions<LwDBContext> options)
 			: base(options)
