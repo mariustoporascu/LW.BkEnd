@@ -43,9 +43,9 @@ namespace LW.BkEndModel
 		public bool IsActive { get; set; } = false;
 
 		// Relations
-		[JsonIgnore]
+		[JsonProperty("conexiuniConturi")]
 		public ICollection<ConexiuniConturi>? ConexiuniConturi { get; set; }
-		[JsonIgnore]
+		[JsonProperty("documente")]
 		public ICollection<Documente>? Documente { get; set; }
 	}
 }

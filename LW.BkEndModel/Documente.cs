@@ -50,7 +50,7 @@ namespace LW.BkEndModel
 		public FirmaDiscount? FirmaDiscount { get; set; }
 		[JsonIgnore]
 		public ConexiuniConturi? ConexiuniConturi { get; set; }
-		[JsonIgnore]
+		[JsonProperty("fisiereDocumente")]
 		public FisiereDocumente? FisiereDocumente { get; set; }
 	}
 }

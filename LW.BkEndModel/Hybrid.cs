@@ -22,9 +22,9 @@ namespace LW.BkEndModel
 		public int NoDocsUploaded { get; set; }
 
 		// Relations
-		[JsonIgnore]
+		[JsonProperty("conexiuniConturi")]
 		public ICollection<ConexiuniConturi>? ConexiuniConturi { get; set; }
-		[JsonIgnore]
+		[JsonProperty("preferinteHybrid")]
 		public ICollection<PreferinteHybrid>? PreferinteHybrid { get; set; }
 	}
 }

@@ -28,7 +28,7 @@ namespace LW.BkEndModel
 		// Relations
 		[JsonIgnore]
 		public Hybrid? Hybrid { get; set; }
-		[JsonIgnore]
+		[JsonProperty("conexiuniConturi")]
 		public ConexiuniConturi? ConexiuniConturi { get; set; }
 	}
 }

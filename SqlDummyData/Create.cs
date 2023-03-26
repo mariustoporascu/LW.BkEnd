@@ -63,7 +63,7 @@ namespace SqlDummyData
 				};
 
 				var result = await userManager.CreateAsync(user, "testpass");
-				if (result != null)
+				if (result.Succeeded)
 				{
 					generatedCount++;
 
@@ -94,7 +94,7 @@ namespace SqlDummyData
 					PhoneNumber = "0725135822"
 				};
 				var result = await userManager.CreateAsync(user, "testpass");
-				if (result != null)
+				if (result.Succeeded)
 				{
 
 					var conexCont = GenerateConexiuniConturi(user);

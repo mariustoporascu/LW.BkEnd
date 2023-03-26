@@ -13,7 +13,6 @@
   <ItemGroup>
     <Folder Include="HybridUser\" />
     <Folder Include="FirmaDiscUser\" />
-    <Folder Include="Commons\" />
     <Folder Include="RegularUser\" />
   </ItemGroup>
 
