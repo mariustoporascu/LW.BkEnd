@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LW.DocProces", "LW.DocProce
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlDummyData", "SqlDummyData\SqlDummyData.csproj", "{FA4A28CF-82EA-42FE-9701-4DB60BDC40AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JwtKeyGen", "JwtKeyGen\JwtKeyGen.csproj", "{43270E4F-6C56-4080-9582-2FF42AD546A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtKeyGen", "JwtKeyGen\JwtKeyGen.csproj", "{43270E4F-6C56-4080-9582-2FF42AD546A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -198,12 +198,17 @@ namespace LW.BkEndApi.Controllers
 			{
 				return Unauthorized();
 			}
-			var user = await _signInManager.UserManager.FindByEmailAsync(authModel.Email);
-			var attemptSignInResult = await _signInManager.CheckPasswordSignInAsync(user, authModel.Password, false);
-			if (!attemptSignInResult.Succeeded)
+			var userEmail = User.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+			if (userEmail == null)
 			{
-				return Unauthorized();
+				return Unauthorized(new { Message = "User not found", Error = true });
 			}
+			var user = await _signInManager.UserManager.FindByEmailAsync(userEmail);
+			if (user == null || user.Email != authModel.Email)
+			{
+				return Unauthorized(new { Message = "User not found", Error = true });
+			}
+
 			var changePasswordResult = await _signInManager.UserManager.ChangePasswordAsync(user, authModel.Password, authModel.NewPassword);
 			if (changePasswordResult.Succeeded)
 			{
@@ -217,17 +222,22 @@ namespace LW.BkEndApi.Controllers
 		{
 			if (authModel == null)
 			{
-				return Unauthorized();
+				return Unauthorized(new { Message = "Form is empty", Error = true });
 			}
-			var user = await _signInManager.UserManager.FindByEmailAsync(authModel.Email);
-			if (user == null)
+			var userEmail = User.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+			if (userEmail == null)
 			{
-				return Unauthorized();
+				return Unauthorized(new { Message = "User not found", Error = true });
+			}
+			var user = await _signInManager.UserManager.FindByEmailAsync(userEmail);
+			if (user == null || user.Email != authModel.Email)
+			{
+				return Unauthorized(new { Message = "User not found", Error = true });
 			}
 			var conexCont = _context.ConexiuniConturi.Include(c => c.ProfilCont).FirstOrDefault(c => c.UserId == user.Id);
 			if (conexCont == null)
 			{
-				return NotFound();
+				return NotFound(new { Message = "Missing data", Error = true });
 			}
 			user.PhoneNumber = authModel.PhoneNumber ?? user.PhoneNumber;
 			conexCont.ProfilCont.Name = authModel.Name ?? conexCont.ProfilCont.Name;
@@ -250,10 +260,15 @@ namespace LW.BkEndApi.Controllers
 			{
 				return Unauthorized();
 			}
-			var user = await _signInManager.UserManager.FindByEmailAsync(authModel.Email);
-			if (user == null)
+			var userEmail = User.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+			if (userEmail == null)
 			{
-				return Unauthorized();
+				return Unauthorized(new { Message = "User not found", Error = true });
+			}
+			var user = await _signInManager.UserManager.FindByEmailAsync(userEmail);
+			if (user == null || user.Email != authModel.Email)
+			{
+				return Unauthorized(new { Message = "User not found", Error = true });
 			}
 			var conexCont = _context.ConexiuniConturi.FirstOrDefault(c => c.UserId == user.Id);
 			if (conexCont != null)
