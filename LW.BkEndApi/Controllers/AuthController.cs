@@ -12,9 +12,11 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
+using static Humanizer.In;
 
 namespace LW.BkEndApi.Controllers
 {
@@ -48,7 +50,7 @@ namespace LW.BkEndApi.Controllers
 
 			if (!result.Succeeded)
 			{
-				return Unauthorized();
+				return Unauthorized(new { Message = "Form invalid", Error = true });
 			}
 
 			var user = await _signInManager.UserManager.FindByEmailAsync(authModel.Email);
@@ -120,10 +122,14 @@ namespace LW.BkEndApi.Controllers
 			_context.Add(conexCont);
 			await _context.SaveChangesAsync();
 
-			var code = await _signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user);
-			if (!_emailSender.SendEmail(new string[] { user.Email }, "Confirmation email code", HtmlEncoder.Default.Encode(code)))
+			var code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(await _signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user)));
+			var setConfirmationTokenResult = await _signInManager.UserManager.SetAuthenticationTokenAsync(user, "Emailconfirmation", "Emailconfirmation", code);
+			if (setConfirmationTokenResult.Succeeded)
 			{
-				Console.WriteLine("Confirmation Email failed to be sent");
+				if (!_emailSender.SendEmail(new string[] { user.Email }, "Confirmation email code", code))
+				{
+					Console.WriteLine("Confirmation Email failed to be sent");
+				}
 			}
 
 			return Ok(new { Message = "User created, please confirm your email" });
@@ -135,13 +141,13 @@ namespace LW.BkEndApi.Controllers
 			var userEmail = principal.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
 			if (userEmail == null)
 			{
-				return Unauthorized();
+				return Unauthorized(new { Message = "Data invalid", Error = true });
 			}
 			var user = await _signInManager.UserManager.FindByNameAsync(userEmail);
 			var userToken = await _signInManager.UserManager.GetAuthenticationTokenAsync(user, "JWT", refreshTokenId);
 			if (user == null || !_tokenService.ValidateRefreshToken(JsonConvert.DeserializeObject<JObject>(userToken), refreshToken))
 			{
-				return Unauthorized();
+				return Unauthorized(new { Message = "Data null or refresh token has expired", Error = true });
 			}
 
 			var token = await _tokenService.GenerateJwtToken(user);
@@ -156,17 +162,24 @@ namespace LW.BkEndApi.Controllers
 		{
 			if (string.IsNullOrWhiteSpace(resetPasswordToken))
 			{
-				return Unauthorized();
+				return Unauthorized(new { Message = "Please provide reset password token", Error = true });
 			}
-			var resetCode = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordToken));
 			var user = await _signInManager.UserManager.FindByEmailAsync(authModel.Email);
 			if (user == null)
 			{
-				return Unauthorized();
+				return Unauthorized(new { Message = "User not found", Error = true });
 			}
-			var resetResult = await _signInManager.UserManager.ResetPasswordAsync(user, resetCode, authModel.Password);
+			var dbToken = await _signInManager.UserManager.GetAuthenticationTokenAsync(user, "Passwordreset", "Passwordreset");
+			if (string.IsNullOrWhiteSpace(dbToken) || !dbToken.Equals(resetPasswordToken))
+			{
+				return Unauthorized(new { Message = "Token invalid", Error = true });
+			}
+
+			await _signInManager.UserManager.RemovePasswordAsync(user);
+			var resetResult = await _signInManager.UserManager.AddPasswordAsync(user, authModel.Password);
 			if (resetResult.Succeeded)
 			{
+				await _signInManager.UserManager.RemoveAuthenticationTokenAsync(user, "Passwordreset", "Passwordreset");
 				return Ok(new { Message = "Password has been reseted" });
 			}
 			return Ok(new { Message = "Password reset has failed", Error = true });
@@ -176,19 +189,87 @@ namespace LW.BkEndApi.Controllers
 		{
 			if (string.IsNullOrWhiteSpace(email))
 			{
-				return Unauthorized();
+				return Unauthorized(new { Message = "Email is empty", Error = true });
 			}
 			var user = await _signInManager.UserManager.FindByEmailAsync(email);
 			if (user == null)
 			{
-				return Unauthorized();
+				return Unauthorized(new { Message = "User not found", Error = true });
 			}
-			var code = await _signInManager.UserManager.GeneratePasswordResetTokenAsync(user);
-			if (_emailSender.SendEmail(new string[] { email }, "Password reset code", HtmlEncoder.Default.Encode(code)))
+
+			if (!string.IsNullOrWhiteSpace(await _signInManager.UserManager.GetAuthenticationTokenAsync(user, "Passwordreset", "Passwordreset")))
 			{
-				return Ok(new { Message = "Password reset token generated" });
+				await _signInManager.UserManager.RemoveAuthenticationTokenAsync(user, "Passwordreset", "Passwordreset");
+			}
+			var code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(await _signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user)));
+			var setConfirmationTokenResult = await _signInManager.UserManager.SetAuthenticationTokenAsync(user, "Passwordreset", "Passwordreset", code);
+			if (setConfirmationTokenResult.Succeeded)
+			{
+				if (_emailSender.SendEmail(new string[] { email }, "Password reset code", code))
+				{
+					return Ok(new { Message = "Password reset token generated" });
+				}
 			}
 			return Ok(new { Message = "Password reset token failed to get generated", Error = true });
+		}
+		[HttpPost("confirm-email")]
+		public async Task<IActionResult> EmailConfirmationAsync(string emailConfirmationToken, string email)
+		{
+			if (string.IsNullOrWhiteSpace(emailConfirmationToken))
+			{
+				return Unauthorized(new { Message = "Please provide email confirmation token", Error = true });
+			}
+			var user = await _signInManager.UserManager.FindByEmailAsync(email);
+			if (user != null && user.EmailConfirmed)
+			{
+				return Ok(new { Message = "Email already confirmed" });
+			}
+			if (user == null)
+			{
+				return Unauthorized(new { Message = "User not found", Error = true });
+			}
+			var dbToken = await _signInManager.UserManager.GetAuthenticationTokenAsync(user, "Emailconfirmation", "Emailconfirmation");
+			if (string.IsNullOrWhiteSpace(dbToken) || !dbToken.Equals(emailConfirmationToken))
+			{
+				return Unauthorized(new { Message = "Token invalid", Error = true });
+			}
+
+			user.EmailConfirmed = true;
+			var confirmResult = await _signInManager.UserManager.UpdateAsync(user);
+			if (confirmResult.Succeeded)
+			{
+				await _signInManager.UserManager.RemoveAuthenticationTokenAsync(user, "Emailconfirmation", "Emailconfirmation");
+				return Ok(new { Message = "Email has been confirmed" });
+			}
+			return Ok(new { Message = "Email confirmation failed", Error = true });
+		}
+		[HttpPost("resend-confirmation-email")]
+		public async Task<IActionResult> ResendEmailConfirmationAsync(string email)
+		{
+			if (string.IsNullOrWhiteSpace(email))
+			{
+				return Unauthorized(new { Message = "Email is empty", Error = true });
+			}
+			var user = await _signInManager.UserManager.FindByEmailAsync(email);
+			if (user == null || user.EmailConfirmed)
+			{
+				return Unauthorized(new { Message = "User not found, or email already confirmed", Error = true });
+			}
+			if (!string.IsNullOrWhiteSpace(await _signInManager.UserManager.GetAuthenticationTokenAsync(user, "Emailconfirmation", "Emailconfirmation")))
+			{
+				await _signInManager.UserManager.RemoveAuthenticationTokenAsync(user, "Emailconfirmation", "Emailconfirmation");
+			}
+			var code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(await _signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user)));
+			var setConfirmationTokenResult = await _signInManager.UserManager.SetAuthenticationTokenAsync(user, "Emailconfirmation", "Emailconfirmation", code);
+			if (setConfirmationTokenResult.Succeeded)
+			{
+				if (_emailSender.SendEmail(new string[] { email }, "Email confirmation code", code))
+				{
+					return Ok(new { Message = "Email confirmation token generated" });
+				}
+			}
+
+			return Ok(new { Message = "Email confirmation token failed to get generated", Error = true });
 		}
 		[Authorize]
 		[HttpPost("change-password")]
@@ -196,7 +277,7 @@ namespace LW.BkEndApi.Controllers
 		{
 			if (authModel == null)
 			{
-				return Unauthorized();
+				return Unauthorized(new { Message = "Form is empty", Error = true });
 			}
 			var userEmail = User.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
 			if (userEmail == null)
@@ -258,7 +339,7 @@ namespace LW.BkEndApi.Controllers
 		{
 			if (authModel == null)
 			{
-				return Unauthorized();
+				return Unauthorized(new { Message = "Form is empty", Error = true });
 			}
 			var userEmail = User.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
 			if (userEmail == null)
