@@ -35,21 +35,49 @@ namespace LW.BkEndLogic.Commons
 			rsaKey.ImportRSAPrivateKey(File.ReadAllBytes("key"), out _);
 			_key = new RsaSecurityKey(rsaKey);
 		}
-
+		private async Task<string> GetUserType(User user)
+		{
+			string userType = string.Empty;
+			if (await _userManager.IsInRoleAsync(user, "master-administrator"))
+			{
+				userType = "master-admin";
+			}
+			else if (user.ConexiuniConturi?.FirmaDiscountId != null)
+			{
+				userType = "firma-admin";
+			}
+			else if (user.ConexiuniConturi?.HybridId != null)
+			{
+				userType = "hybrid-admin";
+			}
+			else if (user.ConexiuniConturi?.ProfilCont?.IsBusiness != null &&
+				user.ConexiuniConturi?.ProfilCont?.IsBusiness == true)
+			{
+				userType = "pj-admin";
+			}
+			else
+			{
+				userType = "pf-admin";
+			}
+			return userType;
+		}
 		public async Task<string> GenerateJwtToken(User user)
 		{
 			var credentials = new SigningCredentials(_key, SecurityAlgorithms.RsaSha256);
+			var userType = await GetUserType(user);
 			var claims = new List<Claim>
 				{
 					new Claim("sub", user.Id.ToString()),
-					new Claim("name", user.UserName),
+					new Claim("name", user.ConexiuniConturi?.ProfilCont?.Name ?? ""),
+					new Claim("firstName", user.ConexiuniConturi?.ProfilCont?.FirstName ?? ""),
 					new Claim("email", user.Email),
-					new Claim("phone", user.PhoneNumber)
+					new Claim("phone", user.PhoneNumber ?? ""),
+					new Claim("type", userType),
 				};
 			var roles = await _userManager.GetRolesAsync(user);
 			foreach (var role in roles)
 			{
-				claims.Add(new Claim(ClaimTypes.Role, role));
+				claims.Add(new Claim("role", role));
 			}
 			var token = new JwtSecurityToken(_configuration["Jwt:Issuer"],
 				_configuration["Jwt:Issuer"],

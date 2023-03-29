@@ -50,7 +50,7 @@ namespace LW.BkEndTests
 			// Assert
 			_outputHelper.WriteLine(await response.Content.ReadAsStringAsync());
 
-			Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+			Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
 		}
 		[Fact]
 		public async Task LoginAsync_ReturnsSuccess_WhenCredentialsAreValid()
@@ -131,7 +131,7 @@ namespace LW.BkEndTests
 			string email = _testEmail; // Make sure this user exists in the test database
 
 			// Act
-			var response = await _client.PostAsJsonAsync($"/auth/password-reset-token?email={email}", new { });
+			var response = await _client.GetAsync($"/auth/password-reset-token?email={email}");
 
 			// Assert
 			_outputHelper.WriteLine(await response.Content.ReadAsStringAsync());
@@ -149,12 +149,12 @@ namespace LW.BkEndTests
 			string email = "nonexistentuser@example.com"; // Make sure this user does NOT exist in the test database
 
 			// Act
-			var response = await _client.PostAsJsonAsync($"/auth/password-reset-token?email={email}", new { });
+			var response = await _client.GetAsync($"/auth/password-reset-token?email={email}");
 
 			// Assert
 			_outputHelper.WriteLine(await response.Content.ReadAsStringAsync());
 
-			Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+			Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 		}
 		[Fact]
 		public async Task ChangePasswordAsync_ReturnSuccess_WhenPasswordChanged()
@@ -213,7 +213,7 @@ namespace LW.BkEndTests
 			Assert.Contains("Password changed", responseContent);
 		}
 		[Fact]
-		public async Task ChangePasswordAsync_ReturnUnauthorized_WhenPasswordNotChanged()
+		public async Task ChangePasswordAsync_ReturnBadRequest_WhenPasswordNotChanged()
 		{
 			// Arrange
 			string email = _testEmail; // Make sure this user exists in the test database
@@ -236,7 +236,7 @@ namespace LW.BkEndTests
 			// Assert
 			_outputHelper.WriteLine(await response.Content.ReadAsStringAsync());
 
-			Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+			Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 		}
 		[Fact]
 		public async Task UpdateProfileAsync_Success()
@@ -269,7 +269,7 @@ namespace LW.BkEndTests
 		}
 
 		[Fact]
-		public async Task UpdateProfileAsync_Unauthorized()
+		public async Task UpdateProfileAsync_BadRequest()
 		{
 			// Arrange
 			string email = "nonexistentuser@example.com"; // Make sure this user does NOT exist in the test database
@@ -293,7 +293,7 @@ namespace LW.BkEndTests
 			// Assert
 			_outputHelper.WriteLine(await response.Content.ReadAsStringAsync());
 
-			Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+			Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 		}
 		[Fact]
 		public async Task DeleteAccountAsync_Success()
@@ -324,7 +324,7 @@ namespace LW.BkEndTests
 		}
 
 		[Fact]
-		public async Task DeleteAccountAsync_Unauthorized()
+		public async Task DeleteAccountAsync_BadRequest()
 		{
 			// Arrange
 			string email = "nonexistentuser@example.com"; // Make sure this user does NOT exist in the test database
@@ -345,7 +345,7 @@ namespace LW.BkEndTests
 			// Assert
 			_outputHelper.WriteLine(await response.Content.ReadAsStringAsync());
 
-			Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+			Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 		}
 		[Fact]
 		public async Task PasswordResetAsync_Success()
@@ -379,17 +379,17 @@ namespace LW.BkEndTests
 			// Assert
 			_outputHelper.WriteLine(await response.Content.ReadAsStringAsync());
 
-			Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+			Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 		}
 		[Fact]
 		public async Task EmailConfirmationAsync_Success()
 		{
 			// Arrange
-			string emailConfirmationToken = "Q2ZESjhGeTVMemZEb1NCT2dtSmw5ZHV3cURKVFM2eWs5YloyNGZjd0hoVStGUVhhNUVNbWlLZHR0YVBFMHYxZSs0NkZyRWNNU1RPbld0YnNDWnduR0h2L1JDSkUvcHAxL3c1T3QvVUNpc0VkVHFJbXFFS0l6YUNlcVd6cXNpaFJuTitHVkd1aVdiTlp4RG5HNU9kRklBWEJvTWJXWUtTQytsdUFJV3Q0Q1BBU0tsMUk1eXludUdBRG1pWG5TZmVXUEJrcEVobVdMWkxRMmtDSGs1UVo0UDVsWHUwUWRQMllBamYyd2V2TjFmd3pLZDlKclhlbnpWOXZxeUY4TjJIKy9Pakx2dz09";
+			string emailConfirmationToken = "Q2ZESjhGeTVMemZEb1NCT2dtSmw5ZHV3cURLVEJYeTQrRGVzQUo0VnFhMGhKSGR4M1V4OXdmY2NtSTFMOS9YK0xZUURnS0Q4TEgzTGxQZHUzZzVweW5CZGg1K3JlQTdubUpnY2xRRnlGRmJGbllWcTBwWWpSQU5RZlovQzF5Z094TUFDRmtESjY5NldsWERCVGhHcVRpQzZrTXNsWGVZSndmam5HalF4YVU5TUFGeFh6V1BIcXhTNW83YUNCRDlGZFNiYzM5WlE3N2tseEg5Q0kxSStleTVIZ1BYejNudDUwRUFHSVRtSVhtRWpsdWhTRW11eUZrNUo0ZXBTb2VXUUJwTnNQQT09";
 			string email = _testEmail; // Make sure this user exists in the test database
 
 			// Act
-			var response = await _client.PostAsJsonAsync($"/auth/confirm-email?emailConfirmationToken={emailConfirmationToken}&email={email}", new { });
+			var response = await _client.GetAsync($"/auth/confirm-email?emailConfirmationToken={emailConfirmationToken}&email={email}");
 
 			// Assert
 			_outputHelper.WriteLine(await response.Content.ReadAsStringAsync());
@@ -407,12 +407,12 @@ namespace LW.BkEndTests
 			string email = "nonexistentuser@example.com"; // Make sure this user does NOT exist in the test database
 
 			// Act
-			var response = await _client.PostAsJsonAsync($"/auth/confirm-email?emailConfirmationToken={emailConfirmationToken}&email={email}", new { });
+			var response = await _client.GetAsync($"/auth/confirm-email?emailConfirmationToken={emailConfirmationToken}&email={email}");
 
 			// Assert
 			_outputHelper.WriteLine(await response.Content.ReadAsStringAsync());
 
-			Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+			Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 		}
 		[Fact]
 		public async Task ResendEmailConfirmationAsync_Success()
@@ -421,7 +421,7 @@ namespace LW.BkEndTests
 			string email = _testEmail; // Make sure this user exists in the test database
 
 			// Act
-			var response = await _client.PostAsJsonAsync($"/auth/resend-confirmation-email?email={email}", new { });
+			var response = await _client.GetAsync($"/auth/resend-confirmation-email?email={email}");
 
 			// Assert
 			_outputHelper.WriteLine(await response.Content.ReadAsStringAsync());
@@ -439,12 +439,12 @@ namespace LW.BkEndTests
 			string email = "nonexistentuser@example.com"; // Make sure this user does NOT exist in the test database
 
 			// Act
-			var response = await _client.PostAsJsonAsync($"/auth/resend-confirmation-email?email={email}", new { });
+			var response = await _client.GetAsync($"/auth/resend-confirmation-email?email={email}");
 
 			// Assert
 			_outputHelper.WriteLine(await response.Content.ReadAsStringAsync());
 
-			Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+			Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 		}
 
 	}

@@ -38,7 +38,19 @@ builder.Services.AddIdentity<User, Role>(options =>
 	})
 	.AddEntityFrameworkStores<LwDBContext>()
 	.AddDefaultTokenProviders();
-
+if (builder.Environment.IsDevelopment())
+{
+	builder.Services.AddCors(opt =>
+	{
+		opt.AddPolicy(name: "Cors",
+			policy =>
+			{
+				policy.WithOrigins(new string[] { "http://localhost:4201" })
+					.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
+					.WithExposedHeaders("Content-Disposition");
+			});
+	});
+}
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -93,13 +105,13 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+	app.UseCors("Cors");
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
-
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.MapGet("", () => "Server is up and running!").AllowAnonymous().WithGroupName("Home").WithDisplayName("Index").WithName("");
 app.MapControllers();
 
 app.Run();

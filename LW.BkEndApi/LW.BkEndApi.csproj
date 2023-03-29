@@ -15,4 +15,10 @@
 		<ProjectReference Include="..\LW.BkEndLogic\LW.BkEndLogic.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="key">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>

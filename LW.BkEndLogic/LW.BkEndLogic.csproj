@@ -16,4 +16,10 @@
     <Folder Include="RegularUser\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="key">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
