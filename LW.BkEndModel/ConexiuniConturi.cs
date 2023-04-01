@@ -13,18 +13,18 @@ namespace LW.BkEndModel
 	{
 		[Key]
 		[JsonProperty("id")]
-		public string Id { get; set; } = Guid.NewGuid().ToString();
+		public Guid Id { get; set; } = Guid.NewGuid();
 
 		// Foreign Keys
 		[ForeignKey("User")]
 		[JsonProperty("userId")]
-		public string? UserId { get; set; } = "";
+		public Guid? UserId { get; set; }
 		[ForeignKey("Hybrid")]
 		[JsonProperty("hybridId")]
-		public string? HybridId { get; set; }
+		public Guid? HybridId { get; set; }
 		[ForeignKey("FirmaDiscount")]
 		[JsonProperty("firmaDiscountId")]
-		public string? FirmaDiscountId { get; set; }
+		public Guid? FirmaDiscountId { get; set; }
 
 		// Relations
 		[JsonIgnore]
@@ -33,11 +33,11 @@ namespace LW.BkEndModel
 		public Hybrid? Hybrid { get; set; }
 		[JsonIgnore]
 		public FirmaDiscount? FirmaDiscount { get; set; }
-		[JsonIgnore]
+		[JsonProperty("profilCont")]
 		public ProfilCont? ProfilCont { get; set; }
-		[JsonIgnore]
+		[JsonProperty("tranzactii")]
 		public ICollection<Tranzactii>? Tranzactii { get; set; }
-		[JsonIgnore]
+		[JsonProperty("documente")]
 		public ICollection<Documente>? Documente { get; set; }
 		[JsonIgnore]
 		public ICollection<PreferinteHybrid>? PreferinteHybrid { get; set; }

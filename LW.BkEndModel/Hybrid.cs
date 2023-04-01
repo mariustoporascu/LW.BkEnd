@@ -13,7 +13,7 @@ namespace LW.BkEndModel
 	{
 		[Key]
 		[JsonProperty("id")]
-		public string Id { get; set; } = Guid.NewGuid().ToString();
+		public Guid Id { get; set; } = Guid.NewGuid();
 		[JsonProperty("name")]
 		public string? Name { get; set; }
 		[JsonProperty("noSubAccounts")]
@@ -22,9 +22,9 @@ namespace LW.BkEndModel
 		public int NoDocsUploaded { get; set; }
 
 		// Relations
-		[JsonIgnore]
+		[JsonProperty("conexiuniConturi")]
 		public ICollection<ConexiuniConturi>? ConexiuniConturi { get; set; }
-		[JsonIgnore]
+		[JsonProperty("preferinteHybrid")]
 		public ICollection<PreferinteHybrid>? PreferinteHybrid { get; set; }
 	}
 }

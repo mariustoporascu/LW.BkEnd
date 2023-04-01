@@ -10,4 +10,16 @@
     <ProjectReference Include="..\LW.BkEndDb\LW.BkEndDb.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="HybridUser\" />
+    <Folder Include="FirmaDiscUser\" />
+    <Folder Include="RegularUser\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="key">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

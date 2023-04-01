@@ -13,7 +13,7 @@ namespace LW.BkEndModel
 	{
 		[Key]
 		[JsonProperty("id")]
-		public string Id { get; set; } = Guid.NewGuid().ToString();
+		public Guid Id { get; set; } = Guid.NewGuid();
 
 		public bool isWithdraw { get; set; } = false;
 		[Column(TypeName = "decimal(18,2)")]
@@ -23,10 +23,10 @@ namespace LW.BkEndModel
 		// Foreign Keys
 		[ForeignKey("Documente")]
 		[JsonProperty("documenteId")]
-		public string? DocumenteId { get; set; }
+		public Guid? DocumenteId { get; set; }
 		[ForeignKey("ConexiuniConturi")]
 		[JsonProperty("conexId")]
-		public string? ConexId { get; set; }
+		public Guid? ConexId { get; set; }
 
 		// Relations
 		[JsonIgnore]

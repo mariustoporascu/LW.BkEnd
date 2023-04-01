@@ -13,7 +13,7 @@ namespace LW.BkEndDb.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -27,7 +27,7 @@ namespace LW.BkEndDb.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -52,7 +52,7 @@ namespace LW.BkEndDb.Migrations
                 name: "FirmaDiscount",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CuiNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NrRegCom = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -75,7 +75,7 @@ namespace LW.BkEndDb.Migrations
                 name: "Hybrid",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NoSubAccounts = table.Column<int>(type: "int", nullable: false),
                     NoDocsUploaded = table.Column<int>(type: "int", nullable: false)
@@ -91,7 +91,7 @@ namespace LW.BkEndDb.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -112,7 +112,7 @@ namespace LW.BkEndDb.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -134,7 +134,7 @@ namespace LW.BkEndDb.Migrations
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -151,8 +151,8 @@ namespace LW.BkEndDb.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -175,7 +175,7 @@ namespace LW.BkEndDb.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -195,10 +195,10 @@ namespace LW.BkEndDb.Migrations
                 name: "ConexiuniConturi",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    HybridId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    FirmaDiscountId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    HybridId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    FirmaDiscountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -224,7 +224,7 @@ namespace LW.BkEndDb.Migrations
                 name: "Documente",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DocNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     IsInvoice = table.Column<bool>(type: "bit", nullable: false),
@@ -234,9 +234,9 @@ namespace LW.BkEndDb.Migrations
                     ExtractedBusinessData = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ExtractedBusinessAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Uploaded = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FirmaDiscountId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ConexId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    NextConexId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    FirmaDiscountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ConexId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    NextConexId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -257,9 +257,9 @@ namespace LW.BkEndDb.Migrations
                 name: "PreferinteHybrid",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    HybridId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ConexId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    HybridId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ConexId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -280,14 +280,14 @@ namespace LW.BkEndDb.Migrations
                 name: "ProfilCont",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NoDocsUploaded = table.Column<int>(type: "int", nullable: false),
                     IsBusiness = table.Column<bool>(type: "bit", nullable: false),
-                    ConexId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    ConexId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -303,12 +303,12 @@ namespace LW.BkEndDb.Migrations
                 name: "FisiereDocumente",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FileExtension = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Identifier = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DocumenteId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    DocumenteId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -324,12 +324,12 @@ namespace LW.BkEndDb.Migrations
                 name: "Tranzactii",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     isWithdraw = table.Column<bool>(type: "bit", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DocumenteId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ConexId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    DocumenteId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ConexId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {

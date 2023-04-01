@@ -14,7 +14,7 @@ namespace LW.BkEndModel
 	{
 		[Key]
 		[JsonProperty("id")]
-		public string Id { get; set; } = Guid.NewGuid().ToString();
+		public Guid Id { get; set; } = Guid.NewGuid();
 		[JsonProperty("name")]
 		public string? Name { get; set; }
 		[JsonProperty("cuiNumber")]
@@ -43,9 +43,9 @@ namespace LW.BkEndModel
 		public bool IsActive { get; set; } = false;
 
 		// Relations
-		[JsonIgnore]
+		[JsonProperty("conexiuniConturi")]
 		public ICollection<ConexiuniConturi>? ConexiuniConturi { get; set; }
-		[JsonIgnore]
+		[JsonProperty("documente")]
 		public ICollection<Documente>? Documente { get; set; }
 	}
 }

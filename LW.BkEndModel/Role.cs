@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +7,7 @@ using System.Threading.Tasks;
 
 namespace LW.BkEndModel
 {
-	public class User : IdentityUser<Guid>
+	public class Role : IdentityRole<Guid>
 	{
-		//Relations
-		[JsonIgnore]
-		public ConexiuniConturi? ConexiuniConturi { get; set; }
 	}
 }
