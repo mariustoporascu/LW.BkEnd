@@ -1,5 +1,6 @@
 ﻿using LW.BkEndModel;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
@@ -92,7 +93,7 @@ namespace LW.BkEndLogic.Commons
 			var randomNumber = new byte[32];
 			using var rng = RandomNumberGenerator.Create();
 			rng.GetBytes(randomNumber);
-			return Convert.ToBase64String(randomNumber);
+			return WebEncoders.Base64UrlEncode(randomNumber);
 		}
 
 		public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
