@@ -18,6 +18,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 
+app.MapGet("", () => "Server 2 is up and running!").AllowAnonymous().WithGroupName("Home").WithDisplayName("Index").WithName("");
 app.MapControllers();
 
 app.Run();
