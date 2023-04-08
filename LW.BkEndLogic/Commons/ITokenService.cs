@@ -51,14 +51,9 @@ namespace LW.BkEndLogic.Commons
 			{
 				userType = "hybrid-admin";
 			}
-			else if (user.ConexiuniConturi?.ProfilCont?.IsBusiness != null &&
-				user.ConexiuniConturi?.ProfilCont?.IsBusiness == true)
-			{
-				userType = "pj-admin";
-			}
 			else
 			{
-				userType = "pf-admin";
+				userType = "user";
 			}
 			return userType;
 		}
