@@ -109,9 +109,9 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
+app.MapGet("", () => "Server is up and running!").AllowAnonymous().WithGroupName("Home").WithDisplayName("Index").WithName("");
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapGet("", () => "Server is up and running!").AllowAnonymous().WithGroupName("Home").WithDisplayName("Index").WithName("");
 app.MapControllers();
 
 app.Run();
