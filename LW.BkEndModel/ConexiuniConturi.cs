@@ -39,6 +39,8 @@ namespace LW.BkEndModel
 		public ICollection<Tranzactii>? Tranzactii { get; set; }
 		[JsonProperty("documente")]
 		public ICollection<Documente>? Documente { get; set; }
+		[JsonProperty("dataprocdocs")]
+		public ICollection<DataProcDocs>? DataProcDocs { get; set; }
 		[JsonIgnore]
 		public ICollection<PreferinteHybrid>? PreferinteHybrid { get; set; }
 	}

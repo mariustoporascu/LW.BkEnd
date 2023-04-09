@@ -1,15 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LW.BkEndModel
 {
-	public class Documente
+	public class DataProcDocs
 	{
 		[Key]
 		[JsonProperty("id")]
@@ -42,14 +43,10 @@ namespace LW.BkEndModel
 		[ForeignKey("ConexiuniConturi")]
 		[JsonProperty("conexId")]
 		public Guid? ConexId { get; set; }
-		[JsonProperty("nextConexId")]
-		public Guid? NextConexId { get; set; }
 
 		// Relations
 		[JsonIgnore]
 		public FirmaDiscount? FirmaDiscount { get; set; }
-		[JsonIgnore]
-		public ICollection<Tranzactii>? Tranzactii { get; set; }
 		[JsonIgnore]
 		public ConexiuniConturi? ConexiuniConturi { get; set; }
 		[JsonProperty("fisiereDocumente")]

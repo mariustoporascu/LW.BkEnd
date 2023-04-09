@@ -4,6 +4,7 @@ using LW.BkEndDb;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LW.BkEndDb.Migrations
 {
     [DbContext(typeof(LwDBContext))]
-    partial class LwDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230409054303_update ef")]
+    partial class updateef
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +50,7 @@ namespace LW.BkEndDb.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("ConexiuniConturi", (string)null);
+                    b.ToTable("ConexiuniConturi");
                 });
 
             modelBuilder.Entity("LW.BkEndModel.DataProcDocs", b =>
@@ -95,7 +98,7 @@ namespace LW.BkEndDb.Migrations
 
                     b.HasIndex("FirmaDiscountId");
 
-                    b.ToTable("DataProcDocs", (string)null);
+                    b.ToTable("DataProcDocs");
                 });
 
             modelBuilder.Entity("LW.BkEndModel.Documente", b =>
@@ -146,7 +149,7 @@ namespace LW.BkEndDb.Migrations
 
                     b.HasIndex("FirmaDiscountId");
 
-                    b.ToTable("Documente", (string)null);
+                    b.ToTable("Documente");
                 });
 
             modelBuilder.Entity("LW.BkEndModel.FirmaDiscount", b =>
@@ -193,7 +196,7 @@ namespace LW.BkEndDb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FirmaDiscount", (string)null);
+                    b.ToTable("FirmaDiscount");
                 });
 
             modelBuilder.Entity("LW.BkEndModel.FisiereDocumente", b =>
@@ -231,7 +234,7 @@ namespace LW.BkEndDb.Migrations
                         .IsUnique()
                         .HasFilter("[DocumenteId] IS NOT NULL");
 
-                    b.ToTable("FisiereDocumente", (string)null);
+                    b.ToTable("FisiereDocumente");
                 });
 
             modelBuilder.Entity("LW.BkEndModel.Hybrid", b =>
@@ -251,7 +254,7 @@ namespace LW.BkEndDb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Hybrid", (string)null);
+                    b.ToTable("Hybrid");
                 });
 
             modelBuilder.Entity("LW.BkEndModel.PreferinteHybrid", b =>
@@ -272,7 +275,7 @@ namespace LW.BkEndDb.Migrations
 
                     b.HasIndex("HybridId");
 
-                    b.ToTable("PreferinteHybrid", (string)null);
+                    b.ToTable("PreferinteHybrid");
                 });
 
             modelBuilder.Entity("LW.BkEndModel.ProfilCont", b =>
@@ -308,7 +311,7 @@ namespace LW.BkEndDb.Migrations
                         .IsUnique()
                         .HasFilter("[ConexId] IS NOT NULL");
 
-                    b.ToTable("ProfilCont", (string)null);
+                    b.ToTable("ProfilCont");
                 });
 
             modelBuilder.Entity("LW.BkEndModel.Role", b =>
@@ -366,7 +369,7 @@ namespace LW.BkEndDb.Migrations
 
                     b.HasIndex("DocumenteId");
 
-                    b.ToTable("Tranzactii", (string)null);
+                    b.ToTable("Tranzactii");
                 });
 
             modelBuilder.Entity("LW.BkEndModel.User", b =>
