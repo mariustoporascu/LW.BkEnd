@@ -7,13 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LW.BkEndDb\LW.BkEndDb.csproj" />
+    <PackageReference Include="Azure.AI.FormRecognizer" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="HybridUser\" />
-    <Folder Include="FirmaDiscUser\" />
-    <Folder Include="RegularUser\" />
+    <ProjectReference Include="..\LW.BkEndDb\LW.BkEndDb.csproj" />
   </ItemGroup>
 
 </Project>
