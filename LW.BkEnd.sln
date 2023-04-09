@@ -19,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlDummyData", "SqlDummyDat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtKeyGen", "JwtKeyGen\JwtKeyGen.csproj", "{43270E4F-6C56-4080-9582-2FF42AD546A8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LW.DocProcLogic", "LW.DocProcLogic\LW.DocProcLogic.csproj", "{D1064A9A-CF04-4E9B-A72E-E11177F6B846}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LW.DocProcesTests", "LW.DocProcesTests\LW.DocProcesTests.csproj", "{BC845E98-D718-4B7C-BE7E-065089E7B70C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +61,14 @@ Global
 		{43270E4F-6C56-4080-9582-2FF42AD546A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43270E4F-6C56-4080-9582-2FF42AD546A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43270E4F-6C56-4080-9582-2FF42AD546A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1064A9A-CF04-4E9B-A72E-E11177F6B846}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1064A9A-CF04-4E9B-A72E-E11177F6B846}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1064A9A-CF04-4E9B-A72E-E11177F6B846}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1064A9A-CF04-4E9B-A72E-E11177F6B846}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC845E98-D718-4B7C-BE7E-065089E7B70C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC845E98-D718-4B7C-BE7E-065089E7B70C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC845E98-D718-4B7C-BE7E-065089E7B70C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC845E98-D718-4B7C-BE7E-065089E7B70C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
