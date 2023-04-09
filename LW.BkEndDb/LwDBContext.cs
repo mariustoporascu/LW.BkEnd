@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace LW.BkEndDb
 		public DbSet<PreferinteHybrid> PreferinteHybrid { get; set; }
 		public DbSet<FirmaDiscount> FirmaDiscount { get; set; }
 		public DbSet<Documente> Documente { get; set; }
+		public DbSet<DataProcDocs> DataProcDocs { get; set; }
 		public DbSet<Tranzactii> Tranzactii { get; set; }
 		public DbSet<FisiereDocumente> FisiereDocumente { get; set; }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)

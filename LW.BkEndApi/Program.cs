@@ -21,10 +21,13 @@ builder.Services.AddDbContext<LwDBContext>(options =>
 	{
 		options.UseSqlServer(builder.Configuration
 			.GetConnectionString("DefaultConnection"),
-			sqlServerOptionsAction => sqlServerOptionsAction.EnableRetryOnFailure(
-			maxRetryCount: 10,
-			maxRetryDelay: TimeSpan.FromSeconds(10),
-			errorNumbersToAdd: null)
+			sqlServerOptionsAction =>
+			{
+				sqlServerOptionsAction.EnableRetryOnFailure(
+					maxRetryCount: 10,
+					maxRetryDelay: TimeSpan.FromSeconds(10),
+					errorNumbersToAdd: null);
+			}
 		);
 	});
 

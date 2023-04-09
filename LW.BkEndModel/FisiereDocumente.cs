@@ -23,9 +23,14 @@ namespace LW.BkEndModel
 		[ForeignKey("Documente")]
 		[JsonProperty("documenteId")]
 		public Guid? DocumenteId { get; set; }
+		[ForeignKey("DataProcDocs")]
+		[JsonProperty("dataProcDocsId")]
+		public Guid? DataProcDocsId { get; set; }
 
 		// Relations
 		[JsonIgnore]
 		public Documente? Documente { get; set; }
+		[JsonIgnore]
+		public DataProcDocs? DataProcDocs { get; set; }
 	}
 }

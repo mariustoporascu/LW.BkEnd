@@ -47,5 +47,7 @@ namespace LW.BkEndModel
 		public ICollection<ConexiuniConturi>? ConexiuniConturi { get; set; }
 		[JsonProperty("documente")]
 		public ICollection<Documente>? Documente { get; set; }
+		[JsonProperty("dataprocdocs")]
+		public ICollection<DataProcDocs>? DataProcDocs { get; set; }
 	}
 }
