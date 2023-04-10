@@ -12,8 +12,6 @@
 
   <ItemGroup>
     <Folder Include="HybridUser\" />
-    <Folder Include="FirmaDiscUser\" />
-    <Folder Include="RegularUser\" />
   </ItemGroup>
 
 </Project>
