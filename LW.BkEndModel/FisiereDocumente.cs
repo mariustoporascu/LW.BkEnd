@@ -14,9 +14,13 @@ namespace LW.BkEndModel
 		[Key]
 		[JsonProperty("id")]
 		public Guid Id { get; set; } = Guid.NewGuid();
+		[JsonProperty("fileName")]
 		public string? FileName { get; set; }
+		[JsonProperty("fileExtension")]
 		public string? FileExtension { get; set; }
+		[JsonProperty("identifier")]
 		public string Identifier { get; set; } = Guid.NewGuid().ToString();
+		[JsonProperty("created")]
 		public DateTime Created { get; set; } = DateTime.UtcNow;
 
 		// Foreign Keys

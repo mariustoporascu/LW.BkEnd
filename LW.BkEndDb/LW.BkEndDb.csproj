@@ -10,8 +10,4 @@
 		<ProjectReference Include="..\LW.BkEndModel\LW.BkEndModel.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Queries\" />
-	</ItemGroup>
-
 </Project>

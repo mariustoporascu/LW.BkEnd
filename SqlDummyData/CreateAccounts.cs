@@ -14,9 +14,12 @@ using System.Threading.Tasks;
 
 namespace SqlDummyData
 {
-	public class Create
+	public class CreateAccounts
 	{
-		public static string DbConnString = "Data Source=.;Initial Catalog=lwdevelop;Integrated Security=true";
+		// dev local
+		//public static string DbConnString = "Data Source=.;Initial Catalog=lwdevelop;Integrated Security=true;TrustServerCertificate=true;";
+		// dev azure
+		public static string DbConnString = "Server=tcp:lw-dbserver.database.windows.net,1433;Initial Catalog=lw-database;Persist Security Info=False;User ID=lwdbadmin;Password=Vib3r0n3;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
 		[Fact]
 		public async Task AddToContext()
