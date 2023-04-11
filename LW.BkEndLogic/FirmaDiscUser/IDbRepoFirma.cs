@@ -11,9 +11,9 @@ namespace LW.BkEndLogic.FirmaDiscUser
 {
 	public interface IDbRepoFirma
 	{
-		IQueryable<Documente> GetAllDocumente(Guid firmaId);
+		IEnumerable<Documente> GetAllDocumente(Guid firmaId);
 		Documente GetDocument(Guid entityId);
-		IQueryable<DataProcDocs> GetAllDataProcDocs(Guid firmaId);
+		IEnumerable<DataProcDocs> GetAllDataProcDocs(Guid firmaId);
 		DataProcDocs GetDataProcDoc(Guid entityId);
 	}
 	public class DbRepoFirma : IDbRepoFirma
@@ -23,14 +23,18 @@ namespace LW.BkEndLogic.FirmaDiscUser
 		{
 			_context = context;
 		}
-		public IQueryable<DataProcDocs> GetAllDataProcDocs(Guid firmaId)
+		public IEnumerable<DataProcDocs> GetAllDataProcDocs(Guid firmaId)
 		{
-			return _context.DataProcDocs.Include(d => d.FisiereDocumente).Where(d => d.FirmaDiscountId == firmaId);
+			return _context.DataProcDocs.Include(d => d.FisiereDocumente)
+				.Where(d => d.FirmaDiscountId == firmaId)
+				.AsEnumerable();
 		}
 
-		public IQueryable<Documente> GetAllDocumente(Guid firmaId)
+		public IEnumerable<Documente> GetAllDocumente(Guid firmaId)
 		{
-			return _context.Documente.Include(d => d.FisiereDocumente).Where(d => d.FirmaDiscountId == firmaId);
+			return _context.Documente.Include(d => d.FisiereDocumente)
+				.Where(d => d.FirmaDiscountId == firmaId)
+				.AsEnumerable();
 		}
 
 		public DataProcDocs GetDataProcDoc(Guid entityId)

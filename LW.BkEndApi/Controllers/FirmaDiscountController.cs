@@ -27,7 +27,7 @@ namespace LW.BkEndApi.Controllers
 				return BadRequest("Invalid input");
 			}
 
-			var documents = _dbRepoFirma.GetAllDocumente(firmaId).AsEnumerable();
+			var documents = _dbRepoFirma.GetAllDocumente(firmaId);
 
 			if (documents == null || documents.Count() == 0)
 			{
@@ -44,7 +44,7 @@ namespace LW.BkEndApi.Controllers
 				return BadRequest("Invalid input");
 			}
 
-			var documents = _dbRepoFirma.GetAllDataProcDocs(firmaId).AsEnumerable();
+			var documents = _dbRepoFirma.GetAllDataProcDocs(firmaId);
 
 			if (documents == null || documents.Count() == 0)
 			{

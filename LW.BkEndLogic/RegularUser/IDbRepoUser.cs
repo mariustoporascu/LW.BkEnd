@@ -11,9 +11,9 @@ namespace LW.BkEndLogic.RegularUser
 {
 	public interface IDbRepoUser
 	{
-		IQueryable<Documente> GetAllDocumente(Guid conexId);
+		IEnumerable<Documente> GetAllDocumente(Guid conexId);
 		Documente GetDocument(Guid entityId);
-		IQueryable<DataProcDocs> GetAllDataProcDocs(Guid conexId);
+		IEnumerable<DataProcDocs> GetAllDataProcDocs(Guid conexId);
 		DataProcDocs GetDataProcDoc(Guid entityId);
 	}
 	public class DbRepoUser : IDbRepoUser
@@ -24,14 +24,18 @@ namespace LW.BkEndLogic.RegularUser
 			_context = context;
 		}
 
-		public IQueryable<DataProcDocs> GetAllDataProcDocs(Guid conexId)
+		public IEnumerable<DataProcDocs> GetAllDataProcDocs(Guid conexId)
 		{
-			return _context.DataProcDocs.Include(d => d.FisiereDocumente).Where(d => d.ConexId == conexId);
+			return _context.DataProcDocs.Include(d => d.FisiereDocumente)
+				.Where(d => d.ConexId == conexId)
+				.AsEnumerable();
 		}
 
-		public IQueryable<Documente> GetAllDocumente(Guid conexId)
+		public IEnumerable<Documente> GetAllDocumente(Guid conexId)
 		{
-			return _context.Documente.Include(d => d.FisiereDocumente).Where(d => d.ConexId == conexId);
+			return _context.Documente.Include(d => d.FisiereDocumente)
+				.Where(d => d.ConexId == conexId)
+				.AsEnumerable();
 		}
 
 		public DataProcDocs GetDataProcDoc(Guid entityId)

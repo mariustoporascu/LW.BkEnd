@@ -10,6 +10,7 @@ namespace LW.BkEndLogic.Commons
 {
 	public interface IDbRepoCommon
 	{
+		IEnumerable<FirmaDiscount> GetAllFolders();
 		Task<bool> AddCommonEntity<T>(T entity);
 		Task<bool> UpdateCommonEntity<T>(T entity);
 		Task<bool> DeleteCommonEntity<T>(T entity);
@@ -31,6 +32,19 @@ namespace LW.BkEndLogic.Commons
 			_context.Remove(entity);
 			return await SaveChangesAsync();
 		}
+
+		public IEnumerable<FirmaDiscount> GetAllFolders()
+		{
+			return _context.FirmaDiscount.Where(x => x.IsActive)
+				.Select(x => new FirmaDiscount
+				{
+					Id = x.Id,
+					Name = x.Name,
+					DiscountPercent = x.DiscountPercent,
+					IsActive = x.IsActive,
+				}).AsEnumerable();
+		}
+
 		public async Task<bool> UpdateCommonEntity<T>(T entity)
 		{
 			_context.Update(entity);

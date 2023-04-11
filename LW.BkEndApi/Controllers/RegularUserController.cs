@@ -8,7 +8,7 @@ namespace LW.BkEndApi.Controllers
 {
 	[Route("[controller]")]
 	[ApiController]
-	//[Authorize]
+	[Authorize]
 	public class RegularUserController : ControllerBase
 	{
 		private readonly IDbRepoUser _dbRepoUser;
@@ -19,14 +19,11 @@ namespace LW.BkEndApi.Controllers
 			_dbRepoCommon = dbRepoCommon;
 		}
 		[HttpGet("getAllDocumente")]
-		public IActionResult GetAllDocumente([FromQuery(Name = "conexId")] Guid conexId)
+		public IActionResult GetAllDocumente()
 		{
-			if (conexId == Guid.Empty)
-			{
-				return BadRequest("Invalid input");
-			}
+			var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
 
-			var documents = _dbRepoUser.GetAllDocumente(conexId).AsEnumerable();
+			var documents = _dbRepoUser.GetAllDocumente(conexId);
 
 			if (documents == null || documents.Count() == 0)
 			{
@@ -36,14 +33,11 @@ namespace LW.BkEndApi.Controllers
 			return Ok(JsonConvert.SerializeObject(documents));
 		}
 		[HttpGet("getAllDataProc")]
-		public IActionResult GetAllDataProc([FromQuery(Name = "conexId")] Guid conexId)
+		public IActionResult GetAllDataProc()
 		{
-			if (conexId == Guid.Empty)
-			{
-				return BadRequest("Invalid input");
-			}
+			var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
 
-			var documents = _dbRepoUser.GetAllDataProcDocs(conexId).AsEnumerable();
+			var documents = _dbRepoUser.GetAllDataProcDocs(conexId);
 
 			if (documents == null || documents.Count() == 0)
 			{
@@ -51,6 +45,18 @@ namespace LW.BkEndApi.Controllers
 			}
 
 			return Ok(JsonConvert.SerializeObject(documents));
+		}
+		[HttpGet("getAllFolders")]
+		public IActionResult GetAllFolders()
+		{
+			var folders = _dbRepoCommon.GetAllFolders();
+
+			if (folders == null || folders.Count() == 0)
+			{
+				return NoContent();
+			}
+
+			return Ok(JsonConvert.SerializeObject(folders));
 		}
 	}
 }

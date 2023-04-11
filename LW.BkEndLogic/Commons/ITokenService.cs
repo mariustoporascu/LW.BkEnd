@@ -67,6 +67,7 @@ namespace LW.BkEndLogic.Commons
 					new Claim("name", user.ConexiuniConturi?.ProfilCont?.Name ?? ""),
 					new Claim("firstName", user.ConexiuniConturi?.ProfilCont?.FirstName ?? ""),
 					new Claim("email", user.Email),
+					new Claim("conexId",user.ConexiuniConturi?.Id.ToString() ?? ""),
 					new Claim("phone", user.PhoneNumber ?? ""),
 					new Claim("type", userType),
 				};

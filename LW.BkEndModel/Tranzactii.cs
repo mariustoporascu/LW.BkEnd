@@ -14,10 +14,12 @@ namespace LW.BkEndModel
 		[Key]
 		[JsonProperty("id")]
 		public Guid Id { get; set; } = Guid.NewGuid();
-
+		[JsonProperty("isWithdraw")]
 		public bool isWithdraw { get; set; } = false;
 		[Column(TypeName = "decimal(18,2)")]
+		[JsonProperty("amount")]
 		public decimal Amount { get; set; }
+		[JsonProperty("created")]
 		public DateTime Created { get; set; } = DateTime.UtcNow;
 
 		// Foreign Keys
