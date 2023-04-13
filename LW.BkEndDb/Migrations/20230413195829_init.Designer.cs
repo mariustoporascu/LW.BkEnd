@@ -12,23 +12,30 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LW.BkEndDb.Migrations
 {
     [DbContext(typeof(LwDBContext))]
-    [Migration("20230325194834_init")]
+    [Migration("20230413195829_init")]
     partial class init
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.10")
+                .HasAnnotation("ProductVersion", "7.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("LW.BkEndModel.ConexiuniConturi", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CIndex")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CIndex"));
 
                     b.Property<Guid?>("FirmaDiscountId")
                         .HasColumnType("uniqueidentifier");
@@ -40,6 +47,13 @@ namespace LW.BkEndDb.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("CIndex")
+                        .IsUnique();
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("CIndex"));
 
                     b.HasIndex("FirmaDiscountId");
 
@@ -57,6 +71,12 @@ namespace LW.BkEndDb.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CIndex")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CIndex"));
 
                     b.Property<Guid?>("ConexId")
                         .HasColumnType("uniqueidentifier");
@@ -76,9 +96,6 @@ namespace LW.BkEndDb.Migrations
                     b.Property<Guid?>("FirmaDiscountId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsInvoice")
                         .HasColumnType("bit");
 
@@ -88,6 +105,12 @@ namespace LW.BkEndDb.Migrations
                     b.Property<string>("ReceiptId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StatusName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
 
@@ -95,6 +118,13 @@ namespace LW.BkEndDb.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("CIndex")
+                        .IsUnique();
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("CIndex"));
 
                     b.HasIndex("ConexId");
 
@@ -117,6 +147,12 @@ namespace LW.BkEndDb.Migrations
 
                     b.Property<string>("BankName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CIndex")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CIndex"));
 
                     b.Property<string>("CuiNumber")
                         .HasColumnType("nvarchar(max)");
@@ -147,6 +183,13 @@ namespace LW.BkEndDb.Migrations
 
                     b.HasKey("Id");
 
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("CIndex")
+                        .IsUnique();
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("CIndex"));
+
                     b.ToTable("FirmaDiscount");
                 });
 
@@ -155,6 +198,12 @@ namespace LW.BkEndDb.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CIndex")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CIndex"));
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -174,6 +223,13 @@ namespace LW.BkEndDb.Migrations
 
                     b.HasKey("Id");
 
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("CIndex")
+                        .IsUnique();
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("CIndex"));
+
                     b.HasIndex("DocumenteId")
                         .IsUnique()
                         .HasFilter("[DocumenteId] IS NOT NULL");
@@ -187,6 +243,12 @@ namespace LW.BkEndDb.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("CIndex")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CIndex"));
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -198,6 +260,13 @@ namespace LW.BkEndDb.Migrations
 
                     b.HasKey("Id");
 
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("CIndex")
+                        .IsUnique();
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("CIndex"));
+
                     b.ToTable("Hybrid");
                 });
 
@@ -207,6 +276,12 @@ namespace LW.BkEndDb.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("CIndex")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CIndex"));
+
                     b.Property<Guid?>("ConexId")
                         .HasColumnType("uniqueidentifier");
 
@@ -214,6 +289,13 @@ namespace LW.BkEndDb.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("CIndex")
+                        .IsUnique();
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("CIndex"));
 
                     b.HasIndex("ConexId");
 
@@ -227,6 +309,12 @@ namespace LW.BkEndDb.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CIndex")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CIndex"));
 
                     b.Property<Guid?>("ConexId")
                         .HasColumnType("uniqueidentifier");
@@ -250,6 +338,13 @@ namespace LW.BkEndDb.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("CIndex")
+                        .IsUnique();
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("CIndex"));
 
                     b.HasIndex("ConexId")
                         .IsUnique()
@@ -295,6 +390,12 @@ namespace LW.BkEndDb.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("CIndex")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CIndex"));
+
                     b.Property<Guid?>("ConexId")
                         .HasColumnType("uniqueidentifier");
 
@@ -308,6 +409,13 @@ namespace LW.BkEndDb.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("CIndex")
+                        .IsUnique();
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("CIndex"));
 
                     b.HasIndex("ConexId");
 
@@ -388,7 +496,7 @@ namespace LW.BkEndDb.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -412,7 +520,7 @@ namespace LW.BkEndDb.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -561,7 +669,7 @@ namespace LW.BkEndDb.Migrations
                         .HasForeignKey("ConexId");
 
                     b.HasOne("LW.BkEndModel.Documente", "Documente")
-                        .WithMany()
+                        .WithMany("Tranzactii")
                         .HasForeignKey("DocumenteId");
 
                     b.Navigation("ConexiuniConturi");
@@ -634,6 +742,8 @@ namespace LW.BkEndDb.Migrations
             modelBuilder.Entity("LW.BkEndModel.Documente", b =>
                 {
                     b.Navigation("FisiereDocumente");
+
+                    b.Navigation("Tranzactii");
                 });
 
             modelBuilder.Entity("LW.BkEndModel.FirmaDiscount", b =>

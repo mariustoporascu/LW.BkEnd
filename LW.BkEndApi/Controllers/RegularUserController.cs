@@ -32,20 +32,7 @@ namespace LW.BkEndApi.Controllers
 
 			return Ok(JsonConvert.SerializeObject(documents));
 		}
-		[HttpGet("getAllDataProc")]
-		public IActionResult GetAllDataProc()
-		{
-			var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
 
-			var documents = _dbRepoUser.GetAllDataProcDocs(conexId);
-
-			if (documents == null || documents.Count() == 0)
-			{
-				return NoContent();
-			}
-
-			return Ok(JsonConvert.SerializeObject(documents));
-		}
 		[HttpGet("getAllFolders")]
 		public IActionResult GetAllFolders()
 		{

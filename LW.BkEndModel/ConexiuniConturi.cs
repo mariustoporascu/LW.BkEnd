@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +15,8 @@ namespace LW.BkEndModel
 		[Key]
 		[JsonProperty("id")]
 		public Guid Id { get; set; } = Guid.NewGuid();
-
+		[JsonIgnore]
+		public int CIndex { get; set; }
 		// Foreign Keys
 		[ForeignKey("User")]
 		[JsonProperty("userId")]
@@ -39,8 +41,6 @@ namespace LW.BkEndModel
 		public ICollection<Tranzactii>? Tranzactii { get; set; }
 		[JsonProperty("documente")]
 		public ICollection<Documente>? Documente { get; set; }
-		[JsonProperty("dataprocdocs")]
-		public ICollection<DataProcDocs>? DataProcDocs { get; set; }
 		[JsonIgnore]
 		public ICollection<PreferinteHybrid>? PreferinteHybrid { get; set; }
 	}

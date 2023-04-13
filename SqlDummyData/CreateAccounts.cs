@@ -94,7 +94,8 @@ namespace SqlDummyData
 					NormalizedEmail = "sa@sa.com".ToUpper(),
 					UserName = "sa@sa.com",
 					NormalizedUserName = "sa@sa.com".ToUpper(),
-					PhoneNumber = "0725135822"
+					PhoneNumber = "0725135822",
+					EmailConfirmed = true,
 				};
 				var result = await userManager.CreateAsync(user, "testpass");
 				if (result.Succeeded)

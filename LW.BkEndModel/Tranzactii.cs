@@ -14,6 +14,8 @@ namespace LW.BkEndModel
 		[Key]
 		[JsonProperty("id")]
 		public Guid Id { get; set; } = Guid.NewGuid();
+		[JsonIgnore]
+		public int CIndex { get; set; }
 		[JsonProperty("isWithdraw")]
 		public bool isWithdraw { get; set; } = false;
 		[Column(TypeName = "decimal(18,2)")]

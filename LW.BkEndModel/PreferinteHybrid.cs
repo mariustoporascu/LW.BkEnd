@@ -15,6 +15,8 @@ namespace LW.BkEndModel
 		[Key]
 		[JsonProperty("id")]
 		public Guid Id { get; set; } = Guid.NewGuid();
+		[JsonIgnore]
+		public int CIndex { get; set; }
 
 		// Foreign Keys
 		[ForeignKey("Hybrid")]

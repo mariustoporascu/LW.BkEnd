@@ -36,22 +36,5 @@ namespace LW.BkEndApi.Controllers
 
 			return Ok(JsonConvert.SerializeObject(documents));
 		}
-		[HttpGet("getAllDataProc")]
-		public IActionResult GetAllDataProc([FromQuery(Name = "firmaId")] Guid firmaId)
-		{
-			if (firmaId == Guid.Empty)
-			{
-				return BadRequest("Invalid input");
-			}
-
-			var documents = _dbRepoFirma.GetAllDataProcDocs(firmaId);
-
-			if (documents == null || documents.Count() == 0)
-			{
-				return NoContent();
-			}
-
-			return Ok(JsonConvert.SerializeObject(documents));
-		}
 	}
 }
