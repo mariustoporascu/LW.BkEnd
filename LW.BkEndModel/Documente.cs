@@ -14,6 +14,8 @@ namespace LW.BkEndModel
 		[Key]
 		[JsonProperty("id")]
 		public Guid Id { get; set; } = Guid.NewGuid();
+		[JsonIgnore]
+		public int CIndex { get; set; }
 		[JsonProperty("docNumber")]
 		public string? DocNumber { get; set; }
 		[JsonProperty("total")]
@@ -21,8 +23,10 @@ namespace LW.BkEndModel
 		public decimal Total { get; set; }
 		[JsonProperty("isInvoice")]
 		public bool IsInvoice { get; set; } = false;
-		[JsonProperty("isApproved")]
-		public bool IsApproved { get; set; } = false;
+		[JsonProperty("status")]
+		public int Status { get; set; } = 0;
+		[JsonProperty("statusName")]
+		public string? StatusName { get; set; } = StatusEnum.NoStatus.ToString();
 		[JsonProperty("receiptId")]
 		public string? ReceiptId { get; set; }
 		[JsonProperty("discountValue")]

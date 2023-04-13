@@ -13,8 +13,6 @@ namespace LW.BkEndLogic.RegularUser
 	{
 		IEnumerable<Documente> GetAllDocumente(Guid conexId);
 		Documente GetDocument(Guid entityId);
-		IEnumerable<DataProcDocs> GetAllDataProcDocs(Guid conexId);
-		DataProcDocs GetDataProcDoc(Guid entityId);
 	}
 	public class DbRepoUser : IDbRepoUser
 	{
@@ -24,23 +22,11 @@ namespace LW.BkEndLogic.RegularUser
 			_context = context;
 		}
 
-		public IEnumerable<DataProcDocs> GetAllDataProcDocs(Guid conexId)
-		{
-			return _context.DataProcDocs.Include(d => d.FisiereDocumente)
-				.Where(d => d.ConexId == conexId)
-				.AsEnumerable();
-		}
-
 		public IEnumerable<Documente> GetAllDocumente(Guid conexId)
 		{
 			return _context.Documente.Include(d => d.FisiereDocumente)
 				.Where(d => d.ConexId == conexId)
 				.AsEnumerable();
-		}
-
-		public DataProcDocs GetDataProcDoc(Guid entityId)
-		{
-			return _context.DataProcDocs.Include(d => d.FisiereDocumente).First(d => d.Id == entityId);
 		}
 
 		public Documente GetDocument(Guid entityId)

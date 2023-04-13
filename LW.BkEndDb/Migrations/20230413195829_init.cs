@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LW.BkEndDb.Migrations
 {
+    /// <inheritdoc />
     public partial class init : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -53,6 +55,8 @@ namespace LW.BkEndDb.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CIndex = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CuiNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NrRegCom = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -68,7 +72,8 @@ namespace LW.BkEndDb.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FirmaDiscount", x => x.Id);
+                    table.PrimaryKey("PK_FirmaDiscount", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
                 });
 
             migrationBuilder.CreateTable(
@@ -76,13 +81,16 @@ namespace LW.BkEndDb.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CIndex = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NoSubAccounts = table.Column<int>(type: "int", nullable: false),
                     NoDocsUploaded = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Hybrid", x => x.Id);
+                    table.PrimaryKey("PK_Hybrid", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
                 });
 
             migrationBuilder.CreateTable(
@@ -196,13 +204,16 @@ namespace LW.BkEndDb.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CIndex = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     HybridId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     FirmaDiscountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ConexiuniConturi", x => x.Id);
+                    table.PrimaryKey("PK_ConexiuniConturi", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
                         name: "FK_ConexiuniConturi_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -225,10 +236,13 @@ namespace LW.BkEndDb.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CIndex = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     DocNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     IsInvoice = table.Column<bool>(type: "bit", nullable: false),
-                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    StatusName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ReceiptId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DiscountValue = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ExtractedBusinessData = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -240,7 +254,8 @@ namespace LW.BkEndDb.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Documente", x => x.Id);
+                    table.PrimaryKey("PK_Documente", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
                         name: "FK_Documente_ConexiuniConturi_ConexId",
                         column: x => x.ConexId,
@@ -258,12 +273,15 @@ namespace LW.BkEndDb.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CIndex = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     HybridId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ConexId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PreferinteHybrid", x => x.Id);
+                    table.PrimaryKey("PK_PreferinteHybrid", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
                         name: "FK_PreferinteHybrid_ConexiuniConturi_ConexId",
                         column: x => x.ConexId,
@@ -281,6 +299,8 @@ namespace LW.BkEndDb.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CIndex = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -291,7 +311,8 @@ namespace LW.BkEndDb.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProfilCont", x => x.Id);
+                    table.PrimaryKey("PK_ProfilCont", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
                         name: "FK_ProfilCont_ConexiuniConturi_ConexId",
                         column: x => x.ConexId,
@@ -304,6 +325,8 @@ namespace LW.BkEndDb.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CIndex = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     FileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FileExtension = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Identifier = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -312,7 +335,8 @@ namespace LW.BkEndDb.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FisiereDocumente", x => x.Id);
+                    table.PrimaryKey("PK_FisiereDocumente", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
                         name: "FK_FisiereDocumente_Documente_DocumenteId",
                         column: x => x.DocumenteId,
@@ -325,6 +349,8 @@ namespace LW.BkEndDb.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CIndex = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     isWithdraw = table.Column<bool>(type: "bit", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -333,7 +359,8 @@ namespace LW.BkEndDb.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tranzactii", x => x.Id);
+                    table.PrimaryKey("PK_Tranzactii", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
                         name: "FK_Tranzactii_ConexiuniConturi_ConexId",
                         column: x => x.ConexId,
@@ -386,6 +413,13 @@ namespace LW.BkEndDb.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ConexiuniConturi_CIndex",
+                table: "ConexiuniConturi",
+                column: "CIndex",
+                unique: true)
+                .Annotation("SqlServer:Clustered", true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ConexiuniConturi_FirmaDiscountId",
                 table: "ConexiuniConturi",
                 column: "FirmaDiscountId");
@@ -403,6 +437,13 @@ namespace LW.BkEndDb.Migrations
                 filter: "[UserId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Documente_CIndex",
+                table: "Documente",
+                column: "CIndex",
+                unique: true)
+                .Annotation("SqlServer:Clustered", true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Documente_ConexId",
                 table: "Documente",
                 column: "ConexId");
@@ -413,11 +454,39 @@ namespace LW.BkEndDb.Migrations
                 column: "FirmaDiscountId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FirmaDiscount_CIndex",
+                table: "FirmaDiscount",
+                column: "CIndex",
+                unique: true)
+                .Annotation("SqlServer:Clustered", true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FisiereDocumente_CIndex",
+                table: "FisiereDocumente",
+                column: "CIndex",
+                unique: true)
+                .Annotation("SqlServer:Clustered", true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FisiereDocumente_DocumenteId",
                 table: "FisiereDocumente",
                 column: "DocumenteId",
                 unique: true,
                 filter: "[DocumenteId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Hybrid_CIndex",
+                table: "Hybrid",
+                column: "CIndex",
+                unique: true)
+                .Annotation("SqlServer:Clustered", true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PreferinteHybrid_CIndex",
+                table: "PreferinteHybrid",
+                column: "CIndex",
+                unique: true)
+                .Annotation("SqlServer:Clustered", true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_PreferinteHybrid_ConexId",
@@ -430,11 +499,25 @@ namespace LW.BkEndDb.Migrations
                 column: "HybridId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProfilCont_CIndex",
+                table: "ProfilCont",
+                column: "CIndex",
+                unique: true)
+                .Annotation("SqlServer:Clustered", true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProfilCont_ConexId",
                 table: "ProfilCont",
                 column: "ConexId",
                 unique: true,
                 filter: "[ConexId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tranzactii_CIndex",
+                table: "Tranzactii",
+                column: "CIndex",
+                unique: true)
+                .Annotation("SqlServer:Clustered", true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tranzactii_ConexId",
@@ -447,6 +530,7 @@ namespace LW.BkEndDb.Migrations
                 column: "DocumenteId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

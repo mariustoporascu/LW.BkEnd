@@ -23,7 +23,7 @@ namespace LW.DocProcesTests
 		public void CheckRandomCuiResult()
 		{
 			var cui = "45329241";
-			var result = new IAnafApiCall(new HttpClient(), new ConfigurationBuilder().AddJsonFile("appsettings.Production.json").Build())
+			var result = new AnafApiCall(new HttpClient(), new ConfigurationBuilder().AddJsonFile("appsettings.Production.json").Build())
 				.CheckCui(int.Parse(cui)).GetAwaiter().GetResult();
 			_outputHelper.WriteLine(result);
 			result.Should().NotBeNull();
