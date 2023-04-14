@@ -3,6 +3,7 @@ using LW.BkEndLogic.RegularUser;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using LW.BkEndLogic.Commons.Interfaces;
 
 namespace LW.BkEndApi.Controllers
 {
@@ -23,7 +24,21 @@ namespace LW.BkEndApi.Controllers
 		{
 			var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
 
-			var documents = _dbRepoUser.GetAllDocumente(conexId);
+			var documents = _dbRepoUser.GetAllDocumenteFileManager(conexId);
+
+			if (documents == null || documents.Count() == 0)
+			{
+				return NoContent();
+			}
+
+			return Ok(JsonConvert.SerializeObject(documents));
+		}
+		[HttpGet("getAllDocumenteApproved")]
+		public IActionResult GetAllDocumenteApproved()
+		{
+			var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
+
+			var documents = _dbRepoUser.GetAllDocumenteOperatii(conexId);
 
 			if (documents == null || documents.Count() == 0)
 			{

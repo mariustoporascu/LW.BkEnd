@@ -1,9 +1,9 @@
 ﻿using LW.BkEndLogic.Commons;
 using LW.BkEndLogic.FirmaDiscUser;
-using LW.BkEndLogic.RegularUser;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using LW.BkEndLogic.Commons.Interfaces;
 
 namespace LW.BkEndApi.Controllers
 {

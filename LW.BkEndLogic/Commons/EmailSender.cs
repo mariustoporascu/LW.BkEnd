@@ -1,17 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
+using LW.BkEndLogic.Commons.Interfaces;
 
 namespace LW.BkEndLogic.Commons
 {
-	public interface IEmailSender
-	{
-		bool SendEmail(string[] emailTo, string subject, string body);
-	}
 	public class EmailSender : IEmailSender
 	{
 		private readonly IConfiguration _configuration;

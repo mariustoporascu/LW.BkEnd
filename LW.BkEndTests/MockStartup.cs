@@ -1,14 +1,18 @@
 ﻿using LW.BkEndDb;
 using LW.BkEndLogic.Commons;
+using LW.BkEndLogic.Commons.Interfaces;
 using LW.BkEndModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 
-namespace LW.BkEndApi
+namespace LW.BkEndTests
 {
 	public class MockStartup
 	{

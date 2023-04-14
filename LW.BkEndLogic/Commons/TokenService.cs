@@ -4,24 +4,13 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+using LW.BkEndLogic.Commons.Interfaces;
 
 namespace LW.BkEndLogic.Commons
 {
-	public interface ITokenService
-	{
-		Task<string> GenerateJwtToken(User user);
-		string GenerateRefreshToken();
-		bool ValidateRefreshToken(JObject userToken, string refreshToken);
-		ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
-	}
 	public class TokenService : ITokenService
 	{
 		private readonly IConfiguration _configuration;

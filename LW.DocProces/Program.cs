@@ -6,10 +6,8 @@ using LW.DocProcLogic.MicrosoftOcr;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Diagnostics.Contracts;
 using System.Security.Cryptography;
 
 var rsaKey = RSA.Create();
