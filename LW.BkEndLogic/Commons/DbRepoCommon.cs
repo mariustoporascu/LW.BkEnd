@@ -1,20 +1,9 @@
 ﻿using LW.BkEndDb;
+using LW.BkEndLogic.Commons.Interfaces;
 using LW.BkEndModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LW.BkEndLogic.Commons
 {
-	public interface IDbRepoCommon
-	{
-		IEnumerable<FirmaDiscount> GetAllFolders();
-		Task<bool> AddCommonEntity<T>(T entity);
-		Task<bool> UpdateCommonEntity<T>(T entity);
-		Task<bool> DeleteCommonEntity<T>(T entity);
-	}
 	public class DbRepoCommon : IDbRepoCommon
 	{
 		private readonly LwDBContext _context;
