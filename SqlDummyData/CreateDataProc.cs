@@ -1,13 +1,14 @@
 ﻿using Bogus;
 using LW.BkEndDb;
 using LW.BkEndModel;
+using LW.BkEndModel.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace SqlDummyData
 {
-	public class CreateDataProc
+    public class CreateDataProc
 	{
 		// dev local
 		public static string DbConnString = "Data Source=.;Initial Catalog=lwdevelop;Integrated Security=true;TrustServerCertificate=true;";

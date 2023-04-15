@@ -19,7 +19,7 @@ namespace LW.BkEndApi.Controllers
 			_dbRepoUser = dbRepoUser;
 			_dbRepoCommon = dbRepoCommon;
 		}
-		[HttpGet("getAllDocumente")]
+		[HttpGet("getAllDocumenteFileManager")]
 		public IActionResult GetAllDocumente()
 		{
 			var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
@@ -33,7 +33,7 @@ namespace LW.BkEndApi.Controllers
 
 			return Ok(JsonConvert.SerializeObject(documents));
 		}
-		[HttpGet("getAllDocumenteApproved")]
+		[HttpGet("getAllDocumenteOperatii")]
 		public IActionResult GetAllDocumenteApproved()
 		{
 			var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);

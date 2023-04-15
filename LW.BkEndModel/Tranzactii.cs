@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using LW.BkEndModel.Enums;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,8 +12,10 @@ namespace LW.BkEndModel
 		public Guid Id { get; set; } = Guid.NewGuid();
 		[JsonIgnore]
 		public int CIndex { get; set; }
-		[JsonProperty("isWithdraw")]
-		public bool isWithdraw { get; set; } = false;
+		[JsonProperty("status")]
+		public int Type { get; set; } = 0;
+		[JsonProperty("statusName")]
+		public string? TypeName { get; set; } = TransferTypeEnum.NoStatus.ToString();
 		[Column(TypeName = "decimal(18,2)")]
 		[JsonProperty("amount")]
 		public decimal Amount { get; set; }
