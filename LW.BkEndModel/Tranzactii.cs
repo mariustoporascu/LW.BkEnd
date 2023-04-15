@@ -12,9 +12,9 @@ namespace LW.BkEndModel
 		public Guid Id { get; set; } = Guid.NewGuid();
 		[JsonIgnore]
 		public int CIndex { get; set; }
-		[JsonProperty("status")]
+		[JsonProperty("type")]
 		public int Type { get; set; } = 0;
-		[JsonProperty("statusName")]
+		[JsonProperty("typeName")]
 		public string? TypeName { get; set; } = TransferTypeEnum.NoStatus.ToString();
 		[Column(TypeName = "decimal(18,2)")]
 		[JsonProperty("amount")]
