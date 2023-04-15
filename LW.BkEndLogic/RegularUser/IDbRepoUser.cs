@@ -7,6 +7,7 @@ namespace LW.BkEndLogic.RegularUser
 		IEnumerable<Tranzactii> GetAllTranzactiiWithDraw(Guid conexId);
 		IEnumerable<Tranzactii> GetAllTranzactiiTransfer(Guid conexId);
 		IEnumerable<Documente> GetAllDocumenteFileManager(Guid conexId);
+		object GetDashboardInfo(Guid conexId);
 		IEnumerable<Documente> GetAllDocumenteOperatii(Guid conexId);
 		Documente GetDocument(Guid entityId);
 	}

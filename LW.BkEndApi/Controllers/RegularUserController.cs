@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using LW.BkEndLogic.Commons.Interfaces;
+using Newtonsoft.Json.Serialization;
 
 namespace LW.BkEndApi.Controllers
 {
@@ -59,6 +60,24 @@ namespace LW.BkEndApi.Controllers
 			}
 
 			return Ok(JsonConvert.SerializeObject(folders));
+		}
+		[HttpGet("getDashboardData")]
+		public IActionResult GetDashboardData()
+		{
+			var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
+
+			var data = _dbRepoUser.GetDashboardInfo(conexId);
+
+			if (data == null)
+			{
+				return NoContent();
+			}
+
+			return Ok(JsonConvert.SerializeObject(data, new JsonSerializerSettings
+			{
+				NullValueHandling = NullValueHandling.Ignore,
+				ContractResolver = new CamelCasePropertyNamesContractResolver()
+			}));
 		}
 	}
 }
