@@ -1,5 +1,6 @@
 ﻿using LW.BkEndDb;
 using LW.BkEndModel;
+using LW.BkEndModel.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace LW.BkEndLogic.RegularUser
@@ -14,13 +15,13 @@ namespace LW.BkEndLogic.RegularUser
 		public IEnumerable<Tranzactii> GetAllTranzactiiWithDraw(Guid conexId)
 		{
 			return _context.Tranzactii
-				.Where(d => d.ConexId == conexId && d.isWithdraw)
+				.Where(d => d.ConexId == conexId && d.Type == (int)TransferTypeEnum.Withdraw)
 				.AsEnumerable();
 		}
 		public IEnumerable<Tranzactii> GetAllTranzactiiTransfer(Guid conexId)
 		{
 			return _context.Tranzactii
-				.Where(d => d.ConexId == conexId && !d.isWithdraw)
+				.Where(d => d.ConexId == conexId && d.Type == (int)TransferTypeEnum.Transfer)
 				.AsEnumerable();
 		}
 		public IEnumerable<Documente> GetAllDocumenteOperatii(Guid conexId)

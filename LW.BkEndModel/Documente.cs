@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using LW.BkEndModel.Enums;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

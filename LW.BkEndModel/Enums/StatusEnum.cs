@@ -1,4 +1,4 @@
-﻿namespace LW.BkEndModel
+﻿namespace LW.BkEndModel.Enums
 {
 	public enum StatusEnum
 	{
