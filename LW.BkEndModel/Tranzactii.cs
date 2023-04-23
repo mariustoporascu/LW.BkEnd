@@ -15,7 +15,7 @@ namespace LW.BkEndModel
 		[JsonProperty("type")]
 		public int Type { get; set; } = 0;
 		[JsonProperty("typeName")]
-		public string? TypeName { get; set; } = TransferTypeEnum.NoStatus.ToString();
+		public string? TypeName { get; set; } = TranzactionTypeEnum.NoStatus.ToString();
 		[Column(TypeName = "decimal(18,2)")]
 		[JsonProperty("amount")]
 		public decimal Amount { get; set; }
