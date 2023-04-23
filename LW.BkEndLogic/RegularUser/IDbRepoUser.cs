@@ -1,4 +1,5 @@
 ﻿using LW.BkEndModel;
+using LW.BkEndModel.Enums;
 
 namespace LW.BkEndLogic.RegularUser
 {
@@ -10,6 +11,7 @@ namespace LW.BkEndLogic.RegularUser
 		object GetDashboardInfo(Guid conexId);
 		IEnumerable<Documente> GetAllDocumenteOperatii(Guid conexId);
 		Documente GetDocument(Guid entityId);
+		Task<bool> AddTranzaction(Guid conexId, Documente documente, TranzactionTypeEnum tranzactionType, Guid? nextConexId);
 	}
 
 }

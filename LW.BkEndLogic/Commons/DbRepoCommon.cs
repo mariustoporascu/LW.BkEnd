@@ -22,6 +22,23 @@ namespace LW.BkEndLogic.Commons
 			return await SaveChangesAsync();
 		}
 
+		public IEnumerable<object> FindUsers(string emailOrPhone)
+		{
+			var users = _context.Users.Where(usr => usr.Email.Contains(emailOrPhone) || usr.PhoneNumber.Contains(emailOrPhone));
+			var usersList = new List<object>();
+			foreach
+				(var usr in users)
+			{
+				usersList.Add(new
+				{
+					email = usr.Email,
+					phoneNumber = usr.PhoneNumber,
+					conexId = _context.ConexiuniConturi.FirstOrDefault(con => con.UserId == usr.Id)?.Id,
+				});
+			}
+			return usersList;
+		}
+
 		public IEnumerable<FirmaDiscount> GetAllFolders()
 		{
 			return _context.FirmaDiscount.Where(x => x.IsActive)

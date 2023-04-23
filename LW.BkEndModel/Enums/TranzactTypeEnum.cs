@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LW.BkEndModel.Enums
 {
-	public enum TransferTypeEnum
+	public enum TranzactionTypeEnum
 	{
 		NoStatus = 0,
 		Transfer = 1,
