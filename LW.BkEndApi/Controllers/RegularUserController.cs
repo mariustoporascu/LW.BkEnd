@@ -150,6 +150,10 @@ namespace LW.BkEndApi.Controllers
 		[HttpGet("query-users")]
 		public IActionResult QueryUser([FromQuery] string query)
 		{
+			if (string.IsNullOrWhiteSpace(query))
+			{
+				return NoContent();
+			}
 			var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
 			var users = _dbRepoCommon.FindUsers(query);
 			if (users == null || users.Count() == 0)

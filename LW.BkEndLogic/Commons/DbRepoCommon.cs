@@ -1,6 +1,7 @@
 ﻿using LW.BkEndDb;
 using LW.BkEndLogic.Commons.Interfaces;
 using LW.BkEndModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace LW.BkEndLogic.Commons
 {
@@ -29,9 +30,14 @@ namespace LW.BkEndLogic.Commons
 			foreach
 				(var usr in users)
 			{
+				var conex = _context.ConexiuniConturi.Include(c => c.ProfilCont).FirstOrDefault(con => con.UserId == usr.Id);
+				if (conex == null)
+				{
+					continue;
+				}
 				usersList.Add(new
 				{
-					email = usr.Email,
+					fullName = $"{conex.ProfilCont?.Name} {conex.ProfilCont?.FirstName}",
 					phoneNumber = usr.PhoneNumber,
 					conexId = _context.ConexiuniConturi.FirstOrDefault(con => con.UserId == usr.Id)?.Id,
 				});
