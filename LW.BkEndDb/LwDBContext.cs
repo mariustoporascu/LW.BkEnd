@@ -38,6 +38,7 @@ namespace LW.BkEndDb
 		{
 			// Configure primary key as non-clustered
 			builder.HasKey(cc => cc.Id).IsClustered(false);
+			builder.HasMany(cc => cc.Documente).WithOne(d => d.ConexiuniConturi).HasForeignKey(d => d.ConexId);
 
 			// Configure clustered index for the ClusteredIndex property
 			builder.Property(cc => cc.CIndex).UseIdentityColumn();

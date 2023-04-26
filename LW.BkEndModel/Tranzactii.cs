@@ -31,7 +31,7 @@ namespace LW.BkEndModel
 		public Guid? ConexId { get; set; }
 
 		// Relations
-		[JsonIgnore]
+		[JsonProperty("documente")]
 		public Documente? Documente { get; set; }
 		[JsonIgnore]
 		public ConexiuniConturi? ConexiuniConturi { get; set; }

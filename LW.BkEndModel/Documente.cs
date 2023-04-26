@@ -42,6 +42,7 @@ namespace LW.BkEndModel
 		[ForeignKey("ConexiuniConturi")]
 		[JsonProperty("conexId")]
 		public Guid? ConexId { get; set; }
+		[ForeignKey("NextConexiuniConturi")]
 		[JsonProperty("nextConexId")]
 		public Guid? NextConexId { get; set; }
 
@@ -50,8 +51,10 @@ namespace LW.BkEndModel
 		public FirmaDiscount? FirmaDiscount { get; set; }
 		[JsonIgnore]
 		public ICollection<Tranzactii>? Tranzactii { get; set; }
-		[JsonIgnore]
+		[JsonProperty("conexiuniConturi")]
 		public ConexiuniConturi? ConexiuniConturi { get; set; }
+		[JsonProperty("nextConexiuniConturi")]
+		public ConexiuniConturi? NextConexiuniConturi { get; set; }
 		[JsonProperty("fisiereDocumente")]
 		public FisiereDocumente? FisiereDocumente { get; set; }
 	}
