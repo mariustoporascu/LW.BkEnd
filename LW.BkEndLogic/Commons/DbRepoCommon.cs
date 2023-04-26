@@ -25,7 +25,9 @@ namespace LW.BkEndLogic.Commons
 
 		public IEnumerable<object> FindUsers(string emailOrPhone)
 		{
-			var users = _context.Users.Where(usr => usr.Email.Contains(emailOrPhone) || usr.PhoneNumber.Contains(emailOrPhone));
+			var users = _context.Users
+				.Where(usr => (usr.Email.Contains(emailOrPhone) || usr.PhoneNumber.Contains(emailOrPhone)) &&
+				 usr.ConexiuniConturi.FirmaDiscountId == null && usr.ConexiuniConturi.HybridId == null);
 			var usersList = new List<object>();
 			foreach
 				(var usr in users)

@@ -31,9 +31,9 @@ namespace LW.BkEndModel
 		public FirmaDiscount? FirmaDiscount { get; set; }
 		[JsonProperty("profilCont")]
 		public ProfilCont? ProfilCont { get; set; }
-		[JsonProperty("tranzactii")]
+		[JsonIgnore]
 		public ICollection<Tranzactii>? Tranzactii { get; set; }
-		[JsonProperty("documente")]
+		[JsonIgnore]
 		public ICollection<Documente>? Documente { get; set; }
 		[JsonIgnore]
 		public ICollection<PreferinteHybrid>? PreferinteHybrid { get; set; }

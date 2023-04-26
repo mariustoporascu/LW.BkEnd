@@ -20,7 +20,7 @@ namespace LW.BkEndLogic.RegularUser
 		}
 		public IEnumerable<Tranzactii> GetAllTranzactiiTransfer(Guid conexId)
 		{
-			return _context.Tranzactii
+			return _context.Tranzactii.Include(t => t.Documente.NextConexiuniConturi.ProfilCont)
 				.Where(d => d.ConexId == conexId && d.Type == (int)TranzactionTypeEnum.Transfer)
 				.AsEnumerable();
 		}
@@ -49,7 +49,9 @@ namespace LW.BkEndLogic.RegularUser
 
 		public object GetDashboardInfo(Guid conexId)
 		{
-			var tableDocs = _context.Documente.Where(d => d.ConexId == conexId && (d.Status == (int)StatusEnum.Approved ||
+			var tableDocs = _context.Documente
+				.Where(d => (d.ConexId == conexId || d.NextConexId == conexId) &&
+				(d.Status == (int)StatusEnum.Approved ||
 				d.Status == (int)StatusEnum.Rejected ||
 				d.Status == (int)StatusEnum.WaitingForApproval))
 				.Select(doc => new Documente
