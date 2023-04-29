@@ -35,14 +35,36 @@ namespace FilesProcessing
 		}
 
 		[Function("OnNewFile")]
+#if DEBUG
+		public async Task Run([BlobTrigger("uploadsblobdev/{name}", Connection = "AzureWebJobsStorage")] ReadOnlyMemory<byte> myBlob, string name)
+#else
 		public async Task Run([BlobTrigger("uploadsblob/{name}", Connection = "AzureWebJobsStorage")] ReadOnlyMemory<byte> myBlob, string name)
+#endif
 		{
 			_logger.LogInformation($"C# Blob trigger function Processed blob\n Name: {name}");
 			// Convert ReadOnlyMemory<byte> to Stream
-			using var stream = new MemoryStream(myBlob.ToArray());
+			var stream = new MemoryStream(myBlob.ToArray());
+
 			// Update status to Processing && get if invoice or receipt
 			await _dbRepo.UpdateBlobStatus(name, StatusEnum.Processing);
-			var blobType = _dbRepo.GetBlobType(name);
+			var blobType = _dbRepo.GetBlobType(name)/*false*/;
+			var blobFileType = _dbRepo.GetBlobFileType(name)/*"application/pdf"*/;
+
+			if (!blobFileType.Contains("image"))
+			{
+				var formData = new MultipartFormDataContent();
+				formData.Add(new StreamContent(stream), "file", name);
+				formData.Add(new StringContent("jpeg"), "convertTo");
+				var imageConversionResult = await _httpClient.PostAsync(_config["ConverterEndpoint"], formData);
+				var convertedImage = await imageConversionResult.Content.ReadAsStreamAsync();
+				if (convertedImage != null)
+				{
+					convertedImage.Seek(0, SeekOrigin.Begin);
+					byte[] convertedBytes = new byte[convertedImage.Length];
+					convertedImage.Read(convertedBytes, 0, (int)convertedImage.Length);
+					stream = new MemoryStream(convertedBytes);
+				}
+			}
 
 			if (!blobType)
 			{

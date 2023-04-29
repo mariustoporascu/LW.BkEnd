@@ -14,6 +14,7 @@ namespace LW.DocProcLogic.DbRepo
 	{
 		FirmaDiscount? GetFirmaDiscountById(Guid id);
 		Documente? GetDocumentByBlobName(string blobName);
+		string? GetBlobFileType(string blobName);
 		Task<bool> UpdateBlobStatus(string blobName, StatusEnum status);
 		bool GetBlobType(string blobName);
 		Task<bool> AddCommonEntity<T>(T entity);
@@ -47,6 +48,11 @@ namespace LW.DocProcLogic.DbRepo
 					DiscountPercent = x.DiscountPercent,
 					IsActive = x.IsActive,
 				}).AsEnumerable();
+		}
+
+		public string? GetBlobFileType(string blobName)
+		{
+			return _context.FisiereDocumente.FirstOrDefault(f => f.Identifier == blobName)?.FileExtension;
 		}
 
 		public bool GetBlobType(string blobName)
