@@ -1,16 +1,55 @@
 ﻿using Azure.AI.FormRecognizer.DocumentAnalysis;
+using LW.BkEndModel;
+using LW.BkEndModel.Enums;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace LW.DocProcLogic.ProcessOcrResult
 {
 	public static class ResultProcessor
 	{
-		public static string ProcessInvoice(AnalyzeResult result)
+		public static JObject ProcessInvoiceForFunctionApp(AnalyzeResult result)
 		{
-			return "";
+			JObject returnValue = new();
+			return new();
 		}
-		public static string ProcessReceipt(AnalyzeResult result)
+		public static JObject ProcessReceiptForFunctionApp(AnalyzeResult result)
 		{
-			return "";
+			JObject returnValue = new();
+
+			var document = result.Documents.First();
+			document.Fields.TryGetValue("MerchantName", out DocumentField MerchantName);
+			document.Fields.TryGetValue("MerchantAddress", out DocumentField MerchantAddress);
+			document.Fields.TryGetValue("TransactionDate", out DocumentField TransactionDate);
+			document.Fields.TryGetValue("TransactionTime", out DocumentField TransactionTime);
+			document.Fields.TryGetValue("Total", out DocumentField Total);
+			document.Fields.TryGetValue("TotalTax", out DocumentField TotalTax);
+			returnValue["Content"] = result.Content;
+			returnValue["MerchantName"] = MerchantName?.Value.AsString();
+			returnValue["MerchantAddress"] = MerchantAddress?.Content;
+			returnValue["TransactionDate"] = TransactionDate?.Value.AsDate();
+			returnValue["TransactionTime"] = TransactionTime?.Value.AsTime();
+			returnValue["Total"] = Total?.Value.AsDouble();
+			returnValue["TotalTax"] = TotalTax?.Value.AsDouble();
+			return returnValue;
+		}
+		public static void ProcessReceiptForFileManager(ref Documente dbFile, FirmaDiscount dbFirmaDisc, JObject processedResult)
+		{
+			try
+			{
+				var docNumber = JsonConvert.DeserializeObject<JObject>(processedResult["docNumber"]?.ToString());
+				dbFile.DocNumber = docNumber["data"]?.ToString();
+			}
+			catch (Exception)
+			{
+				dbFile.DocNumber = "";
+			}
+			dbFile.Total = decimal.Parse(processedResult["Total"]?.ToString() ?? "0.00");
+			dbFile.DiscountValue = dbFile.Total * dbFirmaDisc.DiscountPercent / 100;
+			dbFile.Status = (int)StatusEnum.CompletedProcessing;
+			dbFile.StatusName = StatusEnum.CompletedProcessing.ToString();
+			dbFile.ExtractedBusinessAddress = processedResult["MerchantAddress"]?.ToString();
+			dbFile.ExtractedBusinessData = processedResult["MerchantName"]?.ToString();
 		}
 	}
 }

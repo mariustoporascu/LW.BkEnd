@@ -22,13 +22,13 @@ namespace LW.DocProcLogic.MicrosoftOcr
 		 */
 		public async Task<AnalyzeResult> SendToOcrAsync(Stream fileStream, string ocrModel)
 		{
-			AzureKeyCredential credential = new AzureKeyCredential(_configuration["FormRecognizer:Key"]);
-			DocumentAnalysisClient client = new DocumentAnalysisClient(new Uri(_configuration["FormRecognizer:Endpoint"]), credential);
+			AzureKeyCredential credential = new AzureKeyCredential(_configuration["FormRecognizerKey"]);
+			DocumentAnalysisClient client = new DocumentAnalysisClient(new Uri(_configuration["FormRecognizerEndpoint"]), credential);
 
 			AnalyzeDocumentOperation operation = await client
 				.AnalyzeDocumentAsync(WaitUntil.Completed, ocrModel, fileStream, new AnalyzeDocumentOptions
 				{
-					Locale = "es",
+					Locale = ocrModel.Equals("prebuilt-invoice") ? "es" : "es-ES",
 				});
 
 			return operation.Value;

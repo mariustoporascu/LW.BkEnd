@@ -12,17 +12,6 @@ namespace LW.BkEndLogic.Commons
 		{
 			_context = context;
 		}
-		public async Task<bool> AddCommonEntity<T>(T entity)
-		{
-			_context.Add(entity);
-			return await SaveChangesAsync();
-		}
-		public async Task<bool> DeleteCommonEntity<T>(T entity)
-		{
-			_context.Remove(entity);
-			return await SaveChangesAsync();
-		}
-
 		public IEnumerable<object> FindUsers(string emailOrPhone)
 		{
 			var users = _context.Users
@@ -46,7 +35,16 @@ namespace LW.BkEndLogic.Commons
 			}
 			return usersList;
 		}
-
+		public async Task<bool> AddCommonEntity<T>(T entity)
+		{
+			_context.Add(entity);
+			return await SaveChangesAsync();
+		}
+		public async Task<bool> DeleteCommonEntity<T>(T entity)
+		{
+			_context.Remove(entity);
+			return await SaveChangesAsync();
+		}
 		public IEnumerable<FirmaDiscount> GetAllFolders()
 		{
 			return _context.FirmaDiscount.Where(x => x.IsActive)
@@ -58,7 +56,6 @@ namespace LW.BkEndLogic.Commons
 					IsActive = x.IsActive,
 				}).AsEnumerable();
 		}
-
 		public async Task<bool> UpdateCommonEntity<T>(T entity)
 		{
 			_context.Update(entity);
