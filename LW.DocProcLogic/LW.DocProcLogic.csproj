@@ -1,17 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Azure.AI.FormRecognizer" Version="4.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Azure.AI.FormRecognizer" Version="4.0.0" />
+		<PackageReference Include="Azure.Storage.Blobs" Version="12.16.0" />
+		<PackageReference Include="ZXing.Net" Version="0.16.9" />
+		<PackageReference Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.13" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\LW.BkEndDb\LW.BkEndDb.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\LW.BkEndDb\LW.BkEndDb.csproj" />
+	</ItemGroup>
 
 </Project>

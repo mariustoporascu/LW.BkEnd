@@ -2,6 +2,8 @@ using LW.BkEndDb;
 using LW.BkEndModel;
 using LW.DocProces;
 using LW.DocProcLogic.Anaf;
+using LW.DocProcLogic.DbRepo;
+using LW.DocProcLogic.FileManager;
 using LW.DocProcLogic.MicrosoftOcr;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -99,8 +101,9 @@ builder.Services.AddAuthentication(options =>
 	options.MapInboundClaims = false;
 });
 
-builder.Services.AddTransient<IOcrPrebuilt, OcrPrebuilt>();
 builder.Services.AddTransient<IAnafApiCall, AnafApiCall>();
+builder.Services.AddTransient<IDbRepo, DbRepo>();
+builder.Services.AddTransient<IFileManager, FileManager>();
 
 var app = builder.Build();
 

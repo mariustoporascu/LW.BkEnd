@@ -1,5 +1,6 @@
 ﻿using LW.BkEndModel.Enums;
 using Newtonsoft.Json;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -32,6 +33,12 @@ namespace LW.BkEndModel
 		public string? ExtractedBusinessData { get; set; }
 		[JsonProperty("extractedBusinessAddress")]
 		public string? ExtractedBusinessAddress { get; set; }
+		[JsonProperty("errors")]
+		[NotMapped]
+		public string? Errors { get; set; }
+		[JsonProperty("hasErrors")]
+		[NotMapped]
+		public bool HasErrors { get; set; } = false;
 		[JsonProperty("uploaded")]
 		public DateTime Uploaded { get; set; } = DateTime.UtcNow;
 

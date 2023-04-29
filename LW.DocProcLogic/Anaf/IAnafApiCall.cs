@@ -11,9 +11,9 @@ namespace LW.DocProcLogic.Anaf
 	{
 		private readonly HttpClient _httpClient;
 		private readonly IConfiguration _configuration;
-		public AnafApiCall(HttpClient httpClient, IConfiguration configuration)
+		public AnafApiCall(IConfiguration configuration)
 		{
-			_httpClient = httpClient;
+			_httpClient = new HttpClient();
 			_configuration = configuration;
 		}
 		public async Task<string> CheckCui(int cui)

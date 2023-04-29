@@ -58,11 +58,11 @@ namespace LW.BkEndApi.Controllers
 			{
 				return BadRequest(new
 				{
-					Message = JsonConvert.SerializeObject(new
+					Message = new
 					{
 						Succes = bools.Where(b => b == true).Count(),
 						Failed = bools.Where(b => b == false).Count()
-					}),
+					},
 					Error = true
 				});
 			}
