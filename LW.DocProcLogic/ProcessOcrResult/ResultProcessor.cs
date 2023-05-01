@@ -25,12 +25,34 @@ namespace LW.DocProcLogic.ProcessOcrResult
 			document.Fields.TryGetValue("Total", out DocumentField Total);
 			document.Fields.TryGetValue("TotalTax", out DocumentField TotalTax);
 			returnValue["Content"] = result.Content;
-			returnValue["MerchantName"] = MerchantName?.Value.AsString();
+			returnValue["MerchantName"] = MerchantName?.Content;
 			returnValue["MerchantAddress"] = MerchantAddress?.Content;
-			returnValue["TransactionDate"] = TransactionDate?.Value.AsDate();
-			returnValue["TransactionTime"] = TransactionTime?.Value.AsTime();
-			returnValue["Total"] = Total?.Value.AsDouble();
-			returnValue["TotalTax"] = TotalTax?.Value.AsDouble();
+			try
+			{
+				returnValue["TransactionDate"] = TransactionDate?.Value.AsDate();
+
+			}
+			catch (Exception)
+			{
+				returnValue["TransactionDate"] = TransactionDate?.Content;
+			}
+			returnValue["TransactionTime"] = TransactionTime?.Content;
+			try
+			{
+				returnValue["Total"] = Total?.Value.AsDouble();
+			}
+			catch (Exception)
+			{
+				returnValue["Total"] = Total?.Content;
+			}
+			try
+			{
+				returnValue["TotalTax"] = TotalTax?.Value.AsDouble();
+			}
+			catch (Exception)
+			{
+				returnValue["TotalTax"] = TotalTax?.Content;
+			}
 			return returnValue;
 		}
 		public static void ProcessReceiptForFileManager(ref Documente dbFile, FirmaDiscount dbFirmaDisc, JObject processedResult)
