@@ -16,6 +16,37 @@ namespace LW.DocProces.Controllers
 			_fileManager = fileManager;
 		}
 		[Authorize]
+		[HttpPost("rescanCode")]
+		public async Task<IActionResult> RescanCodeAsync()
+		{
+			var conexId = Guid.Parse(User.Claims.FirstOrDefault(x => x.Type == "conexId").Value);
+			var documentId = Request.Form["documentId"];
+			var formFiles = Request.Form.Files;
+
+			if (formFiles.Count == 0)
+			{
+				return NoContent();
+			}
+			List<bool> bools = new List<bool>();
+			foreach (FormFile file in formFiles)
+			{
+				bools.Add(await _fileManager.OnFileRescan(file, conexId, new Guid(documentId)));
+			}
+			if (bools.Any(b => b == false))
+			{
+				return BadRequest(new
+				{
+					Message = new
+					{
+						Succes = bools.Where(b => b == true).Count(),
+						Failed = bools.Where(b => b == false).Count()
+					},
+					Error = true
+				});
+			}
+			return Ok(new { Message = "All files were succesfully scanned", Error = false });
+		}
+		[Authorize]
 		[HttpPost("uploadFiles")]
 		public async Task<IActionResult> UploadFilesAsync()
 		{

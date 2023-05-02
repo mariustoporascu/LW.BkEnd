@@ -5,8 +5,8 @@ ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
 
 COPY requirements.txt /
 RUN pip install -r /requirements.txt
-
-# Install ZBar shared library
-RUN apt-get update && apt-get install -y libzbar0
+RUN apt-get install -y openjdk-11-jdk libzbar0 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY . /home/site/wwwroot

@@ -14,6 +14,8 @@ namespace LW.DocProcLogic.DbRepo
 	{
 		FirmaDiscount? GetFirmaDiscountById(Guid id);
 		Documente? GetDocumentByBlobName(string blobName);
+		Documente? GetDocumentById(Guid documentId);
+		bool CheckDocExists(Guid conexId, Guid documentId);
 		string? GetBlobFileType(string blobName);
 		Task<bool> UpdateBlobStatus(string blobName, StatusEnum status);
 		bool GetBlobType(string blobName);
@@ -33,6 +35,15 @@ namespace LW.DocProcLogic.DbRepo
 			_context.Add(entity);
 			return await SaveChangesAsync();
 		}
+		public Documente? GetDocumentById(Guid documentId)
+		{
+			return _context.Documente.FirstOrDefault(d => d.Id == documentId);
+		}
+		public bool CheckDocExists(Guid conexId, Guid documentId)
+		{
+			return _context.Documente.Any(d => d.ConexId == conexId && d.Id == documentId);
+		}
+
 		public async Task<bool> DeleteCommonEntity<T>(T entity)
 		{
 			_context.Remove(entity);

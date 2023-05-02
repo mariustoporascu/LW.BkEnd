@@ -1,7 +1,4 @@
 import logging
-#import cv2
-#import numpy as np
-#from pyzbar import pyzbar
 from PIL import Image
 import zxing
 import io
@@ -9,10 +6,9 @@ import io
 import azure.functions as func
 
 def decode_barcodes_qrcodes(image):
-    #barcodes = pyzbar.decode(image)
     reader = zxing.BarCodeReader()
     print(reader.zxing_version, reader.zxing_version_info)
-    barcodes = reader.decode(image)
+    barcodes = reader.decode(image, True)
     print(f'Barcodes: {barcodes}')
     decoded_objects = []
 
@@ -32,9 +28,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     try:
         img_data = req.get_body()
-        #np_arr = np.frombuffer(img_data, np.uint8)
         img_buffer = io.BytesIO(img_data)
-        image = Image.open(img_buffer)#cv2.imdecode(np_arr, cv2.IMREAD_ANYCOLOR)
+        image = Image.open(img_buffer)
 
         decoded_objects = decode_barcodes_qrcodes(image)
 
