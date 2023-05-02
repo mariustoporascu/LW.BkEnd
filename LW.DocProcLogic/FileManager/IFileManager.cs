@@ -13,15 +13,18 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using LW.BkEndModel.Enums;
 using Azure.AI.FormRecognizer.DocumentAnalysis;
-using LW.DocProcLogic.ExtractBarCode;
 using LW.DocProcLogic.ProcessOcrResult;
 using Azure.AI.FormRecognizer.Models;
+using SkiaSharp;
+using System.IO;
+using System.Net.Http;
 
 namespace LW.DocProcLogic.FileManager
 {
 	public interface IFileManager
 	{
 		Task<bool> OnFileUpload(FormFile formFile, Guid conexId, Guid firmaDiscId);
+		Task<bool> OnFileRescan(FormFile formFile, Guid conexId, Guid documentId);
 		Task<bool> OnFileProcessed(string blobName, string result);
 		Task<Stream> GetFileStream(string identifier, Guid conexId);
 	}
@@ -79,17 +82,48 @@ namespace LW.DocProcLogic.FileManager
 			return await _dbRepo.UpdateCommonEntity(dbFile);
 		}
 
+		public async Task<bool> OnFileRescan(FormFile formFile, Guid conexId, Guid documentId)
+		{
+			var exists = _dbRepo.CheckDocExists(conexId, documentId);
+			if (!exists) return false;
+			try
+			{
+				HttpClient _httpClient = new HttpClient();
+				using Stream stream = formFile.OpenReadStream();
+				// get document number from barcode
+				string barCode = string.Empty;
+				var imageContent = new StreamContent(stream);
+				var barCodeResult = await _httpClient.PostAsync(_config["BarCodeEndpointZbar"], imageContent);
+				if (barCodeResult.StatusCode == System.Net.HttpStatusCode.NoContent)
+				{
+					barCodeResult = await _httpClient.PostAsync(_config["BarCodeEndpointZxing"], imageContent);
+				}
+				if (barCodeResult.StatusCode == System.Net.HttpStatusCode.OK)
+				{
+					barCode = await barCodeResult.Content.ReadAsStringAsync();
+				}
+				if (string.IsNullOrWhiteSpace(barCode))
+				{
+					return false;
+				}
+				var document = _dbRepo.GetDocumentById(documentId);
+				document.DocNumber = JsonConvert.DeserializeObject<JObject>(barCode)["data"].ToString();
+				return await _dbRepo.UpdateCommonEntity(document);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+				return false;
+			}
+		}
+
 		public async Task<bool> OnFileUpload(FormFile formFile, Guid conexId, Guid firmaDiscId)
 		{
 			try
 			{
 				using Stream stream = formFile.OpenReadStream();
 
-				//var docNumber = ExtractBarcode.GetFromImage(stream);
-				//if (string.IsNullOrEmpty(docNumber))
-				//{
-				//	return false;
-				//}
+				var fileExtension = formFile.ContentType;
 				var dbFile = new Documente
 				{
 					ConexId = conexId,
@@ -97,7 +131,7 @@ namespace LW.DocProcLogic.FileManager
 					FisiereDocumente = new FisiereDocumente
 					{
 						FileName = formFile.FileName,
-						FileExtension = formFile.ContentType,
+						FileExtension = fileExtension,
 					}
 				};
 				if (!await _dbRepo.AddCommonEntity(dbFile))
@@ -113,14 +147,31 @@ namespace LW.DocProcLogic.FileManager
 				// Get a reference to the blob
 				BlobClient blobClient = blobContainerClient.GetBlobClient(dbFile.FisiereDocumente.Identifier);
 				stream.Seek(0, SeekOrigin.Begin);
-				// Upload the file to the blob
-				await blobClient.UploadAsync(stream, new BlobUploadOptions
+				if (fileExtension.Contains("image"))
 				{
-					HttpHeaders = new BlobHttpHeaders
+					MemoryStream resizedImageStream = ResizeImageAndWriteToStream(stream, 1080, 1080);
+					resizedImageStream.Seek(0, SeekOrigin.Begin);
+					// Upload the file to the blob
+					await blobClient.UploadAsync(resizedImageStream, new BlobUploadOptions
 					{
-						ContentType = formFile.ContentType
-					}
-				});
+						HttpHeaders = new BlobHttpHeaders
+						{
+							ContentType = fileExtension
+						}
+					});
+				}
+				else
+				{
+					// Upload the file to the blob
+					await blobClient.UploadAsync(stream, new BlobUploadOptions
+					{
+						HttpHeaders = new BlobHttpHeaders
+						{
+							ContentType = fileExtension
+						}
+					});
+				}
+
 
 				return true;
 			}
@@ -130,6 +181,53 @@ namespace LW.DocProcLogic.FileManager
 				// Handle exceptions
 				return false;
 			}
+		}
+		private SKBitmap ResizeImageMaintainAspectRatio(SKBitmap originalImage, int newWidth, int newHeight)
+		{
+			// Calculate the aspect ratio
+			float originalAspectRatio = (float)originalImage.Width / originalImage.Height;
+			float newAspectRatio = (float)newWidth / newHeight;
+
+			if (originalAspectRatio > newAspectRatio)
+			{
+				// Keep the width and adjust the height
+				newHeight = (int)(newWidth / originalAspectRatio);
+			}
+			else
+			{
+				// Keep the height and adjust the width
+				newWidth = (int)(newHeight * originalAspectRatio);
+			}
+
+			// Create the new empty bitmap with the calculated dimensions
+			SKBitmap resizedImage = new SKBitmap(newWidth, newHeight);
+
+			// Draw the original image onto the new bitmap
+			using (SKCanvas canvas = new SKCanvas(resizedImage))
+			{
+				canvas.DrawBitmap(originalImage, new SKRect(0, 0, newWidth, newHeight));
+			}
+
+			return resizedImage;
+		}
+		private MemoryStream ResizeImageAndWriteToStream(Stream inputStream, int newWidth, int newHeight)
+		{
+			MemoryStream outputStream = new MemoryStream();
+
+			using (SKBitmap originalImage = SKBitmap.Decode(inputStream))
+			{
+				using (SKBitmap resizedImage = ResizeImageMaintainAspectRatio(originalImage, newWidth, newHeight))
+				{
+					SKPixmap pixmap = new SKPixmap(resizedImage.Info, resizedImage.GetPixels());
+					if (pixmap.Encode(outputStream, SKEncodedImageFormat.Jpeg, 90))
+					{
+						outputStream.Flush();
+						outputStream.Position = 0; // Reset the position of the MemoryStream to the beginning
+					}
+				}
+			}
+
+			return outputStream;
 		}
 	}
 }

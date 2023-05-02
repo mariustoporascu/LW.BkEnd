@@ -69,10 +69,17 @@ namespace FilesProcessing
 			if (!blobType)
 			{
 				// get document number from barcode
+				string barCode = string.Empty;
 				var imageContent = new StreamContent(stream);
-				var barCodeResult = await _httpClient.PostAsync(_config["BarCodeEndpoint"], imageContent);
-
-				var barCode = await barCodeResult.Content.ReadAsStringAsync();
+				var barCodeResult = await _httpClient.PostAsync(_config["BarCodeEndpointZbar"], imageContent);
+				if (barCodeResult.StatusCode == System.Net.HttpStatusCode.NoContent)
+				{
+					barCodeResult = await _httpClient.PostAsync(_config["BarCodeEndpointZxing"], imageContent);
+				}
+				if (barCodeResult.StatusCode == System.Net.HttpStatusCode.OK)
+				{
+					barCode = await barCodeResult.Content.ReadAsStringAsync();
+				}
 				_logger.LogInformation($"blob barcode result: {barCode}");
 
 				stream.Seek(0, SeekOrigin.Begin);
