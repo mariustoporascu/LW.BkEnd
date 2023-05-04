@@ -28,6 +28,11 @@ env:
 on:
   push:
     branches: [ "dev" ]
+    paths:
+        - 'LW.DocProces/**'
+        - 'LW.DocProcLogic/**'
+        - 'LW.BkEndDb/**'
+        - 'LW.BkEndModel/**'
   workflow_dispatch:
 
 permissions:
