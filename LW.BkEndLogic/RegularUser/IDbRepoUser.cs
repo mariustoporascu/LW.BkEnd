@@ -12,6 +12,7 @@ namespace LW.BkEndLogic.RegularUser
 		IEnumerable<Documente> GetAllDocumenteOperatii(Guid conexId);
 		Documente GetDocument(Guid entityId);
 		Task<bool> AddTranzaction(Guid conexId, Documente documente, TranzactionTypeEnum tranzactionType, Guid? nextConexId);
+		Task<bool> SendForApproval(Guid conexId, Guid documentId);
 	}
 
 }

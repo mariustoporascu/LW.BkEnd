@@ -13,32 +13,17 @@ namespace LW.BkEndModel
 		public Guid Id { get; set; } = Guid.NewGuid();
 		[JsonIgnore]
 		public int CIndex { get; set; }
-		[JsonProperty("docNumber")]
-		public string? DocNumber { get; set; }
-		[JsonProperty("total")]
-		[Column(TypeName = "decimal(18,2)")]
-		public decimal Total { get; set; }
 		[JsonProperty("isInvoice")]
 		public bool IsInvoice { get; set; } = false;
 		[JsonProperty("status")]
 		public int Status { get; set; } = 0;
 		[JsonProperty("statusName")]
 		public string? StatusName { get; set; } = StatusEnum.NoStatus.ToString();
-		[JsonProperty("receiptId")]
-		public string? ReceiptId { get; set; }
 		[JsonProperty("discountValue")]
 		[Column(TypeName = "decimal(18,2)")]
 		public decimal DiscountValue { get; set; }
-		[JsonProperty("extractedBusinessData")]
-		public string? ExtractedBusinessData { get; set; }
-		[JsonProperty("extractedBusinessAddress")]
-		public string? ExtractedBusinessAddress { get; set; }
-		[JsonProperty("errors")]
-		[NotMapped]
-		public string? Errors { get; set; }
-		[JsonProperty("hasErrors")]
-		[NotMapped]
-		public bool HasErrors { get; set; } = false;
+		[JsonProperty("ocrDataJson")]
+		public string? OcrDataJson { get; set; }
 		[JsonProperty("uploaded")]
 		public DateTime Uploaded { get; set; } = DateTime.UtcNow;
 
