@@ -45,13 +45,11 @@ namespace LW.BkEndLogic.FirmaDiscUser
 				.Select(doc => new Documente
 				{
 					Id = doc.Id,
-					DocNumber = doc.DocNumber,
+					OcrDataJson = doc.OcrDataJson,
 					Status = doc.Status,
 					Uploaded = doc.Uploaded,
 					StatusName = doc.StatusName,
 					DiscountValue = doc.DiscountValue,
-					Total = doc.Total,
-					ExtractedBusinessData = doc.ExtractedBusinessData,
 				})
 				.OrderByDescending(doc => doc.Uploaded)
 				.Take(5).AsEnumerable();

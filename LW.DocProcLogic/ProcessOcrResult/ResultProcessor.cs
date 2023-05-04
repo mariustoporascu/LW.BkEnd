@@ -57,21 +57,176 @@ namespace LW.DocProcLogic.ProcessOcrResult
 		}
 		public static void ProcessReceiptForFileManager(ref Documente dbFile, FirmaDiscount dbFirmaDisc, JObject processedResult)
 		{
-			try
+			var ocrObject = new JObject();
+			bool hasDocNumberErrors = false;
+			List<bool> otherErrors = new List<bool>();
+			if (!string.IsNullOrWhiteSpace(processedResult["docNumber"]?.ToString()))
 			{
 				var docNumber = JsonConvert.DeserializeObject<JObject>(processedResult["docNumber"]?.ToString());
-				dbFile.DocNumber = docNumber["data"]?.ToString();
+				ocrObject["docNumber"] = JsonConvert.SerializeObject(new
+				{
+					value = docNumber["data"]?.ToString(),
+					hasErrors = false
+				});
 			}
-			catch (Exception)
+			else
 			{
-				dbFile.DocNumber = "";
+				ocrObject["docNumber"] = JsonConvert.SerializeObject(new
+				{
+					value = "",
+					hasErrors = true,
+					errorMessage = "Cod de bare/QR negasit"
+				});
+				hasDocNumberErrors = true;
 			}
-			dbFile.Total = decimal.Parse(processedResult["Total"]?.ToString() ?? "0.00");
-			dbFile.DiscountValue = dbFile.Total * dbFirmaDisc.DiscountPercent / 100;
-			dbFile.Status = (int)StatusEnum.CompletedProcessing;
-			dbFile.StatusName = StatusEnum.CompletedProcessing.ToString();
-			dbFile.ExtractedBusinessAddress = processedResult["MerchantAddress"]?.ToString();
-			dbFile.ExtractedBusinessData = processedResult["MerchantName"]?.ToString();
+
+			if (!string.IsNullOrWhiteSpace(processedResult["Total"]?.ToString()))
+			{
+				decimal total = decimal.Parse(processedResult["Total"]?.ToString());
+				ocrObject["total"] = JsonConvert.SerializeObject(new
+				{
+					value = total,
+					hasErrors = false
+				});
+				dbFile.DiscountValue = total * dbFirmaDisc.DiscountPercent / 100;
+
+			}
+			else
+			{
+				ocrObject["total"] = JsonConvert.SerializeObject(new
+				{
+					value = 0,
+					hasErrors = true,
+					errorMessage = "Total negasit"
+				});
+			}
+			if (processedResult["Content"].ToString().Contains(dbFirmaDisc.CuiNumber))
+			{
+				ocrObject["cuiFirma"] = JsonConvert.SerializeObject(new
+				{
+					value = dbFirmaDisc.CuiNumber,
+					hasErrors = false
+				});
+				otherErrors.Add(false);
+			}
+			else
+			{
+				ocrObject["cuiFirma"] = JsonConvert.SerializeObject(new
+				{
+					value = "",
+					hasErrors = true,
+					errorMessage = "CUI negasit"
+				});
+				otherErrors.Add(true);
+			}
+			if (!string.IsNullOrWhiteSpace(processedResult["MerchantName"].ToString()))
+			{
+				ocrObject["denumireFirma"] = JsonConvert.SerializeObject(new
+				{
+					value = processedResult["MerchantName"].ToString(),
+					hasErrors = false
+				});
+				otherErrors.Add(false);
+			}
+			else
+			{
+				ocrObject["denumireFirma"] = JsonConvert.SerializeObject(new
+				{
+					value = "",
+					hasErrors = true,
+					errorMessage = "Denumire firma negasita"
+				});
+				otherErrors.Add(true);
+			}
+			if (!string.IsNullOrWhiteSpace(processedResult["MerchantAddress"].ToString()))
+			{
+				ocrObject["adresaFirma"] = JsonConvert.SerializeObject(new
+				{
+					value = processedResult["MerchantAddress"].ToString(),
+					hasErrors = false
+				});
+				otherErrors.Add(false);
+			}
+			else
+			{
+				ocrObject["adresaFirma"] = JsonConvert.SerializeObject(new
+				{
+					value = "",
+					hasErrors = true,
+					errorMessage = "Adresa firma negasita"
+				});
+				otherErrors.Add(true);
+			}
+			if (!string.IsNullOrWhiteSpace(processedResult["TransactionDate"].ToString()))
+			{
+				ocrObject["dataTranzactie"] = JsonConvert.SerializeObject(new
+				{
+					value = processedResult["TransactionDate"].ToString(),
+					hasErrors = false
+				});
+				otherErrors.Add(false);
+			}
+			else
+			{
+				ocrObject["dataTranzactie"] = JsonConvert.SerializeObject(new
+				{
+					value = "",
+					hasErrors = true,
+					errorMessage = "Data tranzactie negasita"
+				});
+				otherErrors.Add(true);
+			}
+			if (!string.IsNullOrWhiteSpace(processedResult["TransactionTime"].ToString()))
+			{
+				ocrObject["oraTranzactie"] = JsonConvert.SerializeObject(new
+				{
+					value = processedResult["TransactionTime"].ToString(),
+					hasErrors = false
+				});
+			}
+			else
+			{
+				ocrObject["oraTranzactie"] = JsonConvert.SerializeObject(new
+				{
+					value = "",
+					hasErrors = true,
+					errorMessage = "Ora tranzactie negasita"
+				});
+			}
+			if (!string.IsNullOrWhiteSpace(processedResult["TotalTax"].ToString()))
+			{
+				decimal totalTax = decimal.Parse(processedResult["TotalTax"].ToString());
+				ocrObject["totalTva"] = JsonConvert.SerializeObject(new
+				{
+					value = totalTax,
+					hasErrors = false
+				});
+			}
+			else
+			{
+				ocrObject["totalTva"] = JsonConvert.SerializeObject(new
+				{
+					value = "",
+					hasErrors = true,
+					errorMessage = "Total TVA negasit"
+				});
+			}
+			if (!hasDocNumberErrors && !otherErrors.Any(x => x))
+			{
+				dbFile.Status = (int)StatusEnum.WaitingForApproval;
+				dbFile.StatusName = StatusEnum.WaitingForApproval.ToString();
+			}
+			else if (hasDocNumberErrors && !otherErrors.Any(x => x))
+			{
+				dbFile.Status = (int)StatusEnum.PartialyProcessed;
+				dbFile.StatusName = StatusEnum.PartialyProcessed.ToString();
+			}
+			else
+			{
+				dbFile.Status = (int)StatusEnum.FailedProcessing;
+				dbFile.StatusName = StatusEnum.FailedProcessing.ToString();
+			}
+
 		}
 	}
 }

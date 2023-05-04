@@ -107,7 +107,13 @@ namespace LW.DocProcLogic.FileManager
 					return false;
 				}
 				var document = _dbRepo.GetDocumentById(documentId);
-				document.DocNumber = JsonConvert.DeserializeObject<JObject>(barCode)["data"].ToString();
+				var ocrObject = JsonConvert.DeserializeObject<JObject>(document.OcrDataJson);
+				ocrObject["docNumber"] = JsonConvert.SerializeObject(new
+				{
+					value = JsonConvert.DeserializeObject<JObject>(barCode)["data"].ToString(),
+					hasErrors = false
+				});
+				document.OcrDataJson = JsonConvert.SerializeObject(ocrObject);
 				return await _dbRepo.UpdateCommonEntity(document);
 			}
 			catch (Exception ex)

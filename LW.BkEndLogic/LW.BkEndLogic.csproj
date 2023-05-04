@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LW.BkEndDb\LW.BkEndDb.csproj" />
+    <Compile Remove="HybridUser\**" />
+    <EmbeddedResource Remove="HybridUser\**" />
+    <None Remove="HybridUser\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="HybridUser\" />
+    <ProjectReference Include="..\LW.BkEndDb\LW.BkEndDb.csproj" />
   </ItemGroup>
 
 </Project>

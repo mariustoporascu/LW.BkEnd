@@ -15,13 +15,14 @@ const storage = multer.diskStorage({
   });
   
   const upload = multer({ storage: storage });
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 80;
 app.use(express.json()); 
 
 app.post('/convert', upload.single('file'), (req, res) => {
   const { convertTo } = req.body;
   const inputFile = req.file.path;
-  const outputFile = path.join(req.file.destination, `${req.file.filename}.${convertTo}`);
+  const fileWithoutExtension = req.file.filename.substring(0,req.file.filename.lastIndexOf('.'));
+  const outputFile = path.join(req.file.destination, `${fileWithoutExtension}.${convertTo}`);
 
   execFile('unoconvert', ['--convert-to', convertTo, inputFile, outputFile], (error) => {
     if (error) {
@@ -40,8 +41,22 @@ app.post('/convert', upload.single('file'), (req, res) => {
 app.post('/compare', upload.fields([{ name: 'newFile'}, { name: 'originalFile' }]), (req, res) => {
   const newFile = req.files.newFile[0].path;
   const originalFile = req.files.originalFile[0].path;
-  const outputFile = path.join(req.files.newFile[0].destination, `${req.files.newFile[0].filename}_compare.pdf`);
-
+  const outputFile = path.join(req.files.newFile[0].destination, `result_compare.pdf`);
+  console.log(newFile,originalFile)
+  // execFile('libreoffice', [
+  //   '--headless',
+  //   '--invisible',
+  //   '--nocrashreport',
+  //   '--nodefault',
+  //   '--nologo',
+  //   '--nofirststartwizard',
+  //   '--norestore',
+  //   '--infilter="writer_pdf_import"',
+  //   '--convert-to',
+  //   'docx', 
+  //    `"/app/${newFile}"`], (error) => {
+  //   if (error) {console.log(error);}
+  // });
   execFile('unocompare', [ newFile, originalFile, outputFile], (error) => {
     if (error) {
       console.error(error);

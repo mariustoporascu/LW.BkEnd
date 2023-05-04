@@ -57,13 +57,11 @@ namespace LW.BkEndLogic.RegularUser
 				.Select(doc => new Documente
 				{
 					Id = doc.Id,
-					DocNumber = doc.DocNumber,
+					OcrDataJson = doc.OcrDataJson,
 					Status = doc.Status,
 					Uploaded = doc.Uploaded,
 					StatusName = doc.StatusName,
 					DiscountValue = doc.DiscountValue,
-					Total = doc.Total,
-					ExtractedBusinessData = doc.ExtractedBusinessData,
 				})
 				.OrderByDescending(doc => doc.Uploaded)
 				.Take(5).AsEnumerable();
@@ -171,6 +169,18 @@ namespace LW.BkEndLogic.RegularUser
 		private async Task<bool> SaveChangesAsync()
 		{
 			return await _context.SaveChangesAsync() > 0;
+		}
+
+		public async Task<bool> SendForApproval(Guid conexId, Guid documentId)
+		{
+			var document = _context.Documente.FirstOrDefault(d => d.Id == documentId && d.ConexId == conexId);
+			if (document != null)
+			{
+				document.Status = (int)StatusEnum.WaitingForApproval;
+				document.StatusName = StatusEnum.WaitingForApproval.ToString();
+				return await UpdateCommonEntity(document);
+			}
+			return false;
 		}
 	}
 }

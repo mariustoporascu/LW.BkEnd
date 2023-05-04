@@ -56,9 +56,10 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+RUN npm install -g nodemon
 
 # Expose port for the API
 EXPOSE 80
 
 # Start the API and the unoserver in parallel
-CMD ["sh", "-c", "unoserver & node index.js"]
+CMD ["sh", "-c", "unoserver & nodemon --legacy-watch index.js"]

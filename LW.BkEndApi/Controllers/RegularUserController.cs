@@ -117,6 +117,17 @@ namespace LW.BkEndApi.Controllers
 				ContractResolver = new CamelCasePropertyNamesContractResolver()
 			}));
 		}
+		[HttpGet("sendForApproval")]
+		public async Task<IActionResult> SendForApproval([FromQuery] Guid documentId)
+		{
+			var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
+			var result = await _dbRepoUser.SendForApproval(conexId, documentId);
+			if (result == false)
+			{
+				return BadRequest(new { Message = "Document failed to be sent for approval", Error = true });
+			}
+			return Ok(new { Message = "Document sent for approval successfuly", Error = false });
+		}
 		[HttpPost("addTranzaction")]
 		public async Task<IActionResult> AddTranzaction([FromBody] TranzactionModel tranzactionModel)
 		{

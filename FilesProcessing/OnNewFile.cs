@@ -2,18 +2,14 @@ using System;
 using System.IO;
 using System.Text;
 using Azure.AI.FormRecognizer.DocumentAnalysis;
-using Azure.Storage.Blobs.Models;
 using LW.BkEndModel.Enums;
 using LW.DocProcLogic.DbRepo;
 using LW.DocProcLogic.MicrosoftOcr;
 using LW.DocProcLogic.ProcessOcrResult;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using static System.Net.WebRequestMethods;
 
 namespace FilesProcessing
 {
@@ -71,6 +67,7 @@ namespace FilesProcessing
 				// get document number from barcode
 				string barCode = string.Empty;
 				var imageContent = new StreamContent(stream);
+
 				var barCodeResult = await _httpClient.PostAsync(_config["BarCodeEndpointZbar"], imageContent);
 				if (barCodeResult.StatusCode == System.Net.HttpStatusCode.NoContent)
 				{
@@ -103,8 +100,6 @@ namespace FilesProcessing
 			}
 			else
 			{
-				// get document number from barcode
-				var imageContent = new StreamContent(stream);
 
 				// Send to OCR
 				AnalyzeResult analizedResult = await _ocrPrebuilt.SendToOcrAsync(stream, "prebuilt-invoice");
