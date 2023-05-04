@@ -28,6 +28,11 @@ env:
 on:
   push:
     branches: [ "dev" ]
+    paths:
+        - 'LW.BkEndApi/**'
+        - 'LW.BkEndLogic/**'
+        - 'LW.BkEndModel/**'
+        - 'LW.BkEndDb/**'
   workflow_dispatch:
 
 permissions:
