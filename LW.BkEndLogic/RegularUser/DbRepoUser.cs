@@ -31,11 +31,10 @@ namespace LW.BkEndLogic.RegularUser
 				.Where(d => (d.ConexId == conexId || d.NextConexId == conexId) && (d.Status == (int)StatusEnum.Approved ||
 				d.Status == (int)StatusEnum.Rejected ||
 				d.Status == (int)StatusEnum.WaitingForApproval) && d.Tranzactii != null && !d.Tranzactii.Any(t => t.ConexId == conexId))
-				.AsEnumerable().Select(doc => new Documente
+				.Select(doc => new Documente
 				{
 					Id = doc.Id,
 					OcrDataJson = doc.OcrDataJson,
-					OcrData = JsonConvert.DeserializeObject(doc.OcrDataJson ?? ""),
 					Status = doc.Status,
 					Uploaded = doc.Uploaded,
 					StatusName = doc.StatusName,
@@ -43,7 +42,8 @@ namespace LW.BkEndLogic.RegularUser
 					IsInvoice = doc.IsInvoice,
 					FirmaDiscountId = doc.FirmaDiscountId,
 					FisiereDocumente = doc.FisiereDocumente
-				});
+				})
+				.AsEnumerable();
 		}
 		public IEnumerable<Documente> GetAllDocumenteFileManager(Guid conexId)
 		{
@@ -52,11 +52,10 @@ namespace LW.BkEndLogic.RegularUser
 				d.Status == (int)StatusEnum.PartialyProcessed ||
 				d.Status == (int)StatusEnum.FailedProcessing ||
 				d.Status == (int)StatusEnum.NoStatus) && d.Tranzactii != null && !d.Tranzactii.Any(t => t.ConexId == conexId))
-				.AsEnumerable().Select(doc => new Documente
+				.Select(doc => new Documente
 				{
 					Id = doc.Id,
 					OcrDataJson = doc.OcrDataJson,
-					OcrData = JsonConvert.DeserializeObject(doc.OcrDataJson ?? ""),
 					Status = doc.Status,
 					Uploaded = doc.Uploaded,
 					StatusName = doc.StatusName,
@@ -64,26 +63,14 @@ namespace LW.BkEndLogic.RegularUser
 					IsInvoice = doc.IsInvoice,
 					FirmaDiscountId = doc.FirmaDiscountId,
 					FisiereDocumente = doc.FisiereDocumente
-				});
+				})
+				.AsEnumerable();
 		}
 
 		public Documente GetDocument(Guid entityId)
 		{
-			var doc = _context.Documente.AsNoTracking().Include(d => d.FisiereDocumente)
+			return _context.Documente.Include(d => d.FisiereDocumente)
 				.First(d => d.Id == entityId);
-			return new Documente
-			{
-				Id = doc.Id,
-				OcrDataJson = doc.OcrDataJson,
-				OcrData = JsonConvert.DeserializeObject(doc.OcrDataJson ?? ""),
-				Status = doc.Status,
-				Uploaded = doc.Uploaded,
-				StatusName = doc.StatusName,
-				DiscountValue = doc.DiscountValue,
-				IsInvoice = doc.IsInvoice,
-				FirmaDiscountId = doc.FirmaDiscountId,
-				FisiereDocumente = doc.FisiereDocumente
-			};
 		}
 
 		public object GetDashboardInfo(Guid conexId)
@@ -94,11 +81,10 @@ namespace LW.BkEndLogic.RegularUser
 				d.Status == (int)StatusEnum.Rejected ||
 				d.Status == (int)StatusEnum.WaitingForApproval))
 				.OrderByDescending(doc => doc.Uploaded)
-				.Take(5).AsEnumerable().Select(doc => new Documente
+				.Select(doc => new Documente
 				{
 					Id = doc.Id,
 					OcrDataJson = doc.OcrDataJson,
-					OcrData = JsonConvert.DeserializeObject(doc.OcrDataJson ?? ""),
 					Status = doc.Status,
 					Uploaded = doc.Uploaded,
 					StatusName = doc.StatusName,
@@ -106,7 +92,8 @@ namespace LW.BkEndLogic.RegularUser
 					IsInvoice = doc.IsInvoice,
 					FirmaDiscountId = doc.FirmaDiscountId,
 					FisiereDocumente = doc.FisiereDocumente
-				});
+				})
+				.Take(5).AsEnumerable();
 
 			// curr date
 			var currentDate = DateTime.UtcNow;

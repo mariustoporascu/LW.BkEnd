@@ -26,7 +26,15 @@ namespace LW.BkEndModel
 		public string? OcrDataJson { get; set; }
 		[JsonProperty("ocrData")]
 		[NotMapped]
-		public object? OcrData { get; set; }
+		public object? OcrData
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(OcrDataJson))
+					return null;
+				return JsonConvert.DeserializeObject(OcrDataJson);
+			}
+		}
 		[JsonProperty("uploaded")]
 		public DateTime Uploaded { get; set; } = DateTime.UtcNow;
 

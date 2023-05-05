@@ -20,16 +20,16 @@ namespace LW.BkEndLogic.FirmaDiscUser
 				return null;
 			return _context.Documente.Include(d => d.FisiereDocumente).Include(d => d.ConexiuniConturi.ProfilCont)
 				.Where(d => d.FirmaDiscountId == conex.FirmaDiscountId && d.Status == (int)StatusEnum.WaitingForApproval)
-				.AsEnumerable().Select(d => new Documente
+				.Select(d => new Documente
 				{
 					Id = d.Id,
 					OcrDataJson = d.OcrDataJson,
-					OcrData = JsonConvert.DeserializeObject(d.OcrDataJson ?? ""),
 					FirmaDiscountId = d.FirmaDiscountId,
 					DiscountValue = d.DiscountValue,
 					ConexiuniConturi = d.ConexiuniConturi,
 					FisiereDocumente = d.FisiereDocumente,
-				});
+				})
+				.AsEnumerable();
 		}
 		public Documente GetDocument(Guid entityId)
 		{
@@ -53,17 +53,17 @@ namespace LW.BkEndLogic.FirmaDiscUser
 				d.Status == (int)StatusEnum.Rejected ||
 				d.Status == (int)StatusEnum.WaitingForApproval))
 				.OrderByDescending(doc => doc.Uploaded)
-				.Take(5).AsEnumerable().Select(doc => new Documente
+				.Select(doc => new Documente
 				{
 					Id = doc.Id,
 					OcrDataJson = doc.OcrDataJson,
-					OcrData = JsonConvert.DeserializeObject(doc.OcrDataJson ?? ""),
 					Status = doc.Status,
 					StatusName = doc.StatusName,
 					FirmaDiscountId = doc.FirmaDiscountId,
 					Uploaded = doc.Uploaded,
 					DiscountValue = doc.DiscountValue,
-				});
+				})
+				.Take(5).AsEnumerable();
 
 			// curr date
 			var currentDate = DateTime.UtcNow;
