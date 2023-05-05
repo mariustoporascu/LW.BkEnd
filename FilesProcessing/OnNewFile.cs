@@ -49,7 +49,7 @@ namespace FilesProcessing
 			if (!blobFileType.Contains("image"))
 			{
 				var formData = new MultipartFormDataContent();
-				formData.Add(new StreamContent(stream), "file", name);
+				formData.Add(new StreamContent(stream), "file", $"{name}.pdf");
 				formData.Add(new StringContent("jpeg"), "convertTo");
 				var imageConversionResult = await _httpClient.PostAsync(_config["ConverterEndpoint"], formData);
 				var convertedImage = await imageConversionResult.Content.ReadAsStreamAsync();

@@ -52,6 +52,7 @@ namespace LW.BkEndLogic.Commons
 				{
 					Id = x.Id,
 					Name = x.Name,
+					CuiNumber = x.CuiNumber,
 					DiscountPercent = x.DiscountPercent,
 					IsActive = x.IsActive,
 				}).AsEnumerable();

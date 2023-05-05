@@ -2,6 +2,7 @@
 using LW.BkEndModel;
 using LW.BkEndModel.Enums;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace LW.BkEndLogic.RegularUser
 {
@@ -30,21 +31,59 @@ namespace LW.BkEndLogic.RegularUser
 				.Where(d => (d.ConexId == conexId || d.NextConexId == conexId) && (d.Status == (int)StatusEnum.Approved ||
 				d.Status == (int)StatusEnum.Rejected ||
 				d.Status == (int)StatusEnum.WaitingForApproval) && d.Tranzactii != null && !d.Tranzactii.Any(t => t.ConexId == conexId))
-				.AsEnumerable();
+				.AsEnumerable().Select(doc => new Documente
+				{
+					Id = doc.Id,
+					OcrDataJson = doc.OcrDataJson,
+					OcrData = JsonConvert.DeserializeObject(doc.OcrDataJson ?? ""),
+					Status = doc.Status,
+					Uploaded = doc.Uploaded,
+					StatusName = doc.StatusName,
+					DiscountValue = doc.DiscountValue,
+					IsInvoice = doc.IsInvoice,
+					FirmaDiscountId = doc.FirmaDiscountId,
+					FisiereDocumente = doc.FisiereDocumente
+				});
 		}
 		public IEnumerable<Documente> GetAllDocumenteFileManager(Guid conexId)
 		{
 			return _context.Documente.Include(d => d.FisiereDocumente)
 				.Where(d => (d.ConexId == conexId || d.NextConexId == conexId) && (d.Status == (int)StatusEnum.Processing ||
-				d.Status == (int)StatusEnum.CompletedProcessing ||
+				d.Status == (int)StatusEnum.PartialyProcessed ||
 				d.Status == (int)StatusEnum.FailedProcessing ||
 				d.Status == (int)StatusEnum.NoStatus) && d.Tranzactii != null && !d.Tranzactii.Any(t => t.ConexId == conexId))
-				.AsEnumerable();
+				.AsEnumerable().Select(doc => new Documente
+				{
+					Id = doc.Id,
+					OcrDataJson = doc.OcrDataJson,
+					OcrData = JsonConvert.DeserializeObject(doc.OcrDataJson ?? ""),
+					Status = doc.Status,
+					Uploaded = doc.Uploaded,
+					StatusName = doc.StatusName,
+					DiscountValue = doc.DiscountValue,
+					IsInvoice = doc.IsInvoice,
+					FirmaDiscountId = doc.FirmaDiscountId,
+					FisiereDocumente = doc.FisiereDocumente
+				});
 		}
 
 		public Documente GetDocument(Guid entityId)
 		{
-			return _context.Documente.Include(d => d.FisiereDocumente).First(d => d.Id == entityId);
+			var doc = _context.Documente.AsNoTracking().Include(d => d.FisiereDocumente)
+				.First(d => d.Id == entityId);
+			return new Documente
+			{
+				Id = doc.Id,
+				OcrDataJson = doc.OcrDataJson,
+				OcrData = JsonConvert.DeserializeObject(doc.OcrDataJson ?? ""),
+				Status = doc.Status,
+				Uploaded = doc.Uploaded,
+				StatusName = doc.StatusName,
+				DiscountValue = doc.DiscountValue,
+				IsInvoice = doc.IsInvoice,
+				FirmaDiscountId = doc.FirmaDiscountId,
+				FisiereDocumente = doc.FisiereDocumente
+			};
 		}
 
 		public object GetDashboardInfo(Guid conexId)
@@ -54,17 +93,20 @@ namespace LW.BkEndLogic.RegularUser
 				(d.Status == (int)StatusEnum.Approved ||
 				d.Status == (int)StatusEnum.Rejected ||
 				d.Status == (int)StatusEnum.WaitingForApproval))
-				.Select(doc => new Documente
+				.OrderByDescending(doc => doc.Uploaded)
+				.Take(5).AsEnumerable().Select(doc => new Documente
 				{
 					Id = doc.Id,
 					OcrDataJson = doc.OcrDataJson,
+					OcrData = JsonConvert.DeserializeObject(doc.OcrDataJson ?? ""),
 					Status = doc.Status,
 					Uploaded = doc.Uploaded,
 					StatusName = doc.StatusName,
 					DiscountValue = doc.DiscountValue,
-				})
-				.OrderByDescending(doc => doc.Uploaded)
-				.Take(5).AsEnumerable();
+					IsInvoice = doc.IsInvoice,
+					FirmaDiscountId = doc.FirmaDiscountId,
+					FisiereDocumente = doc.FisiereDocumente
+				});
 
 			// curr date
 			var currentDate = DateTime.UtcNow;

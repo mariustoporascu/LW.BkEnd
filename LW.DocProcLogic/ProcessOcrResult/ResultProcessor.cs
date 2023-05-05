@@ -57,160 +57,180 @@ namespace LW.DocProcLogic.ProcessOcrResult
 		}
 		public static void ProcessReceiptForFileManager(ref Documente dbFile, FirmaDiscount dbFirmaDisc, JObject processedResult)
 		{
-			var ocrObject = new JObject();
+			object docNumberObject = new();
+			object totalObject = new();
+			object cuiFirmaObject = new();
+			object denumireFirmaObject = new();
+			object adresaFirmaObject = new();
+			object dataTranzactieObject = new();
+			object oraTranzactieObject = new();
+			object totalTvaObject = new();
 			bool hasDocNumberErrors = false;
 			List<bool> otherErrors = new List<bool>();
 			if (!string.IsNullOrWhiteSpace(processedResult["docNumber"]?.ToString()))
 			{
 				var docNumber = JsonConvert.DeserializeObject<JObject>(processedResult["docNumber"]?.ToString());
-				ocrObject["docNumber"] = JsonConvert.SerializeObject(new
+				docNumberObject = new
 				{
 					value = docNumber["data"]?.ToString(),
 					hasErrors = false
-				});
+				};
 			}
 			else
 			{
-				ocrObject["docNumber"] = JsonConvert.SerializeObject(new
+				docNumberObject = new
 				{
 					value = "",
 					hasErrors = true,
 					errorMessage = "Cod de bare/QR negasit"
-				});
+				};
 				hasDocNumberErrors = true;
 			}
 
 			if (!string.IsNullOrWhiteSpace(processedResult["Total"]?.ToString()))
 			{
 				decimal total = decimal.Parse(processedResult["Total"]?.ToString());
-				ocrObject["total"] = JsonConvert.SerializeObject(new
+				totalObject = new
 				{
 					value = total,
 					hasErrors = false
-				});
+				};
 				dbFile.DiscountValue = total * dbFirmaDisc.DiscountPercent / 100;
-
+				otherErrors.Add(false);
 			}
 			else
 			{
-				ocrObject["total"] = JsonConvert.SerializeObject(new
+				totalObject = new
 				{
 					value = 0,
 					hasErrors = true,
 					errorMessage = "Total negasit"
-				});
+				};
+				otherErrors.Add(true);
 			}
 			if (processedResult["Content"].ToString().Contains(dbFirmaDisc.CuiNumber))
 			{
-				ocrObject["cuiFirma"] = JsonConvert.SerializeObject(new
+				cuiFirmaObject = new
 				{
 					value = dbFirmaDisc.CuiNumber,
 					hasErrors = false
-				});
+				};
 				otherErrors.Add(false);
 			}
 			else
 			{
-				ocrObject["cuiFirma"] = JsonConvert.SerializeObject(new
+				cuiFirmaObject = new
 				{
 					value = "",
 					hasErrors = true,
 					errorMessage = "CUI negasit"
-				});
-				otherErrors.Add(true);
+				};
+				// TO ENABLE IN PROD
+				/*otherErrors.Add(true);*/
 			}
 			if (!string.IsNullOrWhiteSpace(processedResult["MerchantName"].ToString()))
 			{
-				ocrObject["denumireFirma"] = JsonConvert.SerializeObject(new
+				denumireFirmaObject = new
 				{
 					value = processedResult["MerchantName"].ToString(),
 					hasErrors = false
-				});
+				};
 				otherErrors.Add(false);
 			}
 			else
 			{
-				ocrObject["denumireFirma"] = JsonConvert.SerializeObject(new
+				denumireFirmaObject = new
 				{
 					value = "",
 					hasErrors = true,
 					errorMessage = "Denumire firma negasita"
-				});
+				};
 				otherErrors.Add(true);
 			}
 			if (!string.IsNullOrWhiteSpace(processedResult["MerchantAddress"].ToString()))
 			{
-				ocrObject["adresaFirma"] = JsonConvert.SerializeObject(new
+				adresaFirmaObject = new
 				{
 					value = processedResult["MerchantAddress"].ToString(),
 					hasErrors = false
-				});
+				};
 				otherErrors.Add(false);
 			}
 			else
 			{
-				ocrObject["adresaFirma"] = JsonConvert.SerializeObject(new
+				adresaFirmaObject = new
 				{
 					value = "",
 					hasErrors = true,
 					errorMessage = "Adresa firma negasita"
-				});
+				};
 				otherErrors.Add(true);
 			}
 			if (!string.IsNullOrWhiteSpace(processedResult["TransactionDate"].ToString()))
 			{
-				ocrObject["dataTranzactie"] = JsonConvert.SerializeObject(new
+				dataTranzactieObject = new
 				{
 					value = processedResult["TransactionDate"].ToString(),
 					hasErrors = false
-				});
+				};
 				otherErrors.Add(false);
 			}
 			else
 			{
-				ocrObject["dataTranzactie"] = JsonConvert.SerializeObject(new
+				dataTranzactieObject = new
 				{
 					value = "",
 					hasErrors = true,
 					errorMessage = "Data tranzactie negasita"
-				});
+				};
 				otherErrors.Add(true);
 			}
 			if (!string.IsNullOrWhiteSpace(processedResult["TransactionTime"].ToString()))
 			{
-				ocrObject["oraTranzactie"] = JsonConvert.SerializeObject(new
+				oraTranzactieObject = new
 				{
 					value = processedResult["TransactionTime"].ToString(),
 					hasErrors = false
-				});
+				};
 			}
 			else
 			{
-				ocrObject["oraTranzactie"] = JsonConvert.SerializeObject(new
+				oraTranzactieObject = new
 				{
 					value = "",
 					hasErrors = true,
 					errorMessage = "Ora tranzactie negasita"
-				});
+				};
 			}
 			if (!string.IsNullOrWhiteSpace(processedResult["TotalTax"].ToString()))
 			{
 				decimal totalTax = decimal.Parse(processedResult["TotalTax"].ToString());
-				ocrObject["totalTva"] = JsonConvert.SerializeObject(new
+				totalTvaObject = new
 				{
 					value = totalTax,
 					hasErrors = false
-				});
+				};
 			}
 			else
 			{
-				ocrObject["totalTva"] = JsonConvert.SerializeObject(new
+				totalTvaObject = new
 				{
 					value = "",
 					hasErrors = true,
 					errorMessage = "Total TVA negasit"
-				});
+				};
 			}
+			dbFile.OcrDataJson = JsonConvert.SerializeObject(new
+			{
+				docNumber = docNumberObject,
+				total = totalObject,
+				cuiFirma = cuiFirmaObject,
+				denumireFirma = denumireFirmaObject,
+				adresaFirma = adresaFirmaObject,
+				dataTranzactie = dataTranzactieObject,
+				oraTranzactie = oraTranzactieObject,
+				totalTva = totalTvaObject
+			});
 			if (!hasDocNumberErrors && !otherErrors.Any(x => x))
 			{
 				dbFile.Status = (int)StatusEnum.WaitingForApproval;
