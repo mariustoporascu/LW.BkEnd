@@ -21,6 +21,7 @@ app.use(express.json());
 app.post('/convert', upload.single('file'), (req, res) => {
   const { convertTo } = req.body;
   const inputFile = req.file.path;
+  console.log(inputFile)
   const fileWithoutExtension = req.file.filename.substring(0,req.file.filename.lastIndexOf('.'));
   const outputFile = path.join(req.file.destination, `${fileWithoutExtension}.${convertTo}`);
 

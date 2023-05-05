@@ -24,6 +24,9 @@ namespace LW.BkEndModel
 		public decimal DiscountValue { get; set; }
 		[JsonProperty("ocrDataJson")]
 		public string? OcrDataJson { get; set; }
+		[JsonProperty("ocrData")]
+		[NotMapped]
+		public object? OcrData { get; set; }
 		[JsonProperty("uploaded")]
 		public DateTime Uploaded { get; set; } = DateTime.UtcNow;
 
