@@ -46,9 +46,9 @@ namespace LW.DocProcLogic.FileManager
 				return null;
 			}
 			var blobClient = new BlobClient(_config["Azure:Storage"], _config["Azure:ContainerName"], identifier);
-			var response = await blobClient.DownloadAsync();
+			var response = await blobClient.DownloadStreamingAsync();
 
-			return response?.Value?.Content;
+			return response.Value.Content;
 		}
 
 		public async Task<bool> OnFileProcessed(string blobName, string result)
