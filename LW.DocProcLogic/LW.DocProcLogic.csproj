@@ -7,10 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Azure.Communication.Email" Version="1.0.0" />
 		<PackageReference Include="Azure.AI.FormRecognizer" Version="4.0.0" />
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.16.0" />
 		<PackageReference Include="SkiaSharp" Version="2.88.3" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.3" />
+		<PackageReference Include="Syncfusion.Licensing" Version="21.2.3" />
 	</ItemGroup>
 
 	<ItemGroup>
