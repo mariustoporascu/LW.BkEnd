@@ -18,6 +18,10 @@ using Azure.AI.FormRecognizer.Models;
 using SkiaSharp;
 using System.IO;
 using System.Net.Http;
+using Syncfusion.Drawing;
+using Syncfusion.Pdf;
+using Syncfusion.Pdf.Graphics;
+using Syncfusion.Pdf.Interactive;
 
 namespace LW.DocProcLogic.FileManager
 {
@@ -41,14 +45,48 @@ namespace LW.DocProcLogic.FileManager
 		public async Task<Stream> GetFileStream(string identifier, Guid conexId)
 		{
 			var exists = _dbRepo.GetDocumentByBlobName(identifier);
-			if (exists == null || exists.ConexId != conexId)
+			var conexCont = _dbRepo.GetConexCont(conexId);
+			if (exists == null || conexCont == null)
 			{
 				return null;
 			}
-			var blobClient = new BlobClient(_config["Azure:Storage"], _config["Azure:ContainerName"], identifier);
-			var response = await blobClient.DownloadStreamingAsync();
+			if (exists.FirmaDiscountId == conexCont.FirmaDiscountId || exists.ConexId == conexId)
+			{
+				var blobClient = new BlobClient(_config["Azure:Storage"], _config["Azure:ContainerName"], identifier);
+				var response = await blobClient.DownloadContentAsync();
+				if (exists.FisiereDocumente.FileExtension.Contains("image"))
+				{
+					PdfBitmap image = new PdfBitmap(response.Value.Content.ToStream());
 
-			return response.Value.Content;
+					//Create a new PDF document
+					PdfDocument doc = new PdfDocument();
+					if (image.Width > image.Height)
+					{
+						doc.PageSettings.Orientation = PdfPageOrientation.Landscape;
+					}
+					//Add a page to the document
+					PdfPage page = doc.Pages.Add();
+
+					//Create PDF graphics for the page
+					PdfGraphics graphics = page.Graphics;
+					//Load the image from the disk
+					//Draw the image
+
+					graphics.DrawImage(image, 0, 0);
+					var stream = new MemoryStream();
+					//Save the document
+					doc.Save(stream);
+					//Close the document
+					doc.Close(true);
+					stream.Seek(0, SeekOrigin.Begin);
+					return stream;
+				}
+				else
+				{
+					return response.Value.Content.ToStream();
+				}
+			}
+			return null;
 		}
 
 		public async Task<bool> OnFileProcessed(string blobName, string result)
