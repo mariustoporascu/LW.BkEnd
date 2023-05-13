@@ -1,0 +1,19 @@
+name: CleanUp
+
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove artifacts
+        uses: c-hive/gha-remove-artifacts@v1.2.0
+        with:
+          # Artifacts older than this will be deleted (e.g. "2 months", "1 day"). Parsed by moment.
+          age: '0'
+          # Access token for the repository, available under the same name in secrets.
+          GITHUB_TOKEN: ${{ github.token }}
