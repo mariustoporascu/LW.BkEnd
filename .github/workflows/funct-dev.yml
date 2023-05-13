@@ -22,7 +22,7 @@ on:
   push:
     branches: ["dev"]
     paths:
-        - 'FileProcessing/**'
+        - 'FilesProcessing/**'
         - 'LW.DocProcLogic/**'
         - 'LW.BkEndDb/**'
         - 'LW.BkEndModel/**'
