@@ -26,6 +26,8 @@ on:
         - 'LW.DocProcLogic/**'
         - 'LW.BkEndDb/**'
         - 'LW.BkEndModel/**'
+  workflow_dispatch:
+  
 env:
   AZURE_FUNCTIONAPP_NAME: 'lw-file-proc-dev'   # set this to your function app name on Azure
   AZURE_FUNCTIONAPP_PACKAGE_PATH: './FilesProcessing'       # set this to the path to your function app project, defaults to the repository root
