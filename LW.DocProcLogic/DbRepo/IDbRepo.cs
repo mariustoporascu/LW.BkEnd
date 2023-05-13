@@ -14,6 +14,7 @@ namespace LW.DocProcLogic.DbRepo
 	{
 		FirmaDiscount? GetFirmaDiscountById(Guid id);
 		Documente? GetDocumentByBlobName(string blobName);
+		ConexiuniConturi? GetConexCont(Guid conexId);
 		Documente? GetDocumentById(Guid documentId);
 		bool CheckDocExists(Guid conexId, Guid documentId);
 		string? GetBlobFileType(string blobName);
@@ -73,7 +74,7 @@ namespace LW.DocProcLogic.DbRepo
 
 		public Documente? GetDocumentByBlobName(string blobName)
 		{
-			return _context.Documente.FirstOrDefault(d => d.FisiereDocumente.Identifier == blobName);
+			return _context.Documente.Include(d => d.FisiereDocumente).FirstOrDefault(d => d.FisiereDocumente.Identifier == blobName);
 		}
 
 		public FirmaDiscount? GetFirmaDiscountById(Guid id)
@@ -101,6 +102,11 @@ namespace LW.DocProcLogic.DbRepo
 		private async Task<bool> SaveChangesAsync()
 		{
 			return await _context.SaveChangesAsync() > 0;
+		}
+
+		public ConexiuniConturi? GetConexCont(Guid conexId)
+		{
+			return _context.ConexiuniConturi.FirstOrDefault(c => c.Id == conexId);
 		}
 	}
 }

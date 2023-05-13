@@ -16,7 +16,7 @@ var rsaKey = RSA.Create();
 rsaKey.ImportRSAPrivateKey(File.ReadAllBytes("key"), out _);
 
 var builder = WebApplication.CreateBuilder(args);
-
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(builder.Configuration.GetValue<string>("Syncfusion"));
 // Add services to the container.
 builder.Services.AddDbContext<LwDBContext>(options =>
 {
