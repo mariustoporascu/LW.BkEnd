@@ -1,4 +1,5 @@
-﻿using LW.BkEndApi.Models;
+﻿using LW.BkEndApi;
+using LW.BkEndApi.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -15,7 +16,7 @@ namespace LW.BkEndTests
 		private readonly HttpClient _client;
 		private readonly ITestOutputHelper _outputHelper;
 		private static string _testEmail = "office@topodvlp.website";
-		private static string _testPass = "Test@123";
+		private static string _testPass = "Vib3r0n3@2";
 		private static string _testNewPass = "NewPassword123!";
 		private static string _testName = "Test";
 		private static string _testFirstName = "User";
@@ -25,8 +26,15 @@ namespace LW.BkEndTests
 		public AuthControllerIntegrationTests(WebApplicationFactory<MockStartup> factory, ITestOutputHelper outputHelper)
 		{
 			_factory = factory;
-			_client = _factory.CreateClient();
 			_outputHelper = outputHelper;
+			try
+			{
+				_client = _factory.CreateClient();
+			}
+			catch (Exception ex)
+			{
+				_outputHelper.WriteLine(ex.Message);
+			}
 		}
 
 		[Fact]

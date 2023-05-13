@@ -7,11 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LW.BkEndDb\LW.BkEndDb.csproj" />
+    <Compile Remove="HybridUser\**" />
+    <EmbeddedResource Remove="HybridUser\**" />
+    <None Remove="HybridUser\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="HybridUser\" />
+    <PackageReference Include="Azure.Communication.Email" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LW.BkEndDb\LW.BkEndDb.csproj" />
   </ItemGroup>
 
 </Project>

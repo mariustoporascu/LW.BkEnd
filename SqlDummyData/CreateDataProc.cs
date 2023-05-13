@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SqlDummyData
 {
-    public class CreateDataProc
+	public class CreateDataProc
 	{
 		// dev local
 		public static string DbConnString = "Data Source=.;Initial Catalog=lwdevelop;Integrated Security=true;TrustServerCertificate=true;";
@@ -51,14 +51,8 @@ namespace SqlDummyData
 				// comment to enter unapproved data
 
 				var docsFaker = new Faker<Documente>()
-					.RuleFor(x => x.DocNumber, x => x.Random.AlphaNumeric(8))
-					.RuleFor(x => x.Total, x => x.Random.Decimal(0.0M, 1000.0M))
-					.RuleFor(x => x.IsInvoice, x => x.Random.Bool())
-					.RuleFor(x => x.ReceiptId, x => x.Random.AlphaNumeric(8))
-					.RuleFor(x => x.ExtractedBusinessData, x => x.Random.Words(4))
-					.RuleFor(x => x.ExtractedBusinessAddress, x => x.Random.Words(4));
+					.RuleFor(x => x.IsInvoice, x => x.Random.Bool());
 				var docs = docsFaker.Generate();
-				docs.DiscountValue = docs.Total * firma.DiscountPercent / 100;
 				docs.FirmaDiscountId = firma.Id;
 				docs.Status = random.Next(0, 7);
 				docs.StatusName = Enum.GetName(typeof(StatusEnum), docs.Status);

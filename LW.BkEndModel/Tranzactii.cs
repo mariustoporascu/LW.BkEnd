@@ -12,10 +12,10 @@ namespace LW.BkEndModel
 		public Guid Id { get; set; } = Guid.NewGuid();
 		[JsonIgnore]
 		public int CIndex { get; set; }
-		[JsonProperty("status")]
+		[JsonProperty("type")]
 		public int Type { get; set; } = 0;
-		[JsonProperty("statusName")]
-		public string? TypeName { get; set; } = TransferTypeEnum.NoStatus.ToString();
+		[JsonProperty("typeName")]
+		public string? TypeName { get; set; } = TranzactionTypeEnum.NoStatus.ToString();
 		[Column(TypeName = "decimal(18,2)")]
 		[JsonProperty("amount")]
 		public decimal Amount { get; set; }
@@ -31,7 +31,7 @@ namespace LW.BkEndModel
 		public Guid? ConexId { get; set; }
 
 		// Relations
-		[JsonIgnore]
+		[JsonProperty("documente")]
 		public Documente? Documente { get; set; }
 		[JsonIgnore]
 		public ConexiuniConturi? ConexiuniConturi { get; set; }

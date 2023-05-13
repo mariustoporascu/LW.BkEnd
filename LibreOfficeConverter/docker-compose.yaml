@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:80"
+    volumes:
+      - .:/app
+    deploy:
+      resources:
+        limits:
+          cpus: '16'
+          memory: 6G
+        reservations:
+          cpus: '14'
+          memory: 4G
+    cpu_count: 16

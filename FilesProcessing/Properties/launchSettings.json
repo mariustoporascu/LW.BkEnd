@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "FilesProcessing": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7288 --csharp --cors *",
+      "launchBrowser": false
+    }
+  }
+}

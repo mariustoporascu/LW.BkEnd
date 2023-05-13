@@ -9,5 +9,6 @@
 		Processing = 4,
 		CompletedProcessing = 5,
 		FailedProcessing = 6,
+		PartialyProcessed = 7,
 	}
 }

@@ -81,15 +81,6 @@ namespace LW.BkEndDb.Migrations
                     b.Property<decimal>("DiscountValue")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("DocNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExtractedBusinessAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExtractedBusinessData")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("FirmaDiscountId")
                         .HasColumnType("uniqueidentifier");
 
@@ -99,7 +90,7 @@ namespace LW.BkEndDb.Migrations
                     b.Property<Guid?>("NextConexId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ReceiptId")
+                    b.Property<string>("OcrDataJson")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
@@ -107,9 +98,6 @@ namespace LW.BkEndDb.Migrations
 
                     b.Property<string>("StatusName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("Uploaded")
                         .HasColumnType("datetime2");
@@ -126,6 +114,8 @@ namespace LW.BkEndDb.Migrations
                     b.HasIndex("ConexId");
 
                     b.HasIndex("FirmaDiscountId");
+
+                    b.HasIndex("NextConexId");
 
                     b.ToTable("Documente");
                 });
@@ -624,9 +614,15 @@ namespace LW.BkEndDb.Migrations
                         .WithMany("Documente")
                         .HasForeignKey("FirmaDiscountId");
 
+                    b.HasOne("LW.BkEndModel.ConexiuniConturi", "NextConexiuniConturi")
+                        .WithMany()
+                        .HasForeignKey("NextConexId");
+
                     b.Navigation("ConexiuniConturi");
 
                     b.Navigation("FirmaDiscount");
+
+                    b.Navigation("NextConexiuniConturi");
                 });
 
             modelBuilder.Entity("LW.BkEndModel.FisiereDocumente", b =>
