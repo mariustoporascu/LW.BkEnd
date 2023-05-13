@@ -10,6 +10,8 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Syncfusion.EJ2.PdfViewer;
+using Syncfusion.Pdf.Parsing;
 
 namespace FilesProcessing
 {
@@ -48,18 +50,10 @@ namespace FilesProcessing
 
 			if (!blobFileType.Contains("image"))
 			{
-				var formData = new MultipartFormDataContent();
-				formData.Add(new StreamContent(stream), "file", $"{name}.pdf");
-				formData.Add(new StringContent("jpeg"), "convertTo");
-				var imageConversionResult = await _httpClient.PostAsync(_config["ConverterEndpoint"], formData);
-				var convertedImage = await imageConversionResult.Content.ReadAsStreamAsync();
-				if (convertedImage != null)
-				{
-					convertedImage.Seek(0, SeekOrigin.Begin);
-					byte[] convertedBytes = new byte[convertedImage.Length];
-					convertedImage.Read(convertedBytes, 0, (int)convertedImage.Length);
-					stream = new MemoryStream(convertedBytes);
-				}
+				PdfRenderer renderer = new PdfRenderer();
+				renderer.Load(stream);
+				var img = renderer.ExportAsImage(0);
+				stream = new MemoryStream(img.Bytes);
 			}
 
 			if (!blobType)
