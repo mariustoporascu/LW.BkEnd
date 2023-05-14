@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LW.BkEndModel
 {
@@ -16,8 +17,14 @@ namespace LW.BkEndModel
 		public int NoSubAccounts { get; set; }
 		[JsonProperty("noDocsUploaded")]
 		public int NoDocsUploaded { get; set; }
+		// Foreign Keys
+		[ForeignKey("FirmaDiscount")]
+		[JsonProperty("firmaDiscountId")]
+		public Guid? FirmaDiscountId { get; set; }
 
 		// Relations
+		[JsonIgnore]
+		public FirmaDiscount? FirmaDiscount { get; set; }
 		[JsonProperty("conexiuniConturi")]
 		public ICollection<ConexiuniConturi>? ConexiuniConturi { get; set; }
 		[JsonProperty("preferinteHybrid")]

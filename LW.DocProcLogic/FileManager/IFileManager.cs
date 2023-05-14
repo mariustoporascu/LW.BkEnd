@@ -22,6 +22,7 @@ using Syncfusion.Drawing;
 using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
 using Syncfusion.Pdf.Interactive;
+using Microsoft.Extensions.Logging;
 
 namespace LW.DocProcLogic.FileManager
 {
@@ -36,10 +37,12 @@ namespace LW.DocProcLogic.FileManager
 	{
 		private readonly IConfiguration _config;
 		private readonly IDbRepo _dbRepo;
-		public FileManager(IConfiguration config, IDbRepo dbRepo)
+		private readonly ILogger<FileManager> _logger;
+		public FileManager(IConfiguration config, IDbRepo dbRepo, ILogger<FileManager> logger)
 		{
 			_config = config;
 			_dbRepo = dbRepo;
+			_logger = logger;
 		}
 
 		public async Task<Stream> GetFileStream(string identifier, Guid conexId)
@@ -114,7 +117,7 @@ namespace LW.DocProcLogic.FileManager
 			{
 				dbFile.Status = (int)StatusEnum.FailedProcessing;
 				dbFile.StatusName = StatusEnum.FailedProcessing.ToString();
-				Console.WriteLine(ex.Message);
+				_logger.LogWarning(ex.Message);
 			}
 
 			return await _dbRepo.UpdateCommonEntity(dbFile);
@@ -157,7 +160,7 @@ namespace LW.DocProcLogic.FileManager
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				_logger.LogWarning(ex.Message);
 				return false;
 			}
 		}
@@ -222,7 +225,7 @@ namespace LW.DocProcLogic.FileManager
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				_logger.LogWarning(ex.Message);
 				// Handle exceptions
 				return false;
 			}

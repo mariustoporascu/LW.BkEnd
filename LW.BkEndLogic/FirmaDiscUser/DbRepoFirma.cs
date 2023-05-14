@@ -149,5 +149,10 @@ namespace LW.BkEndLogic.FirmaDiscUser
 		{
 			return await _context.SaveChangesAsync() > 0;
 		}
+
+		public Guid? GetFirmaDiscountId(Guid conexId)
+		{
+			return _context.ConexiuniConturi.Find(conexId)?.FirmaDiscountId;
+		}
 	}
 }
