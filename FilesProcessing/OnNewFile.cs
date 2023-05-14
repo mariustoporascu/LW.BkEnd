@@ -10,6 +10,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SkiaSharp;
 using Syncfusion.EJ2.PdfViewer;
 using Syncfusion.Pdf.Parsing;
 
@@ -52,8 +53,12 @@ namespace FilesProcessing
 			{
 				PdfRenderer renderer = new PdfRenderer();
 				renderer.Load(stream);
-				var img = renderer.ExportAsImage(0);
-				stream = new MemoryStream(img.Bytes);
+				var bitMapimg = renderer.ExportAsImage(0);
+				var image = SKImage.FromBitmap(bitMapimg);
+				var imageData = image.Encode(SKEncodedImageFormat.Png, 100);
+				stream = new MemoryStream();
+				imageData.SaveTo(stream);
+				stream.Seek(0, SeekOrigin.Begin);
 			}
 
 			if (!blobType)

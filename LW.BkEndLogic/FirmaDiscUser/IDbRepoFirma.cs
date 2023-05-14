@@ -9,6 +9,7 @@ namespace LW.BkEndLogic.FirmaDiscUser
 		Documente GetDocument(Guid entityId);
 		Task<bool> UpdateDocStatusAsync(Documente documente, StatusEnum status);
 		object GetDashboardInfo(Guid conexId);
+		Guid? GetFirmaDiscountId(Guid conexId);
 	}
 
 }

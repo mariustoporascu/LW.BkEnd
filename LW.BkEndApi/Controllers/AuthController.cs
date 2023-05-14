@@ -23,6 +23,7 @@ namespace LW.BkEndApi.Controllers
 	{
 		private readonly ITokenService _tokenService;
 		private readonly SignInManager<User> _signInManager;
+		private readonly ILogger<AuthController> _logger;
 		private readonly LwDBContext _context;
 		private readonly IEmailSender _emailSender;
 		private readonly IConfiguration _configuration;
@@ -31,13 +32,15 @@ namespace LW.BkEndApi.Controllers
 			SignInManager<User> signInManager,
 			LwDBContext context,
 			IEmailSender emailSender,
-			IConfiguration configuration)
+			IConfiguration configuration,
+			ILogger<AuthController> logger)
 		{
 			_tokenService = tokenService;
 			_signInManager = signInManager;
 			_context = context;
 			_emailSender = emailSender;
 			_configuration = configuration;
+			_logger = logger;
 		}
 		[HttpPost("login")]
 		public async Task<IActionResult> LoginAsync([FromBody] AuthModel authModel)
@@ -83,7 +86,7 @@ namespace LW.BkEndApi.Controllers
 			var setAuthTokenResult = await _signInManager.UserManager.SetAuthenticationTokenAsync(user, identityToken.LoginProvider, identityToken.Name, identityToken.Value);
 			if (!setAuthTokenResult.Succeeded)
 			{
-				Console.WriteLine("Auth token could not get saved");
+				_logger.LogWarning("Auth token could not get saved");
 			}
 			else
 			{
@@ -140,7 +143,7 @@ namespace LW.BkEndApi.Controllers
 			{
 				if (!_emailSender.SendEmail(new string[] { user.Email }, "Confirmation email code", $"Confirma-ti email-ul accesand <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>link-ul acesta</a>."))
 				{
-					Console.WriteLine("Confirmation Email failed to be sent");
+					_logger.LogWarning("Confirmation Email failed to be sent");
 				}
 			}
 
@@ -158,7 +161,7 @@ namespace LW.BkEndApi.Controllers
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				_logger.LogWarning(ex.Message);
 				return Unauthorized(new { Message = "Refresh token or jwt token invalid", Error = true });
 			}
 
@@ -402,7 +405,7 @@ namespace LW.BkEndApi.Controllers
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				_logger.LogWarning(ex.Message);
 				return BadRequest(new { Message = "Logout invalid", Error = true });
 			}
 			var user = await _signInManager.UserManager.FindByNameAsync(userEmail);

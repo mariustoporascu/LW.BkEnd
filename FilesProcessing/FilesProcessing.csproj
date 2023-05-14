@@ -15,7 +15,7 @@
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.7.0" />
     <PackageReference Include="Microsoft.Extensions.Azure" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
-    <PackageReference Include="Syncfusion.EJ2.PdfViewer.AspNet.Core.Linux" Version="21.2.4" />
+    <PackageReference Include="Syncfusion.EJ2.PdfViewer.AspNet.Core" Version="21.2.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LW.DocProcLogic\LW.DocProcLogic.csproj" />
