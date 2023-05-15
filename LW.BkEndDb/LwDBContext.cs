@@ -43,6 +43,10 @@ namespace LW.BkEndDb
 				.WithOne(cc => cc.ConexiuniConturi)
 				.HasForeignKey<ConexiuniConturi>(d => d.UserId)
 				.OnDelete(DeleteBehavior.SetNull);
+			builder.HasOne(d => d.Hybrid)
+				.WithMany(cc => cc.ConexiuniConturi)
+				.HasForeignKey(cc => cc.HybridId)
+				.OnDelete(DeleteBehavior.SetNull);
 
 			// Configure clustered index for the ClusteredIndex property
 			builder.Property(cc => cc.CIndex).UseIdentityColumn();
