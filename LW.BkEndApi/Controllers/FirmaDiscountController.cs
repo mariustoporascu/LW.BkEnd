@@ -159,6 +159,65 @@ namespace LW.BkEndApi.Controllers
 		{
 			return Ok(new { Result = _dbRepoCommon.EmailNotTaken(email) });
 		}
+		[HttpPost("deleteHybrids")]
+		public async Task<IActionResult> DeleteHybrid([FromBody] DeleteHybridsModel deleteHybridsModel)
+		{
+			var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
+			var firmaDiscountId = _dbRepoFirma.GetFirmaDiscountId(conexId);
+			List<bool> bools = new List<bool>();
+
+			if (firmaDiscountId == null)
+			{
+				return BadRequest(new
+				{
+					Message = "Firma discount not found",
+					Error = true
+				});
+			}
+			foreach (var hybridId in deleteHybridsModel.GroupsIds)
+			{
+				bools.Add(await _dbRepoFirma.DeleteHybrid((Guid)firmaDiscountId, hybridId));
+			}
+			if (bools.Any(b => b == false))
+			{
+				return BadRequest(new
+				{
+					Message = new
+					{
+						Succes = bools.Where(b => b == true).Count(),
+						Failed = bools.Where(b => b == false).Count()
+					},
+					Error = true
+				});
+			}
+			return Ok(new { Message = "All tranzactions were succesfully completed", Error = false });
+		}
+		[HttpGet("getFirmaHybrids")]
+		public async Task<IActionResult> GetFirmaHybrids()
+		{
+			var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
+			var firmaDiscountId = _dbRepoFirma.GetFirmaDiscountId(conexId);
+			if (firmaDiscountId == null)
+			{
+				return BadRequest(new
+				{
+					Message = "Firma discount not found",
+					Error = true
+				});
+			}
+			var data = _dbRepoFirma.GetAllHybrids((Guid)firmaDiscountId);
+
+			if (data == null)
+			{
+				return NoContent();
+			}
+
+			return Ok(JsonConvert.SerializeObject(data, new JsonSerializerSettings
+			{
+				NullValueHandling = NullValueHandling.Ignore,
+				ContractResolver = new CamelCasePropertyNamesContractResolver()
+			}));
+		}
 		[HttpGet("getDashboardData")]
 		public IActionResult GetDashboardData()
 		{
