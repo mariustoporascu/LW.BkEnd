@@ -11,6 +11,7 @@ namespace LW.BkEndLogic.FirmaDiscUser
 		object GetDashboardInfo(Guid conexId);
 		Guid? GetFirmaDiscountId(Guid conexId);
 		IEnumerable<Hybrid> GetAllHybrids(Guid firmaDiscountId);
+		Task<bool> CheckIfHybrindExists(string name, Guid firmaDiscountId);
 		Task<bool> DeleteHybrid(Guid firmaDiscountId, Guid groupId);
 	}
 
