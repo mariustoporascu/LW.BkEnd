@@ -6,7 +6,7 @@ namespace LW.BkEndLogic.Commons.Interfaces
 	{
 		IEnumerable<FirmaDiscount> GetAllFolders();
 		IEnumerable<object> FindUsers(string emailOrPhone);
-		bool EmailNotTaken(string email);
+		Task<bool> EmailNotTaken(string email);
 		Task<bool> AddCommonEntity<T>(T entity);
 		Task<bool> UpdateCommonEntity<T>(T entity);
 		Task<bool> DeleteCommonEntity<T>(T entity);

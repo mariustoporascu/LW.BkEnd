@@ -180,5 +180,10 @@ namespace LW.BkEndLogic.FirmaDiscUser
 			_context.Hybrid.Remove(hybrid);
 			return await SaveChangesAsync();
 		}
+
+		public async Task<bool> CheckIfHybrindExists(string name, Guid firmaDiscountId)
+		{
+			return await _context.Hybrid.AnyAsync(h => h.Name.ToLower() == name.ToLower() && h.FirmaDiscountId == firmaDiscountId);
+		}
 	}
 }

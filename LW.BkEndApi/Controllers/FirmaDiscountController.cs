@@ -93,66 +93,82 @@ namespace LW.BkEndApi.Controllers
 					Error = true
 				});
 			}
-			if (!string.IsNullOrWhiteSpace(createHybridDTO.Name))
+			if (string.IsNullOrWhiteSpace(createHybridDTO.Name))
 			{
-				var hybrid = new Hybrid
+				return BadRequest(new
 				{
-					Name = createHybridDTO.Name,
-					FirmaDiscountId = firmaDiscountId.Value,
+					Message = "Hybrid name cannot be empty",
+					Error = true
+				});
+			}
+			if (await _dbRepoFirma.CheckIfHybrindExists(createHybridDTO.Name, firmaDiscountId.Value))
+			{
+				return BadRequest(new
+				{
+					Message = "Hybrid name already exists",
+					Error = true
+				});
+			}
+			var hybrid = new Hybrid
+			{
+				Name = createHybridDTO.Name,
+				FirmaDiscountId = firmaDiscountId.Value,
+			};
+			var hybridResult = await _dbRepoCommon.AddCommonEntity(hybrid);
+			if (!hybridResult)
+			{
+				return BadRequest(new
+				{
+					Message = "Hybrid could not get created",
+					Error = true
+				});
+			}
+			if (!string.IsNullOrWhiteSpace(createHybridDTO.InitialEmail) &&
+				!string.IsNullOrWhiteSpace(createHybridDTO.InitialPassword))
+			{
+				var user = new User
+				{
+					UserName = createHybridDTO.InitialEmail,
+					Email = createHybridDTO.InitialEmail,
+					EmailConfirmed = true,
 				};
-				var hybridResult = await _dbRepoCommon.AddCommonEntity(hybrid);
-				if (!hybridResult)
+				var userResult = await _signInManager.UserManager.CreateAsync(user, createHybridDTO.InitialPassword);
+				if (!userResult.Succeeded)
 				{
+					await _dbRepoCommon.DeleteCommonEntity(hybrid);
 					return BadRequest(new
 					{
-						Message = "Hybrid could not get created",
+						Message = "User for hybrid could not get created",
 						Error = true
 					});
 				}
-				if (!string.IsNullOrWhiteSpace(createHybridDTO.InitialEmail) &&
-					!string.IsNullOrWhiteSpace(createHybridDTO.InitialPassword))
-				{
-					var user = new User
-					{
-						UserName = createHybridDTO.InitialEmail,
-						Email = createHybridDTO.InitialEmail,
-						EmailConfirmed = true,
-					};
-					var userResult = await _signInManager.UserManager.CreateAsync(user, createHybridDTO.InitialPassword);
-					if (!userResult.Succeeded)
-					{
-						return BadRequest(new
-						{
-							Message = "User for hybrid could not get created",
-							Error = true
-						});
-					}
 
-					var conexUser = new ConexiuniConturi
+				var conexUser = new ConexiuniConturi
+				{
+					UserId = user.Id,
+					HybridId = hybrid.Id
+				};
+				var conexUserResult = await _dbRepoCommon.AddCommonEntity(conexUser);
+				if (!conexUserResult)
+				{
+					await _dbRepoCommon.DeleteCommonEntity(hybrid);
+					return BadRequest(new
 					{
-						UserId = user.Id,
-						HybridId = hybrid.Id
-					};
-					var conexUserResult = await _dbRepoCommon.AddCommonEntity(conexUser);
-					if (!conexUserResult)
-					{
-						return BadRequest(new
-						{
-							Message = "Conexiuni conturi could not get created",
-							Error = true
-						});
-					}
-					if (!_emailSender.SendEmail(new string[] { user.Email }, "Creare cont automat", $"Contul tau a fost creat automat cu parola {createHybridDTO.InitialPassword}, te rugam sa o schimbi dupa prima autentificare."))
-					{
-						_logger.LogWarning("Confirmation Email failed to be sent");
-					}
-					else
-					{
-						_logger.LogInformation("Hybrid account created succesfully");
-					}
+						Message = "Conexiuni conturi could not get created",
+						Error = true
+					});
+				}
+				if (!_emailSender.SendEmail(new string[] { user.Email }, "Creare cont automat", $"Contul tau a fost creat automat cu parola {createHybridDTO.InitialPassword}, te rugam sa o schimbi dupa prima autentificare."))
+				{
+					_logger.LogWarning("Confirmation Email failed to be sent");
+				}
+				else
+				{
+					_logger.LogInformation("Hybrid account created succesfully");
 				}
 			}
 			return Ok(new { Message = "Hybrid created succesfully", Error = false });
+
 		}
 		[HttpGet("checkIfEmailNotTaken")]
 		public IActionResult CheckIfEmailNotTaken(string email)

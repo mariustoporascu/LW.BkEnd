@@ -12,9 +12,9 @@ namespace LW.BkEndLogic.Commons
 		{
 			_context = context;
 		}
-		public bool EmailNotTaken(string email)
+		public async Task<bool> EmailNotTaken(string email)
 		{
-			return !_context.Users.Any(usr => usr.Email == email);
+			return !(await _context.Users.AnyAsync(usr => usr.Email == email));
 		}
 		public IEnumerable<object> FindUsers(string emailOrPhone)
 		{
