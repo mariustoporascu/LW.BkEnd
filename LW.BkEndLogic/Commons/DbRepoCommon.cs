@@ -61,6 +61,19 @@ namespace LW.BkEndLogic.Commons
 					IsActive = x.IsActive,
 				}).AsEnumerable();
 		}
+		public IEnumerable<FirmaDiscount> GetAllFolders(Guid hybridId)
+		{
+			var firmaDiscountId = _context.Hybrid.FirstOrDefault(x => x.Id == hybridId)?.FirmaDiscountId;
+			return _context.FirmaDiscount.Where(x => x.IsActive && x.Id == firmaDiscountId)
+				.Select(x => new FirmaDiscount
+				{
+					Id = x.Id,
+					Name = x.Name,
+					CuiNumber = x.CuiNumber,
+					DiscountPercent = x.DiscountPercent,
+					IsActive = x.IsActive,
+				}).AsEnumerable();
+		}
 		public async Task<bool> UpdateCommonEntity<T>(T entity)
 		{
 			_context.Update(entity);

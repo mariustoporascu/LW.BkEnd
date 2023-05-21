@@ -53,7 +53,7 @@ namespace LW.DocProcLogic.FileManager
 			{
 				return null;
 			}
-			if (exists.FirmaDiscountId == conexCont.FirmaDiscountId || exists.ConexId == conexId)
+			if (exists.FirmaDiscountId == conexCont.FirmaDiscountId || exists.ConexiuniConturi.HybridId == conexCont.HybridId || exists.ConexId == conexId)
 			{
 				var blobClient = new BlobClient(_config["Azure:Storage"], _config["Azure:ContainerName"], identifier);
 				var response = await blobClient.DownloadContentAsync();
