@@ -149,5 +149,41 @@ namespace LW.BkEndLogic.FirmaDiscUser
 		{
 			return await _context.SaveChangesAsync() > 0;
 		}
+
+		public Guid GetFirmaDiscountId(Guid conexId)
+		{
+			return _context.ConexiuniConturi.Find(conexId)?.FirmaDiscountId ?? Guid.Empty;
+		}
+
+		public IEnumerable<Hybrid> GetAllHybrids(Guid firmaDiscountId)
+		{
+			return _context.Hybrid
+				.Where(h => h.FirmaDiscountId == firmaDiscountId)
+				.Select(h => new Hybrid
+				{
+					Id = h.Id,
+					Name = h.Name,
+					NoSubAccounts = h.ConexiuniConturi.Count,
+				}).AsEnumerable();
+		}
+
+		public async Task<bool> DeleteHybrid(Guid firmaDiscountId, Guid groupId)
+		{
+			var hybrid = _context.Hybrid.Find(groupId);
+			if (hybrid == null)
+				return false;
+
+			var users = _context.Users.Where(u => u.ConexiuniConturi.HybridId == groupId);
+			if (users.Any())
+				_context.Users.RemoveRange(users);
+
+			_context.Hybrid.Remove(hybrid);
+			return await SaveChangesAsync();
+		}
+
+		public async Task<bool> CheckIfHybrindExists(string name, Guid firmaDiscountId)
+		{
+			return await _context.Hybrid.AnyAsync(h => h.Name.ToLower() == name.ToLower() && h.FirmaDiscountId == firmaDiscountId);
+		}
 	}
 }

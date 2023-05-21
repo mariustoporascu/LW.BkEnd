@@ -27,4 +27,6 @@ var host = new HostBuilder()
 	})
 	.Build();
 
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(Environment.GetEnvironmentVariable("Syncfusion"));
+
 host.Run();

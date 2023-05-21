@@ -4,6 +4,7 @@ using LW.BkEndDb;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LW.BkEndDb.Migrations
 {
     [DbContext(typeof(LwDBContext))]
-    partial class LwDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230514030932_set null cc on del usr")]
+    partial class setnullccondelusr
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -596,8 +599,7 @@ namespace LW.BkEndDb.Migrations
 
                     b.HasOne("LW.BkEndModel.Hybrid", "Hybrid")
                         .WithMany("ConexiuniConturi")
-                        .HasForeignKey("HybridId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("HybridId");
 
                     b.HasOne("LW.BkEndModel.User", "User")
                         .WithOne("ConexiuniConturi")

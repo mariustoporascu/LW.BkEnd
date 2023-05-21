@@ -22,6 +22,7 @@ using Syncfusion.Drawing;
 using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
 using Syncfusion.Pdf.Interactive;
+using Microsoft.Extensions.Logging;
 
 namespace LW.DocProcLogic.FileManager
 {
@@ -36,10 +37,12 @@ namespace LW.DocProcLogic.FileManager
 	{
 		private readonly IConfiguration _config;
 		private readonly IDbRepo _dbRepo;
-		public FileManager(IConfiguration config, IDbRepo dbRepo)
+		private readonly ILogger<FileManager> _logger;
+		public FileManager(IConfiguration config, IDbRepo dbRepo, ILogger<FileManager> logger)
 		{
 			_config = config;
 			_dbRepo = dbRepo;
+			_logger = logger;
 		}
 
 		public async Task<Stream> GetFileStream(string identifier, Guid conexId)
@@ -50,7 +53,7 @@ namespace LW.DocProcLogic.FileManager
 			{
 				return null;
 			}
-			if (exists.FirmaDiscountId == conexCont.FirmaDiscountId || exists.ConexId == conexId)
+			if (exists.FirmaDiscountId == conexCont.FirmaDiscountId || exists.ConexiuniConturi.HybridId == conexCont.HybridId || exists.ConexId == conexId)
 			{
 				var blobClient = new BlobClient(_config["Azure:Storage"], _config["Azure:ContainerName"], identifier);
 				var response = await blobClient.DownloadContentAsync();
@@ -114,7 +117,7 @@ namespace LW.DocProcLogic.FileManager
 			{
 				dbFile.Status = (int)StatusEnum.FailedProcessing;
 				dbFile.StatusName = StatusEnum.FailedProcessing.ToString();
-				Console.WriteLine(ex.Message);
+				_logger.LogWarning(ex.Message);
 			}
 
 			return await _dbRepo.UpdateCommonEntity(dbFile);
@@ -146,17 +149,18 @@ namespace LW.DocProcLogic.FileManager
 				}
 				var document = _dbRepo.GetDocumentById(documentId);
 				var ocrObject = JsonConvert.DeserializeObject<JObject>(document.OcrDataJson);
-				ocrObject["docNumber"] = JsonConvert.SerializeObject(new
-				{
-					value = JsonConvert.DeserializeObject<JObject>(barCode)["data"].ToString(),
-					hasErrors = false
-				});
+				JObject newDocNr = new JObject();
+
+				newDocNr["value"] = JsonConvert.DeserializeObject<JObject>(barCode)["data"].ToString();
+				newDocNr["hasErrors"] = false;
+
+				ocrObject["docNumber"] = newDocNr;
 				document.OcrDataJson = JsonConvert.SerializeObject(ocrObject);
 				return await _dbRepo.UpdateCommonEntity(document);
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				_logger.LogWarning(ex.Message);
 				return false;
 			}
 		}
@@ -221,7 +225,7 @@ namespace LW.DocProcLogic.FileManager
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				_logger.LogWarning(ex.Message);
 				// Handle exceptions
 				return false;
 			}
