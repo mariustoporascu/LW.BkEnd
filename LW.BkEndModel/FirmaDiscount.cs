@@ -44,5 +44,7 @@ namespace LW.BkEndModel
 		public ICollection<ConexiuniConturi>? ConexiuniConturi { get; set; }
 		[JsonProperty("documente")]
 		public ICollection<Documente>? Documente { get; set; }
+		[JsonProperty("hybrid")]
+		public ICollection<Hybrid>? Hybrid { get; set; }
 	}
 }

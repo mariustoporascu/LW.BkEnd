@@ -12,6 +12,10 @@ namespace LW.BkEndLogic.Commons
 		{
 			_context = context;
 		}
+		public async Task<bool> EmailNotTaken(string email)
+		{
+			return !(await _context.Users.AnyAsync(usr => usr.Email == email));
+		}
 		public IEnumerable<object> FindUsers(string emailOrPhone)
 		{
 			var users = _context.Users
@@ -48,6 +52,19 @@ namespace LW.BkEndLogic.Commons
 		public IEnumerable<FirmaDiscount> GetAllFolders()
 		{
 			return _context.FirmaDiscount.Where(x => x.IsActive)
+				.Select(x => new FirmaDiscount
+				{
+					Id = x.Id,
+					Name = x.Name,
+					CuiNumber = x.CuiNumber,
+					DiscountPercent = x.DiscountPercent,
+					IsActive = x.IsActive,
+				}).AsEnumerable();
+		}
+		public IEnumerable<FirmaDiscount> GetAllFolders(Guid hybridId)
+		{
+			var firmaDiscountId = _context.Hybrid.FirstOrDefault(x => x.Id == hybridId)?.FirmaDiscountId;
+			return _context.FirmaDiscount.Where(x => x.IsActive && x.Id == firmaDiscountId)
 				.Select(x => new FirmaDiscount
 				{
 					Id = x.Id,

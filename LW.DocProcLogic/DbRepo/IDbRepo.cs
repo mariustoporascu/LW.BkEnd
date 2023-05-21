@@ -74,7 +74,7 @@ namespace LW.DocProcLogic.DbRepo
 
 		public Documente? GetDocumentByBlobName(string blobName)
 		{
-			return _context.Documente.Include(d => d.FisiereDocumente).FirstOrDefault(d => d.FisiereDocumente.Identifier == blobName);
+			return _context.Documente.Include(d => d.ConexiuniConturi).Include(d => d.FisiereDocumente).FirstOrDefault(d => d.FisiereDocumente.Identifier == blobName);
 		}
 
 		public FirmaDiscount? GetFirmaDiscountById(Guid id)

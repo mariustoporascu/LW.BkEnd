@@ -1,4 +1,6 @@
-﻿namespace LW.BkEndApi.Models
+﻿using Newtonsoft.Json;
+
+namespace LW.BkEndApi.Models
 {
 	public class AuthModel
 	{
