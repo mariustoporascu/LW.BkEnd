@@ -85,7 +85,7 @@ namespace LW.BkEndApi.Controllers
 		{
 			var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
 			var firmaDiscountId = _dbRepoFirma.GetFirmaDiscountId(conexId);
-			if (firmaDiscountId == null)
+			if (firmaDiscountId == Guid.Empty)
 			{
 				return BadRequest(new
 				{
@@ -101,7 +101,7 @@ namespace LW.BkEndApi.Controllers
 					Error = true
 				});
 			}
-			if (await _dbRepoFirma.CheckIfHybrindExists(createHybridDTO.Name, firmaDiscountId.Value))
+			if (await _dbRepoFirma.CheckIfHybrindExists(createHybridDTO.Name, firmaDiscountId))
 			{
 				return BadRequest(new
 				{
@@ -112,7 +112,7 @@ namespace LW.BkEndApi.Controllers
 			var hybrid = new Hybrid
 			{
 				Name = createHybridDTO.Name,
-				FirmaDiscountId = firmaDiscountId.Value,
+				FirmaDiscountId = firmaDiscountId,
 			};
 			var hybridResult = await _dbRepoCommon.AddCommonEntity(hybrid);
 			if (!hybridResult)
@@ -146,7 +146,11 @@ namespace LW.BkEndApi.Controllers
 				var conexUser = new ConexiuniConturi
 				{
 					UserId = user.Id,
-					HybridId = hybrid.Id
+					HybridId = hybrid.Id,
+					ProfilCont = new ProfilCont
+					{
+						Email = createHybridDTO.InitialEmail,
+					}
 				};
 				var conexUserResult = await _dbRepoCommon.AddCommonEntity(conexUser);
 				if (!conexUserResult)
@@ -182,7 +186,7 @@ namespace LW.BkEndApi.Controllers
 			var firmaDiscountId = _dbRepoFirma.GetFirmaDiscountId(conexId);
 			List<bool> bools = new List<bool>();
 
-			if (firmaDiscountId == null)
+			if (firmaDiscountId == Guid.Empty)
 			{
 				return BadRequest(new
 				{
@@ -192,7 +196,7 @@ namespace LW.BkEndApi.Controllers
 			}
 			foreach (var hybridId in deleteHybridsModel.GroupsIds)
 			{
-				bools.Add(await _dbRepoFirma.DeleteHybrid((Guid)firmaDiscountId, hybridId));
+				bools.Add(await _dbRepoFirma.DeleteHybrid(firmaDiscountId, hybridId));
 			}
 			if (bools.Any(b => b == false))
 			{
@@ -213,7 +217,7 @@ namespace LW.BkEndApi.Controllers
 		{
 			var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
 			var firmaDiscountId = _dbRepoFirma.GetFirmaDiscountId(conexId);
-			if (firmaDiscountId == null)
+			if (firmaDiscountId == Guid.Empty)
 			{
 				return BadRequest(new
 				{
@@ -221,7 +225,7 @@ namespace LW.BkEndApi.Controllers
 					Error = true
 				});
 			}
-			var data = _dbRepoFirma.GetAllHybrids((Guid)firmaDiscountId);
+			var data = _dbRepoFirma.GetAllHybrids(firmaDiscountId);
 
 			if (data == null)
 			{

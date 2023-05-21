@@ -9,7 +9,7 @@ namespace LW.BkEndLogic.FirmaDiscUser
 		Documente GetDocument(Guid entityId);
 		Task<bool> UpdateDocStatusAsync(Documente documente, StatusEnum status);
 		object GetDashboardInfo(Guid conexId);
-		Guid? GetFirmaDiscountId(Guid conexId);
+		Guid GetFirmaDiscountId(Guid conexId);
 		IEnumerable<Hybrid> GetAllHybrids(Guid firmaDiscountId);
 		Task<bool> CheckIfHybrindExists(string name, Guid firmaDiscountId);
 		Task<bool> DeleteHybrid(Guid firmaDiscountId, Guid groupId);
