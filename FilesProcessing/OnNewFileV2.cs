@@ -158,6 +158,6 @@ namespace FilesProcessing
         public int contentLength { get; set; }
         public string blobType { get; set; }
         public string url { get; set; }
-        public bool sequencer { get; set; }
+        public string sequencer { get; set; }
     }
 }
