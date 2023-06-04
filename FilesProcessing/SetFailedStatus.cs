@@ -20,7 +20,7 @@ namespace FilesProcessing
 
 		public SetFailedStatus(ILoggerFactory loggerFactory, IOcrPrebuilt ocrPrebuilt, IConfiguration config, IDbRepo dbRepo)
 		{
-			_logger = loggerFactory.CreateLogger<OnNewFile>();
+			_logger = loggerFactory.CreateLogger<SetFailedStatus>();
 			_httpClient = new HttpClient();
 			_ocrPrebuilt = ocrPrebuilt;
 			_config = config;

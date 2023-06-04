@@ -103,12 +103,12 @@ builder.Services.AddAuthentication(options =>
 		options.MapInboundClaims = false;
 	});
 
-builder.Services.AddTransient<ITokenService, TokenService>();
-builder.Services.AddTransient<IEmailSender, EmailSender>();
-builder.Services.AddTransient<IDbRepoCommon, DbRepoCommon>();
-builder.Services.AddTransient<IDbRepoFirma, DbRepoFirma>();
-builder.Services.AddTransient<IDbRepoHybrid, DbRepoHybrid>();
-builder.Services.AddTransient<IDbRepoUser, DbRepoUser>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IDbRepoCommon, DbRepoCommon>();
+builder.Services.AddScoped<IDbRepoFirma, DbRepoFirma>();
+builder.Services.AddScoped<IDbRepoHybrid, DbRepoHybrid>();
+builder.Services.AddScoped<IDbRepoUser, DbRepoUser>();
 
 var app = builder.Build();
 
