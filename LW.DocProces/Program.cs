@@ -101,9 +101,9 @@ builder.Services.AddAuthentication(options =>
 	options.MapInboundClaims = false;
 });
 
-builder.Services.AddTransient<IAnafApiCall, AnafApiCall>();
-builder.Services.AddTransient<IDbRepo, DbRepo>();
-builder.Services.AddTransient<IFileManager, FileManager>();
+builder.Services.AddScoped<IAnafApiCall, AnafApiCall>();
+builder.Services.AddScoped<IDbRepo, DbRepo>();
+builder.Services.AddScoped<IFileManager, FileManager>();
 
 var app = builder.Build();
 
