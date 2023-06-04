@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MainApi", "MainApi", "{7F89
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DocApi", "DocApi", "{380B241B-EF5E-434F-B1FA-FCFF70C0639D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilesProcessing", "FilesProcessing\FilesProcessing.csproj", "{9C50BFB9-BEB6-4BAD-A46A-82987DCDBAB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilesProcessing", "FilesProcessing\FilesProcessing.csproj", "{9C50BFB9-BEB6-4BAD-A46A-82987DCDBAB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
