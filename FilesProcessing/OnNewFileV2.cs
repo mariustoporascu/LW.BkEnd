@@ -26,14 +26,21 @@ namespace FilesProcessing
         private readonly IDbRepo _dbRepo;
         private readonly BlobServiceClient _blobServiceClient;
 
-        public OnNewFileV2(ILoggerFactory loggerFactory, IOcrPrebuilt ocrPrebuilt, IConfiguration config, IDbRepo dbRepo)
+        public OnNewFileV2(
+            ILoggerFactory loggerFactory,
+            IOcrPrebuilt ocrPrebuilt,
+            IConfiguration config,
+            IDbRepo dbRepo
+        )
         {
             _logger = loggerFactory.CreateLogger<OnNewFileV2>();
             _httpClient = new HttpClient();
             _ocrPrebuilt = ocrPrebuilt;
             _config = config;
             _dbRepo = dbRepo;
-            _blobServiceClient = new BlobServiceClient(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
+            _blobServiceClient = new BlobServiceClient(
+                Environment.GetEnvironmentVariable("AzureWebJobsStorage")
+            );
         }
 
         [Function("OnNewFileV2")]
@@ -45,7 +52,9 @@ namespace FilesProcessing
             _logger.LogInformation($"Processing blob\n Name: {name}");
 
             // Get Blob Reference
-            var blob = _blobServiceClient.GetBlobContainerClient(Environment.GetEnvironmentVariable("BlobContainerName")).GetBlobClient(name);
+            var blob = _blobServiceClient
+                .GetBlobContainerClient(Environment.GetEnvironmentVariable("BlobContainerName"))
+                .GetBlobClient(name);
 
             if (!await blob.ExistsAsync())
             {
@@ -56,15 +65,21 @@ namespace FilesProcessing
             // Download the blob
             var memoryStream = new MemoryStream();
             await blob.DownloadToAsync(memoryStream);
-            var myBlob = memoryStream.ToArray().AsMemory();
+            var myBlobBytes = memoryStream.ToArray();
 
             // Convert ReadOnlyMemory<byte> to Stream
-            var stream = new MemoryStream(myBlob.ToArray());
+            var stream = new MemoryStream(myBlobBytes);
 
             // Update status to Processing && get if invoice or receipt
             await _dbRepo.UpdateBlobStatus(name, StatusEnum.Processing);
-            var blobType = _dbRepo.GetBlobType(name)/*false*/;
-            var blobFileType = _dbRepo.GetBlobFileType(name)/*"application/pdf"*/;
+            var blobType = _dbRepo.GetBlobType(
+                name
+            ) /*false*/
+            ;
+            var blobFileType = _dbRepo.GetBlobFileType(
+                name
+            ) /*"application/pdf"*/
+            ;
 
             if (!blobFileType.Contains("image"))
             {
@@ -84,10 +99,16 @@ namespace FilesProcessing
                 string barCode = string.Empty;
                 var imageContent = new StreamContent(stream);
 
-                var barCodeResult = await _httpClient.PostAsync(_config["BarCodeEndpointZbar"], imageContent);
+                var barCodeResult = await _httpClient.PostAsync(
+                    _config["BarCodeEndpointZbar"],
+                    imageContent
+                );
                 if (barCodeResult.StatusCode == System.Net.HttpStatusCode.NoContent)
                 {
-                    barCodeResult = await _httpClient.PostAsync(_config["BarCodeEndpointZxing"], imageContent);
+                    barCodeResult = await _httpClient.PostAsync(
+                        _config["BarCodeEndpointZxing"],
+                        imageContent
+                    );
                 }
                 if (barCodeResult.StatusCode == System.Net.HttpStatusCode.OK)
                 {
@@ -106,8 +127,15 @@ namespace FilesProcessing
                     BlobName = name,
                     AnalyzeResult = JsonConvert.SerializeObject(processedResult)
                 };
-                var httpContent = new StringContent(JsonConvert.SerializeObject(objectContent), Encoding.UTF8, "application/json");
-                var dbServerResult = await _httpClient.PostAsync(_config["FinalizeEndpoint"], httpContent);
+                var httpContent = new StringContent(
+                    JsonConvert.SerializeObject(objectContent),
+                    Encoding.UTF8,
+                    "application/json"
+                );
+                var dbServerResult = await _httpClient.PostAsync(
+                    _config["FinalizeEndpoint"],
+                    httpContent
+                );
                 // Throw exception if not success
                 if (!dbServerResult.IsSuccessStatusCode)
                 {
@@ -116,9 +144,11 @@ namespace FilesProcessing
             }
             else
             {
-
                 // Send to OCR
-                AnalyzeResult analizedResult = await _ocrPrebuilt.SendToOcrAsync(stream, "prebuilt-invoice");
+                AnalyzeResult analizedResult = await _ocrPrebuilt.SendToOcrAsync(
+                    stream,
+                    "prebuilt-invoice"
+                );
                 var processedResult = ResultProcessor.ProcessInvoiceForFunctionApp(analizedResult);
 
                 // Send to DB Server
@@ -127,8 +157,15 @@ namespace FilesProcessing
                     BlobName = name,
                     AnalyzeResult = JsonConvert.SerializeObject(processedResult)
                 };
-                var httpContent = new StringContent(JsonConvert.SerializeObject(objectContent), Encoding.UTF8, "application/json");
-                var dbServerResult = await _httpClient.PostAsync(_config["FinalizeEndpoint"], httpContent);
+                var httpContent = new StringContent(
+                    JsonConvert.SerializeObject(objectContent),
+                    Encoding.UTF8,
+                    "application/json"
+                );
+                var dbServerResult = await _httpClient.PostAsync(
+                    _config["FinalizeEndpoint"],
+                    httpContent
+                );
                 // Throw exception if not success
                 if (!dbServerResult.IsSuccessStatusCode)
                 {

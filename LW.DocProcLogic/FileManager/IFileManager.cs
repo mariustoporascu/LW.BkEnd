@@ -219,7 +219,6 @@ namespace LW.DocProcLogic.FileManager
                     doc.Save(newStream);
                     doc.Close(true);
                     stream = new MemoryStream(newStream.ToArray());
-                    stream.Seek(0, SeekOrigin.Begin);
                 }
                 var dbFile = new Documente
                 {
@@ -345,7 +344,7 @@ namespace LW.DocProcLogic.FileManager
                     if (pixmap.Encode(outputStream, SKEncodedImageFormat.Jpeg, 90))
                     {
                         outputStream.Flush();
-                        outputStream.Position = 0; // Reset the position of the MemoryStream to the beginning
+                        outputStream.Seek(0, SeekOrigin.Begin);
                     }
                 }
             }
