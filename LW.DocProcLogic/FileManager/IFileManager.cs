@@ -227,7 +227,7 @@ namespace LW.DocProcLogic.FileManager
                     FisiereDocumente = new FisiereDocumente
                     {
                         FileName =
-                            $"{formFile.FileName.Substring(0, formFile.FileName.LastIndexOf('.'))}.pdf",
+                            $"{formFile.FileName.Substring(0, formFile.FileName.LastIndexOf('.'))}",
                         FileExtension = "application/pdf",
                     }
                 };
