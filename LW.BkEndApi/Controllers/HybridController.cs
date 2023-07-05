@@ -186,7 +186,7 @@ namespace LW.BkEndApi.Controllers
                 return NoContent();
             }
             var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
-            var users = _dbRepoCommon.FindUsers(query);
+            var users = _dbRepoCommon.FindUsers(query, conexId);
             if (users == null || users.Count() == 0)
             {
                 return NoContent();

@@ -59,34 +59,40 @@ namespace LW.BkEndLogic.Commons
             return !(await _context.Users.AnyAsync(usr => usr.Email == email));
         }
 
-        public IEnumerable<object> FindUsers(string emailOrPhone)
+        public IEnumerable<object> FindUsers(string emailOrPhone, Guid conexId)
         {
-            var users = _context.Users.Where(
-                usr =>
-                    (
-                        usr.Email.ToLower().Contains(emailOrPhone.ToLower())
-                        || usr.PhoneNumber.Contains(emailOrPhone)
-                    )
-                    && usr.ConexiuniConturi.FirmaDiscountId == null
-                    && usr.ConexiuniConturi.HybridId == null
-            );
+            var users = _context.ConexiuniConturi
+                .Include(c => c.ProfilCont)
+                .Where(
+                    usr =>
+                        (
+                            usr.ProfilCont.Email.ToLower().Contains(emailOrPhone.ToLower())
+                            || usr.ProfilCont.PhoneNumber.Contains(emailOrPhone)
+                        )
+                        && usr.FirmaDiscountId == null
+                        && usr.HybridId == null
+                        && usr.UserId != null
+                        && usr.Id != conexId
+                        && !_context.PreferinteHybrid.Any(
+                            fav => fav.ConexId == conexId && fav.MyConexId == usr.Id
+                        )
+                );
+            //var users = users.Where(
+            //    usr =>
+            //        !_context.PreferinteHybrid.Any(
+            //            fav => fav.ConexId == conexId && fav.MyConexId == usr.Id
+            //        )
+            //);
             var usersList = new List<object>();
             foreach (var usr in users)
             {
-                var conex = _context.ConexiuniConturi
-                    .Include(c => c.ProfilCont)
-                    .FirstOrDefault(con => con.UserId == usr.Id);
-                if (conex == null)
-                {
-                    continue;
-                }
                 usersList.Add(
                     new
                     {
-                        conexId = conex.Id,
-                        fullName = $"{conex.ProfilCont?.Name} {conex.ProfilCont?.FirstName}",
-                        phoneNumber = usr.PhoneNumber,
-                        email = conex.ProfilCont.Email,
+                        conexId = usr.Id,
+                        fullName = $"{usr.ProfilCont?.Name} {usr.ProfilCont?.FirstName}",
+                        phoneNumber = usr.ProfilCont.PhoneNumber,
+                        email = usr.ProfilCont.Email,
                     }
                 );
             }

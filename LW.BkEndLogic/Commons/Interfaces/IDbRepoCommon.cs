@@ -6,7 +6,7 @@ namespace LW.BkEndLogic.Commons.Interfaces
     {
         IEnumerable<FirmaDiscount> GetAllFolders();
         IEnumerable<FirmaDiscount> GetAllFolders(Guid hybridId);
-        IEnumerable<object> FindUsers(string emailOrPhone);
+        IEnumerable<object> FindUsers(string emailOrPhone, Guid conexId);
         Task<bool> RemoveFavoriteUser(Guid conexId, Guid favConexId);
         Task<bool> AddFavoriteUser(Guid conexId, Guid favConexId);
         IEnumerable<object> GetFavoritesList(Guid conexId);

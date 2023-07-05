@@ -7,6 +7,7 @@ using LW.BkEndLogic.Commons.Interfaces;
 using Newtonsoft.Json.Serialization;
 using LW.BkEndModel.Enums;
 using LW.BkEndApi.Models;
+using LW.BkEndModel;
 
 namespace LW.BkEndApi.Controllers
 {
@@ -57,8 +58,13 @@ namespace LW.BkEndApi.Controllers
         [HttpGet("getAllFolders")]
         public IActionResult GetAllFolders()
         {
-            var folders = _dbRepoCommon.GetAllFolders();
-
+            var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
+            var hybridId = _dbRepoUser.GetMyHybridId(conexId);
+            IEnumerable<FirmaDiscount> folders;
+            if (hybridId == Guid.Empty)
+                folders = _dbRepoCommon.GetAllFolders();
+            else
+                folders = _dbRepoCommon.GetAllFolders(hybridId);
             if (folders == null || folders.Count() == 0)
             {
                 return NoContent();
@@ -203,7 +209,7 @@ namespace LW.BkEndApi.Controllers
                 return NoContent();
             }
             var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
-            var users = _dbRepoCommon.FindUsers(query);
+            var users = _dbRepoCommon.FindUsers(query, conexId);
             if (users == null || users.Count() == 0)
             {
                 return NoContent();
