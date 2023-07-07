@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using LW.BkEndLogic.Commons.Interfaces;
+using LW.BkEndModel.Enums;
 
 namespace LW.BkEndLogic.Commons
 {
@@ -29,7 +30,7 @@ namespace LW.BkEndLogic.Commons
         private async Task<string> GetUserType(User user)
         {
             string userType = string.Empty;
-            if (await _userManager.IsInRoleAsync(user, "master-administrator"))
+            if (await _userManager.IsInRoleAsync(user, Enum.GetName(typeof(RolesEnum), 0)))
             {
                 userType = "master-admin";
             }
@@ -67,6 +68,9 @@ namespace LW.BkEndLogic.Commons
             {
                 claims.Add(new Claim("role", role));
             }
+            // To be removed
+            claims.Add(new Claim("role", userType));
+            // To be removed ^
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Issuer"],
