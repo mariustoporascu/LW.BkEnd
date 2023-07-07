@@ -13,7 +13,7 @@ namespace LW.BkEndApi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = "user")]
     public class RegularUserController : ControllerBase
     {
         private readonly IDbRepoUser _dbRepoUser;
