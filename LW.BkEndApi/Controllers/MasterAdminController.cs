@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using LW.BkEndLogic.MasterUser;
 
 namespace LW.BkEndApi.Controllers
 {
@@ -17,6 +18,7 @@ namespace LW.BkEndApi.Controllers
     {
         private readonly ILogger<MasterAdminController> _logger;
         private readonly IDbRepoCommon _dbRepoCommon;
+        private readonly IDbRepoMaster _dbRepoMaster;
         private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<User> _userManager;
 
@@ -24,13 +26,15 @@ namespace LW.BkEndApi.Controllers
             ILogger<MasterAdminController> logger,
             RoleManager<Role> roleManager,
             IDbRepoCommon dbRepoCommon,
-            UserManager<User> userManager
+            UserManager<User> userManager,
+            IDbRepoMaster dbRepoMaster
         )
         {
             _logger = logger;
             _dbRepoCommon = dbRepoCommon;
             _roleManager = roleManager;
             _userManager = userManager;
+            _dbRepoMaster = dbRepoMaster;
         }
 
         [HttpGet("create-role")]
@@ -130,9 +134,7 @@ namespace LW.BkEndApi.Controllers
         [HttpGet("getDashboardData")]
         public IActionResult GetDashboardData()
         {
-            var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
-
-            object data = null; //_dbRepoUser.GetDashboardInfo(conexId);
+            object data = _dbRepoMaster.GetDashboardInfo();
 
             if (data == null)
             {
