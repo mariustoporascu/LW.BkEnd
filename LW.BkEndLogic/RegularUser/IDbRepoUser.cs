@@ -18,6 +18,5 @@ namespace LW.BkEndLogic.RegularUser
             TranzactionTypeEnum tranzactionType,
             Guid? nextConexId
         );
-        Task<bool> SendForApproval(Guid conexId, Guid documentId);
     }
 }

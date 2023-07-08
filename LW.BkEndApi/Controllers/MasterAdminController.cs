@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using LW.BkEndLogic.MasterUser;
+using LW.BkEndApi.Models;
 
 namespace LW.BkEndApi.Controllers
 {
@@ -151,6 +152,130 @@ namespace LW.BkEndApi.Controllers
                     }
                 )
             );
+        }
+
+        [HttpGet("getFirme")]
+        public IActionResult GetFirme()
+        {
+            object data = _dbRepoMaster.GetFirmeDiscountList();
+
+            if (data == null)
+            {
+                return NoContent();
+            }
+
+            return Ok(JsonConvert.SerializeObject(data));
+        }
+
+        [HttpGet("getDocumente")]
+        public IActionResult GetDocumente()
+        {
+            object data = _dbRepoMaster.GetDocumenteList();
+
+            if (data == null)
+            {
+                return NoContent();
+            }
+
+            return Ok(JsonConvert.SerializeObject(data));
+        }
+
+        [HttpGet("getDocumentePreApproval")]
+        public IActionResult GetDocumentePreApproval()
+        {
+            object data = _dbRepoMaster.GetDocumentePreAprobareList();
+
+            if (data == null)
+            {
+                return NoContent();
+            }
+
+            return Ok(JsonConvert.SerializeObject(data));
+        }
+
+        [HttpGet("changeDocStatus")]
+        public async Task<IActionResult> ChangeDocStatus(
+            [FromQuery] Guid documentId,
+            [FromQuery] StatusEnum status
+        )
+        {
+            var result = await _dbRepoMaster.ChangeDocStatus(documentId, status);
+            if (result == false)
+            {
+                return BadRequest(
+                    new { Message = "Document status failed to be updated", Error = true }
+                );
+            }
+            return Ok(new { Message = "Document status has been updated", Error = false });
+        }
+
+        [HttpPost("addFirma")]
+        public async Task<IActionResult> AddFirma([FromBody] CreateFirmaDiscountDTO firma)
+        {
+            var firmaDiscount = new FirmaDiscount
+            {
+                Address = firma.Address,
+                BankAccount = firma.BankAccount,
+                BankName = firma.BankName,
+                CuiNumber = firma.CuiNumber,
+                MainContactEmail = firma.MainContactEmail,
+                MainContactName = firma.MainContactName,
+                MainContactPhone = firma.MainContactPhone,
+                DiscountPercent = firma.DiscountPercent,
+                NrRegCom = firma.NrRegCom,
+                Name = firma.Name,
+            };
+            var result = await _dbRepoCommon.AddCommonEntity(firmaDiscount);
+            if (result == false)
+            {
+                return BadRequest(new { Message = "Firma failed to be added", Error = true });
+            }
+            return Ok(new { Message = "Firma has been added", Error = false });
+        }
+
+        [HttpPut("updateFirmaStatus")]
+        public async Task<IActionResult> UpdateFirmaStatus([FromQuery] Guid firmaId)
+        {
+            var firmaDiscount = await _dbRepoCommon.GetCommonEntity<FirmaDiscount>(firmaId);
+            if (firmaDiscount == null)
+            {
+                return BadRequest(new { Message = "Firma not found", Error = true });
+            }
+            firmaDiscount.IsActive = !firmaDiscount.IsActive;
+            var result = await _dbRepoCommon.UpdateCommonEntity(firmaDiscount);
+            if (result == false)
+            {
+                return BadRequest(
+                    new { Message = "Firma status failed to be updated", Error = true }
+                );
+            }
+            return Ok(new { Message = "Firma status has been updated", Error = false });
+        }
+
+        [HttpPut("updateFirma")]
+        public async Task<IActionResult> UpdateFirma([FromBody] FirmaDiscount firma)
+        {
+            var firmaDiscount = await _dbRepoCommon.GetCommonEntity<FirmaDiscount>(firma.Id);
+            if (firmaDiscount == null)
+            {
+                return BadRequest(new { Message = "Firma not found", Error = true });
+            }
+            firmaDiscount.Address = firma.Address;
+            firmaDiscount.BankAccount = firma.BankAccount;
+            firmaDiscount.BankName = firma.BankName;
+            firmaDiscount.CuiNumber = firma.CuiNumber;
+            firmaDiscount.MainContactEmail = firma.MainContactEmail;
+            firmaDiscount.MainContactName = firma.MainContactName;
+            firmaDiscount.MainContactPhone = firma.MainContactPhone;
+            firmaDiscount.DiscountPercent = firma.DiscountPercent;
+            firmaDiscount.NrRegCom = firma.NrRegCom;
+            firmaDiscount.Name = firma.Name;
+            var result = await _dbRepoCommon.UpdateCommonEntity(firmaDiscount);
+            if (result == false)
+            {
+                return BadRequest(new { Message = "Firma failed to be updated", Error = true });
+            }
+            return Ok(new { Message = "Firma has been updated", Error = false });
         }
     }
 }

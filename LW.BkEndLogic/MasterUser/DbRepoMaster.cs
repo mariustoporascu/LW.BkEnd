@@ -1,4 +1,7 @@
 ﻿using LW.BkEndDb;
+using LW.BkEndModel;
+using LW.BkEndModel.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +42,94 @@ namespace LW.BkEndLogic.MasterUser
                 puncteFacturateCount,
                 documenteRespinse
             };
+        }
+
+        public IEnumerable<Documente> GetDocumenteList()
+        {
+            return _context.Documente
+                .Include(d => d.FisiereDocumente)
+                .Select(
+                    doc =>
+                        new Documente
+                        {
+                            Id = doc.Id,
+                            OcrDataJson = doc.OcrDataJson,
+                            Status = doc.Status,
+                            Uploaded = doc.Uploaded,
+                            StatusName = doc.StatusName,
+                            DiscountValue = doc.DiscountValue,
+                            IsInvoice = doc.IsInvoice,
+                            FirmaDiscountId = doc.FirmaDiscountId,
+                            FisiereDocumente = doc.FisiereDocumente
+                        }
+                )
+                .AsEnumerable();
+        }
+
+        public IEnumerable<FirmaDiscount> GetFirmeDiscountList()
+        {
+            return _context.FirmaDiscount
+                .Select(
+                    x =>
+                        new FirmaDiscount
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            MainContactEmail = x.MainContactEmail,
+                            MainContactName = x.MainContactName,
+                            MainContactPhone = x.MainContactPhone,
+                            CuiNumber = x.CuiNumber,
+                            DiscountPercent = x.DiscountPercent,
+                            IsActive = x.IsActive,
+                        }
+                )
+                .AsEnumerable();
+        }
+
+        public async Task<bool> ChangeDocStatus(Guid documentId, StatusEnum status)
+        {
+            var document = _context.Documente.FirstOrDefault(d => d.Id == documentId);
+            if (document != null)
+            {
+                document.Status = (int)status;
+                document.StatusName = Enum.GetName(typeof(StatusEnum), status);
+                return await UpdateCommonEntity(document);
+            }
+            return false;
+        }
+
+        private async Task<bool> UpdateCommonEntity<T>(T entity)
+        {
+            _context.Update(entity);
+            return await SaveChangesAsync();
+        }
+
+        private async Task<bool> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public IEnumerable<Documente> GetDocumentePreAprobareList()
+        {
+            return _context.Documente
+                .Include(d => d.FisiereDocumente)
+                .Where(x => x.Status == (int)StatusEnum.WaitingForPreApproval)
+                .Select(
+                    doc =>
+                        new Documente
+                        {
+                            Id = doc.Id,
+                            OcrDataJson = doc.OcrDataJson,
+                            Status = doc.Status,
+                            Uploaded = doc.Uploaded,
+                            StatusName = doc.StatusName,
+                            DiscountValue = doc.DiscountValue,
+                            IsInvoice = doc.IsInvoice,
+                            FirmaDiscountId = doc.FirmaDiscountId,
+                            FisiereDocumente = doc.FisiereDocumente
+                        }
+                )
+                .AsEnumerable();
         }
     }
 }

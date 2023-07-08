@@ -160,5 +160,11 @@ namespace LW.BkEndLogic.Commons
         {
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<T?> GetCommonEntity<T>(Guid entityId)
+            where T : class
+        {
+            return await _context.Set<T>().FindAsync(entityId);
+        }
     }
 }

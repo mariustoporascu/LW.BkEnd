@@ -310,20 +310,6 @@ namespace LW.BkEndLogic.RegularUser
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> SendForApproval(Guid conexId, Guid documentId)
-        {
-            var document = _context.Documente.FirstOrDefault(
-                d => d.Id == documentId && d.ConexId == conexId
-            );
-            if (document != null)
-            {
-                document.Status = (int)StatusEnum.WaitingForApproval;
-                document.StatusName = StatusEnum.WaitingForApproval.ToString();
-                return await UpdateCommonEntity(document);
-            }
-            return false;
-        }
-
         public Guid GetMyHybridId(Guid conexId)
         {
             return _context.ConexiuniConturi.Find(conexId)?.HybridId ?? Guid.Empty;

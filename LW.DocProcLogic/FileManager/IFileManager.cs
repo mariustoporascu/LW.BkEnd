@@ -179,6 +179,8 @@ namespace LW.DocProcLogic.FileManager
 
                 ocrObject["docNumber"] = newDocNr;
                 document.OcrDataJson = JsonConvert.SerializeObject(ocrObject);
+                document.Status = (int)StatusEnum.WaitingForPreApproval;
+                document.StatusName = StatusEnum.WaitingForPreApproval.ToString();
                 return await _dbRepo.UpdateCommonEntity(document);
             }
             catch (Exception ex)
