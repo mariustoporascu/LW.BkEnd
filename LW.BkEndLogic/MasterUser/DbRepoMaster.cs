@@ -131,5 +131,10 @@ namespace LW.BkEndLogic.MasterUser
                 )
                 .AsEnumerable();
         }
+
+        public bool FirmaDiscountExists(string cuiNumber)
+        {
+            return _context.FirmaDiscount.Any(f => f.CuiNumber == cuiNumber);
+        }
     }
 }

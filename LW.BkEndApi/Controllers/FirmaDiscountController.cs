@@ -70,7 +70,7 @@ namespace LW.BkEndApi.Controllers
             List<bool> bools = new List<bool>();
             foreach (var id in docStatusUpdateModel.DocumenteIds)
             {
-                var document = _dbRepoFirma.GetDocument(id);
+                var document = await _dbRepoCommon.GetCommonEntity<Documente>(id);
                 if (document == null || document.Status != 3)
                 {
                     bools.Add(false);
@@ -99,6 +99,41 @@ namespace LW.BkEndApi.Controllers
             return Ok(
                 new { Message = "All tranzactions were succesfully completed", Error = false }
             );
+        }
+
+        [HttpPut("updateHybrid")]
+        public async Task<IActionResult> UpdateHybrid(string name, string id)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return BadRequest(new { Message = "Hybrid name cannot be empty", Error = true });
+            }
+            var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
+            var firmaDiscountId = _dbRepoFirma.GetFirmaDiscountId(conexId);
+            if (firmaDiscountId == Guid.Empty)
+            {
+                return BadRequest(new { Message = "Firma discount not found", Error = true });
+            }
+            var hybridGuid = new Guid(id);
+            var hybrid = await _dbRepoCommon.GetCommonEntity<Hybrid>(hybridGuid);
+            if (hybrid == null)
+            {
+                return BadRequest(new { Message = "Hybrid not found", Error = true });
+            }
+            if (
+                name != hybrid.Name
+                && await _dbRepoFirma.CheckIfHybrindExists(name, firmaDiscountId)
+            )
+            {
+                return BadRequest(new { Message = "Hybrid name already exists", Error = true });
+            }
+            hybrid.Name = name;
+            var result = await _dbRepoCommon.UpdateCommonEntity(hybrid);
+            if (result)
+            {
+                return Ok(new { Message = "Hybrid updated succesfully", Error = false });
+            }
+            return BadRequest(new { Message = "Hybrid update failed", Error = true });
         }
 
         [HttpPost("createHybrid")]
@@ -189,7 +224,7 @@ namespace LW.BkEndApi.Controllers
             return Ok(new { Result = _dbRepoCommon.EmailNotTaken(email) });
         }
 
-        [HttpPost("deleteHybrids")]
+        [HttpDelete("deleteHybrids")]
         public async Task<IActionResult> DeleteHybrid(
             [FromBody] DeleteHybridsModel deleteHybridsModel
         )

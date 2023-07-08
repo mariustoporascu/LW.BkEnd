@@ -15,5 +15,6 @@ namespace LW.BkEndLogic.MasterUser
         IEnumerable<Documente> GetDocumenteList();
         IEnumerable<Documente> GetDocumentePreAprobareList();
         Task<bool> ChangeDocStatus(Guid documentId, StatusEnum status);
+        bool FirmaDiscountExists(string cuiNumber);
     }
 }

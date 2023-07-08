@@ -154,7 +154,7 @@ namespace LW.BkEndApi.Controllers
             List<bool> bools = new List<bool>();
             foreach (var id in tranzactionModel.DocumenteIds)
             {
-                var document = _dbRepoUser.GetDocument(id);
+                var document = await _dbRepoCommon.GetCommonEntity<Documente>(id);
                 if (document == null || document.Status != 1)
                 {
                     bools.Add(false);
@@ -203,8 +203,8 @@ namespace LW.BkEndApi.Controllers
             return Ok(JsonConvert.SerializeObject(users));
         }
 
-        [HttpGet("add-favorite-user")]
-        public async Task<IActionResult> AddFavoriteUser([FromQuery] string favConexId)
+        [HttpPut("add-favorite-user")]
+        public async Task<IActionResult> AddFavoriteUser(string favConexId)
         {
             if (string.IsNullOrWhiteSpace(favConexId))
             {

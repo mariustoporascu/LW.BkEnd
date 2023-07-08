@@ -97,11 +97,6 @@ namespace LW.BkEndLogic.RegularUser
                 .AsEnumerable();
         }
 
-        public Documente GetDocument(Guid entityId)
-        {
-            return _context.Documente.Include(d => d.FisiereDocumente).First(d => d.Id == entityId);
-        }
-
         public object GetDashboardInfo(Guid conexId)
         {
             var tableDocs = _context.Documente
