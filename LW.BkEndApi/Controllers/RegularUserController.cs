@@ -146,9 +146,7 @@ namespace LW.BkEndApi.Controllers
         }
 
         [HttpPost("addTranzaction")]
-        public async Task<IActionResult> AddTranzaction(
-            [FromBody] TranzactionModel tranzactionModel
-        )
+        public async Task<IActionResult> AddTranzaction([FromBody] TranzactionDTO tranzactionModel)
         {
             var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
             List<bool> bools = new List<bool>();
@@ -204,15 +202,10 @@ namespace LW.BkEndApi.Controllers
         }
 
         [HttpPut("add-favorite-user")]
-        public async Task<IActionResult> AddFavoriteUser(string favConexId)
+        public async Task<IActionResult> AddFavoriteUser(Guid favConexId)
         {
-            if (string.IsNullOrWhiteSpace(favConexId))
-            {
-                return NoContent();
-            }
-            var favConexIdGuid = new Guid(favConexId);
             var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
-            var result = await _dbRepoCommon.AddFavoriteUser(conexId, favConexIdGuid);
+            var result = await _dbRepoCommon.AddFavoriteUser(conexId, favConexId);
             if (result == false)
             {
                 return BadRequest(
@@ -223,15 +216,10 @@ namespace LW.BkEndApi.Controllers
         }
 
         [HttpDelete("remove-favorite-user")]
-        public async Task<IActionResult> RemoveFavoriteUser([FromQuery] string favConexId)
+        public async Task<IActionResult> RemoveFavoriteUser([FromQuery] Guid favConexId)
         {
-            if (string.IsNullOrWhiteSpace(favConexId))
-            {
-                return NoContent();
-            }
-            var favConexIdGuid = new Guid(favConexId);
             var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
-            var result = await _dbRepoCommon.RemoveFavoriteUser(conexId, favConexIdGuid);
+            var result = await _dbRepoCommon.RemoveFavoriteUser(conexId, favConexId);
             if (result == false)
             {
                 return BadRequest(

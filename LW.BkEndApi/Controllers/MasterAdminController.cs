@@ -164,6 +164,19 @@ namespace LW.BkEndApi.Controllers
             return Ok(JsonConvert.SerializeObject(data));
         }
 
+        [HttpGet("getFirmaExtendedDetails")]
+        public async Task<IActionResult> GetFirme([FromQuery] Guid firmaId)
+        {
+            var data = await _dbRepoCommon.GetCommonEntity<FirmaDiscount>(firmaId);
+
+            if (data == null)
+            {
+                return NoContent();
+            }
+
+            return Ok(JsonConvert.SerializeObject(data));
+        }
+
         [HttpGet("getDocumente")]
         public IActionResult GetDocumente()
         {
@@ -191,10 +204,13 @@ namespace LW.BkEndApi.Controllers
         }
 
         [HttpPut("changeDocStatus")]
-        public async Task<IActionResult> ChangeDocStatus(string documentId, StatusEnum status)
+        public async Task<IActionResult> ChangeDocStatus(Guid documentId, StatusEnum status)
         {
-            var documentGuid = new Guid(documentId);
-            var result = await _dbRepoMaster.ChangeDocStatus(documentGuid, status);
+            if ((int)status < 2 && (int)status > 3)
+            {
+                return BadRequest(new { Message = "Invalid status", Error = true });
+            }
+            var result = await _dbRepoMaster.ChangeDocStatus(documentId, status);
             if (result == false)
             {
                 return BadRequest(
@@ -236,10 +252,9 @@ namespace LW.BkEndApi.Controllers
         }
 
         [HttpPut("updateFirmaStatus")]
-        public async Task<IActionResult> UpdateFirmaStatus(string firmaId)
+        public async Task<IActionResult> UpdateFirmaStatus(Guid firmaId)
         {
-            var firmaGuid = new Guid(firmaId);
-            var firmaDiscount = await _dbRepoCommon.GetCommonEntity<FirmaDiscount>(firmaGuid);
+            var firmaDiscount = await _dbRepoCommon.GetCommonEntity<FirmaDiscount>(firmaId);
             if (firmaDiscount == null)
             {
                 return BadRequest(new { Message = "Firma not found", Error = true });
@@ -256,14 +271,17 @@ namespace LW.BkEndApi.Controllers
         }
 
         [HttpPut("updateFirma")]
-        public async Task<IActionResult> UpdateFirma([FromBody] FirmaDiscount firma)
+        public async Task<IActionResult> UpdateFirma([FromBody] UpdateFirmaDiscountDTO firma)
         {
             var firmaDiscount = await _dbRepoCommon.GetCommonEntity<FirmaDiscount>(firma.Id);
             if (string.IsNullOrWhiteSpace(firma.CuiNumber) || firmaDiscount == null)
             {
                 return BadRequest(new { Message = "Firma not found", Error = true });
             }
-            if (firma.Id != firmaDiscount.Id && _dbRepoMaster.FirmaDiscountExists(firma.CuiNumber))
+            if (
+                firma.CuiNumber != firmaDiscount.CuiNumber
+                && _dbRepoMaster.FirmaDiscountExists(firma.CuiNumber)
+            )
             {
                 return BadRequest(new { Message = "Firma already exists", Error = true });
             }

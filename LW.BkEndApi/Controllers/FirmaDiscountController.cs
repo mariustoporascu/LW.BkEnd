@@ -64,7 +64,7 @@ namespace LW.BkEndApi.Controllers
 
         [HttpPost("updateDocStatus")]
         public async Task<IActionResult> UpdateDocStatus(
-            [FromBody] DocStatusUpdateModel docStatusUpdateModel
+            [FromBody] DocStatusUpdateDTO docStatusUpdateModel
         )
         {
             List<bool> bools = new List<bool>();
@@ -101,12 +101,14 @@ namespace LW.BkEndApi.Controllers
             );
         }
 
-        [HttpPut("updateHybrid")]
-        public async Task<IActionResult> UpdateHybrid(string name, string id)
+        [HttpPut("updatePunctDeLucru")]
+        public async Task<IActionResult> UpdatePunctDeLucru(string name, Guid entityId)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                return BadRequest(new { Message = "Hybrid name cannot be empty", Error = true });
+                return BadRequest(
+                    new { Message = "Punct De Lucru name cannot be empty", Error = true }
+                );
             }
             var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
             var firmaDiscountId = _dbRepoFirma.GetFirmaDiscountId(conexId);
@@ -114,30 +116,33 @@ namespace LW.BkEndApi.Controllers
             {
                 return BadRequest(new { Message = "Firma discount not found", Error = true });
             }
-            var hybridGuid = new Guid(id);
-            var hybrid = await _dbRepoCommon.GetCommonEntity<Hybrid>(hybridGuid);
+            var hybrid = await _dbRepoCommon.GetCommonEntity<Hybrid>(entityId);
             if (hybrid == null)
             {
-                return BadRequest(new { Message = "Hybrid not found", Error = true });
+                return BadRequest(new { Message = "Punct De Lucru not found", Error = true });
             }
             if (
                 name != hybrid.Name
                 && await _dbRepoFirma.CheckIfHybrindExists(name, firmaDiscountId)
             )
             {
-                return BadRequest(new { Message = "Hybrid name already exists", Error = true });
+                return BadRequest(
+                    new { Message = "Punct De Lucru name already exists", Error = true }
+                );
             }
             hybrid.Name = name;
             var result = await _dbRepoCommon.UpdateCommonEntity(hybrid);
             if (result)
             {
-                return Ok(new { Message = "Hybrid updated succesfully", Error = false });
+                return Ok(new { Message = "Punct De Lucru updated succesfully", Error = false });
             }
-            return BadRequest(new { Message = "Hybrid update failed", Error = true });
+            return BadRequest(new { Message = "Punct De Lucru update failed", Error = true });
         }
 
-        [HttpPost("createHybrid")]
-        public async Task<IActionResult> CreateHybrid([FromBody] CreateHybridDTO createHybridDTO)
+        [HttpPost("createPunctDeLucru")]
+        public async Task<IActionResult> CreatePunctDeLucru(
+            [FromBody] CreatePunctDeLucruDTO createPunctDeLucruDTO
+        )
         {
             var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
             var firmaDiscountId = _dbRepoFirma.GetFirmaDiscountId(conexId);
@@ -145,44 +150,56 @@ namespace LW.BkEndApi.Controllers
             {
                 return BadRequest(new { Message = "Firma discount not found", Error = true });
             }
-            if (string.IsNullOrWhiteSpace(createHybridDTO.Name))
+            if (string.IsNullOrWhiteSpace(createPunctDeLucruDTO.Name))
             {
-                return BadRequest(new { Message = "Hybrid name cannot be empty", Error = true });
+                return BadRequest(
+                    new { Message = "Punct De Lucru name cannot be empty", Error = true }
+                );
             }
-            if (await _dbRepoFirma.CheckIfHybrindExists(createHybridDTO.Name, firmaDiscountId))
+            if (
+                await _dbRepoFirma.CheckIfHybrindExists(createPunctDeLucruDTO.Name, firmaDiscountId)
+            )
             {
-                return BadRequest(new { Message = "Hybrid name already exists", Error = true });
+                return BadRequest(
+                    new { Message = "Punct De Lucru name already exists", Error = true }
+                );
             }
             var hybrid = new Hybrid
             {
-                Name = createHybridDTO.Name,
+                Name = createPunctDeLucruDTO.Name,
                 FirmaDiscountId = firmaDiscountId,
             };
             var hybridResult = await _dbRepoCommon.AddCommonEntity(hybrid);
             if (!hybridResult)
             {
-                return BadRequest(new { Message = "Hybrid could not get created", Error = true });
+                return BadRequest(
+                    new { Message = "Punct De Lucru could not get created", Error = true }
+                );
             }
             if (
-                !string.IsNullOrWhiteSpace(createHybridDTO.InitialEmail)
-                && !string.IsNullOrWhiteSpace(createHybridDTO.InitialPassword)
+                !string.IsNullOrWhiteSpace(createPunctDeLucruDTO.InitialEmail)
+                && !string.IsNullOrWhiteSpace(createPunctDeLucruDTO.InitialPassword)
             )
             {
                 var user = new User
                 {
-                    UserName = createHybridDTO.InitialEmail,
-                    Email = createHybridDTO.InitialEmail,
+                    UserName = createPunctDeLucruDTO.InitialEmail,
+                    Email = createPunctDeLucruDTO.InitialEmail,
                     EmailConfirmed = true,
                 };
                 var userResult = await _signInManager.UserManager.CreateAsync(
                     user,
-                    createHybridDTO.InitialPassword
+                    createPunctDeLucruDTO.InitialPassword
                 );
                 if (!userResult.Succeeded)
                 {
                     await _dbRepoCommon.DeleteCommonEntity(hybrid);
                     return BadRequest(
-                        new { Message = "User for hybrid could not get created", Error = true }
+                        new
+                        {
+                            Message = "User for Punct De Lucru could not get created",
+                            Error = true
+                        }
                     );
                 }
 
@@ -190,7 +207,7 @@ namespace LW.BkEndApi.Controllers
                 {
                     UserId = user.Id,
                     HybridId = hybrid.Id,
-                    ProfilCont = new ProfilCont { Email = createHybridDTO.InitialEmail, }
+                    ProfilCont = new ProfilCont { Email = createPunctDeLucruDTO.InitialEmail, }
                 };
                 var conexUserResult = await _dbRepoCommon.AddCommonEntity(conexUser);
                 if (!conexUserResult)
@@ -204,7 +221,7 @@ namespace LW.BkEndApi.Controllers
                     !_emailSender.SendEmail(
                         new string[] { user.Email },
                         "Creare cont automat",
-                        $"Contul tau a fost creat automat cu parola {createHybridDTO.InitialPassword}, te rugam sa o schimbi dupa prima autentificare."
+                        $"Contul tau a fost creat automat cu parola {createPunctDeLucruDTO.InitialPassword}, te rugam sa o schimbi dupa prima autentificare."
                     )
                 )
                 {
@@ -212,10 +229,10 @@ namespace LW.BkEndApi.Controllers
                 }
                 else
                 {
-                    _logger.LogInformation("Hybrid account created succesfully");
+                    _logger.LogInformation("Punct De Lucru account created succesfully");
                 }
             }
-            return Ok(new { Message = "Hybrid created succesfully", Error = false });
+            return Ok(new { Message = "Punct De Lucru created succesfully", Error = false });
         }
 
         [HttpGet("checkIfEmailNotTaken")]
@@ -224,9 +241,9 @@ namespace LW.BkEndApi.Controllers
             return Ok(new { Result = _dbRepoCommon.EmailNotTaken(email) });
         }
 
-        [HttpDelete("deleteHybrids")]
-        public async Task<IActionResult> DeleteHybrid(
-            [FromBody] DeleteHybridsModel deleteHybridsModel
+        [HttpDelete("deletePuncteDeLucru")]
+        public async Task<IActionResult> DeletePuncteDeLucru(
+            [FromBody] DeletePuncteDeLucruDTO deletePuncteDeLucruModel
         )
         {
             var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
@@ -237,7 +254,7 @@ namespace LW.BkEndApi.Controllers
             {
                 return BadRequest(new { Message = "Firma discount not found", Error = true });
             }
-            foreach (var hybridId in deleteHybridsModel.GroupsIds)
+            foreach (var hybridId in deletePuncteDeLucruModel.GroupsIds)
             {
                 bools.Add(await _dbRepoFirma.DeleteHybrid(firmaDiscountId, hybridId));
             }
@@ -260,8 +277,8 @@ namespace LW.BkEndApi.Controllers
             );
         }
 
-        [HttpGet("getFirmaHybrids")]
-        public async Task<IActionResult> GetFirmaHybrids()
+        [HttpGet("getFirmaPuncteDeLucru")]
+        public async Task<IActionResult> GetFirmaPuncteDeLucru()
         {
             var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
             var firmaDiscountId = _dbRepoFirma.GetFirmaDiscountId(conexId);

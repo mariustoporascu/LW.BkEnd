@@ -48,6 +48,12 @@ namespace LW.BkEndLogic.MasterUser
         {
             return _context.Documente
                 .Include(d => d.FisiereDocumente)
+                .Include(d => d.ConexiuniConturi.ProfilCont)
+                .Where(
+                    d =>
+                        d.Status != (int)StatusEnum.FailedProcessing
+                        && d.Status != (int)StatusEnum.NoStatus
+                )
                 .Select(
                     doc =>
                         new Documente
@@ -60,6 +66,7 @@ namespace LW.BkEndLogic.MasterUser
                             DiscountValue = doc.DiscountValue,
                             IsInvoice = doc.IsInvoice,
                             FirmaDiscountId = doc.FirmaDiscountId,
+                            ConexiuniConturi = doc.ConexiuniConturi,
                             FisiereDocumente = doc.FisiereDocumente
                         }
                 )
@@ -113,6 +120,7 @@ namespace LW.BkEndLogic.MasterUser
         {
             return _context.Documente
                 .Include(d => d.FisiereDocumente)
+                .Include(d => d.ConexiuniConturi.ProfilCont)
                 .Where(x => x.Status == (int)StatusEnum.WaitingForPreApproval)
                 .Select(
                     doc =>
@@ -120,12 +128,11 @@ namespace LW.BkEndLogic.MasterUser
                         {
                             Id = doc.Id,
                             OcrDataJson = doc.OcrDataJson,
-                            Status = doc.Status,
                             Uploaded = doc.Uploaded,
-                            StatusName = doc.StatusName,
                             DiscountValue = doc.DiscountValue,
                             IsInvoice = doc.IsInvoice,
                             FirmaDiscountId = doc.FirmaDiscountId,
+                            ConexiuniConturi = doc.ConexiuniConturi,
                             FisiereDocumente = doc.FisiereDocumente
                         }
                 )
