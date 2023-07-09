@@ -145,30 +145,14 @@ namespace LW.BkEndApi.Controllers
             );
         }
 
-        [HttpGet("sendForApproval")]
-        public async Task<IActionResult> SendForApproval([FromQuery] Guid documentId)
-        {
-            var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
-            var result = await _dbRepoUser.SendForApproval(conexId, documentId);
-            if (result == false)
-            {
-                return BadRequest(
-                    new { Message = "Document failed to be sent for approval", Error = true }
-                );
-            }
-            return Ok(new { Message = "Document sent for approval successfuly", Error = false });
-        }
-
         [HttpPost("addTranzaction")]
-        public async Task<IActionResult> AddTranzaction(
-            [FromBody] TranzactionModel tranzactionModel
-        )
+        public async Task<IActionResult> AddTranzaction([FromBody] TranzactionDTO tranzactionModel)
         {
             var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
             List<bool> bools = new List<bool>();
             foreach (var id in tranzactionModel.DocumenteIds)
             {
-                var document = _dbRepoUser.GetDocument(id);
+                var document = await _dbRepoCommon.GetCommonEntity<Documente>(id);
                 if (document == null || document.Status != 1)
                 {
                     bools.Add(false);
@@ -217,16 +201,11 @@ namespace LW.BkEndApi.Controllers
             return Ok(JsonConvert.SerializeObject(users));
         }
 
-        [HttpGet("add-favorite-user")]
-        public async Task<IActionResult> AddFavoriteUser([FromQuery] string favConexId)
+        [HttpPut("add-favorite-user")]
+        public async Task<IActionResult> AddFavoriteUser(Guid favConexId)
         {
-            if (string.IsNullOrWhiteSpace(favConexId))
-            {
-                return NoContent();
-            }
-            var favConexIdGuid = new Guid(favConexId);
             var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
-            var result = await _dbRepoCommon.AddFavoriteUser(conexId, favConexIdGuid);
+            var result = await _dbRepoCommon.AddFavoriteUser(conexId, favConexId);
             if (result == false)
             {
                 return BadRequest(
@@ -237,15 +216,10 @@ namespace LW.BkEndApi.Controllers
         }
 
         [HttpDelete("remove-favorite-user")]
-        public async Task<IActionResult> RemoveFavoriteUser([FromQuery] string favConexId)
+        public async Task<IActionResult> RemoveFavoriteUser([FromQuery] Guid favConexId)
         {
-            if (string.IsNullOrWhiteSpace(favConexId))
-            {
-                return NoContent();
-            }
-            var favConexIdGuid = new Guid(favConexId);
             var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
-            var result = await _dbRepoCommon.RemoveFavoriteUser(conexId, favConexIdGuid);
+            var result = await _dbRepoCommon.RemoveFavoriteUser(conexId, favConexId);
             if (result == false)
             {
                 return BadRequest(

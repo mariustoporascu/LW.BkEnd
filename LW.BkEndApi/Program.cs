@@ -4,6 +4,7 @@ using LW.BkEndLogic.Commons;
 using LW.BkEndLogic.Commons.Interfaces;
 using LW.BkEndLogic.FirmaDiscUser;
 using LW.BkEndLogic.HybridUser;
+using LW.BkEndLogic.MasterUser;
 using LW.BkEndLogic.RegularUser;
 using LW.BkEndModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -151,8 +152,8 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IDbRepoCommon, DbRepoCommon>();
 builder.Services.AddScoped<IDbRepoFirma, DbRepoFirma>();
-builder.Services.AddScoped<IDbRepoHybrid, DbRepoHybrid>();
 builder.Services.AddScoped<IDbRepoUser, DbRepoUser>();
+builder.Services.AddScoped<IDbRepoMaster, DbRepoMaster>();
 
 var app = builder.Build();
 
