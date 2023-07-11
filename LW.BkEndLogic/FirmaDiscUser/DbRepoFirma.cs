@@ -55,16 +55,16 @@ namespace LW.BkEndLogic.FirmaDiscUser
             var conex = _context.ConexiuniConturi.Find(conexId);
             if (conex == null)
                 return null;
-
+            int[] opsInts = new int[]
+            {
+                (int)StatusEnum.Approved,
+                (int)StatusEnum.Rejected,
+                (int)StatusEnum.WaitingForPreApproval,
+                (int)StatusEnum.WaitingForApproval,
+            };
             var tableDocs = _context.Documente
                 .Where(
-                    d =>
-                        d.FirmaDiscountId == conex.FirmaDiscountId
-                        && (
-                            d.Status == (int)StatusEnum.Approved
-                            || d.Status == (int)StatusEnum.Rejected
-                            || d.Status == (int)StatusEnum.WaitingForApproval
-                        )
+                    d => d.FirmaDiscountId == conex.FirmaDiscountId && opsInts.Contains(d.Status)
                 )
                 .OrderByDescending(doc => doc.Uploaded)
                 .Select(
@@ -95,11 +95,7 @@ namespace LW.BkEndLogic.FirmaDiscUser
                 .Where(
                     d =>
                         d.FirmaDiscountId == conex.FirmaDiscountId
-                        && (
-                            d.Status == (int)StatusEnum.Approved
-                            || d.Status == (int)StatusEnum.Rejected
-                            || d.Status == (int)StatusEnum.WaitingForApproval
-                        )
+                        && opsInts.Contains(d.Status)
                         && d.Uploaded.Month == currentMonth
                         && d.Uploaded.Year == currentYear
                 )
@@ -130,11 +126,7 @@ namespace LW.BkEndLogic.FirmaDiscUser
                 .Where(
                     d =>
                         d.FirmaDiscountId == conex.FirmaDiscountId
-                        && (
-                            d.Status == (int)StatusEnum.Approved
-                            || d.Status == (int)StatusEnum.Rejected
-                            || d.Status == (int)StatusEnum.WaitingForApproval
-                        )
+                        && opsInts.Contains(d.Status)
                         && d.Uploaded.Month == previousMonth
                         && d.Uploaded.Year == previousYear
                         && d.Tranzactii != null
