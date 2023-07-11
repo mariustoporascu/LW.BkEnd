@@ -107,7 +107,11 @@ namespace LW.DocProcLogic.ProcessOcrResult
                 };
                 otherErrors.Add(true);
             }
-            if (processedResult["Content"].ToString().Contains(dbFirmaDisc.CuiNumber))
+            if (
+                processedResult["Content"]
+                    .ToString()
+                    .Contains(dbFirmaDisc.CuiNumber.Replace("RO", ""))
+            )
             {
                 cuiFirmaObject = new { value = dbFirmaDisc.CuiNumber, hasErrors = false };
                 otherErrors.Add(false);
@@ -121,7 +125,7 @@ namespace LW.DocProcLogic.ProcessOcrResult
                     errorMessage = "CUI negasit"
                 };
                 // TO ENABLE IN PROD
-                /*otherErrors.Add(true);*/
+                otherErrors.Add(true);
             }
             if (!string.IsNullOrWhiteSpace(processedResult["MerchantName"].ToString()))
             {

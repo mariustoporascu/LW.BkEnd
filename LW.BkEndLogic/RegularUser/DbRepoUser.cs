@@ -32,16 +32,19 @@ namespace LW.BkEndLogic.RegularUser
 
         public IEnumerable<Documente> GetAllDocumenteOperatii(Guid conexId)
         {
+            int[] opsInts = new int[]
+            {
+                (int)StatusEnum.Approved,
+                (int)StatusEnum.Rejected,
+                (int)StatusEnum.WaitingForPreApproval,
+                (int)StatusEnum.WaitingForApproval,
+            };
             return _context.Documente
                 .Include(d => d.FisiereDocumente)
                 .Where(
                     d =>
                         (d.ConexId == conexId || d.NextConexId == conexId)
-                        && (
-                            d.Status == (int)StatusEnum.Approved
-                            || d.Status == (int)StatusEnum.Rejected
-                            || d.Status == (int)StatusEnum.WaitingForApproval
-                        )
+                        && opsInts.Contains(d.Status)
                         && d.Tranzactii != null
                         && !d.Tranzactii.Any(t => t.ConexId == conexId)
                 )
@@ -65,17 +68,19 @@ namespace LW.BkEndLogic.RegularUser
 
         public IEnumerable<Documente> GetAllDocumenteFileManager(Guid conexId)
         {
+            int[] opsInts = new int[]
+            {
+                (int)StatusEnum.Processing,
+                (int)StatusEnum.PartialyProcessed,
+                (int)StatusEnum.FailedProcessing,
+                (int)StatusEnum.NoStatus,
+            };
             return _context.Documente
                 .Include(d => d.FisiereDocumente)
                 .Where(
                     d =>
                         (d.ConexId == conexId || d.NextConexId == conexId)
-                        && (
-                            d.Status == (int)StatusEnum.Processing
-                            || d.Status == (int)StatusEnum.PartialyProcessed
-                            || d.Status == (int)StatusEnum.FailedProcessing
-                            || d.Status == (int)StatusEnum.NoStatus
-                        )
+                        && opsInts.Contains(d.Status)
                         && d.Tranzactii != null
                         && !d.Tranzactii.Any(t => t.ConexId == conexId)
                 )
@@ -99,15 +104,18 @@ namespace LW.BkEndLogic.RegularUser
 
         public object GetDashboardInfo(Guid conexId)
         {
+            int[] opsInts = new int[]
+            {
+                (int)StatusEnum.Approved,
+                (int)StatusEnum.Rejected,
+                (int)StatusEnum.WaitingForPreApproval,
+                (int)StatusEnum.WaitingForApproval,
+            };
             var tableDocs = _context.Documente
                 .Where(
                     d =>
                         (d.ConexId == conexId || d.NextConexId == conexId)
-                        && (
-                            d.Status == (int)StatusEnum.Approved
-                            || d.Status == (int)StatusEnum.Rejected
-                            || d.Status == (int)StatusEnum.WaitingForApproval
-                        )
+                        && opsInts.Contains(d.Status)
                 )
                 .OrderByDescending(doc => doc.Uploaded)
                 .Select(
@@ -140,11 +148,7 @@ namespace LW.BkEndLogic.RegularUser
                 .Where(
                     d =>
                         (d.ConexId == conexId || d.NextConexId == conexId)
-                        && (
-                            d.Status == (int)StatusEnum.Approved
-                            || d.Status == (int)StatusEnum.Rejected
-                            || d.Status == (int)StatusEnum.WaitingForApproval
-                        )
+                        && opsInts.Contains(d.Status)
                         && d.Uploaded.Month == currentMonth
                         && d.Uploaded.Year == currentYear
                         && d.Tranzactii != null
@@ -182,11 +186,7 @@ namespace LW.BkEndLogic.RegularUser
                 .Where(
                     d =>
                         (d.ConexId == conexId || d.NextConexId == conexId)
-                        && (
-                            d.Status == (int)StatusEnum.Approved
-                            || d.Status == (int)StatusEnum.Rejected
-                            || d.Status == (int)StatusEnum.WaitingForApproval
-                        )
+                        && opsInts.Contains(d.Status)
                         && d.Uploaded.Month == previousMonth
                         && d.Uploaded.Year == previousYear
                         && d.Tranzactii != null

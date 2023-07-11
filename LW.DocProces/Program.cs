@@ -58,7 +58,7 @@ if (builder.Environment.IsDevelopment())
             policy =>
             {
                 policy
-                    .WithOrigins(new string[] { "http://localhost:4201" })
+                    .WithOrigins(new string[] { "https://lw-localhost.topodvlp.ro" })
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials()

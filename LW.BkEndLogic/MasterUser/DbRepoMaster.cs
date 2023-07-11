@@ -49,11 +49,6 @@ namespace LW.BkEndLogic.MasterUser
             return _context.Documente
                 .Include(d => d.FisiereDocumente)
                 .Include(d => d.ConexiuniConturi.ProfilCont)
-                .Where(
-                    d =>
-                        d.Status != (int)StatusEnum.FailedProcessing
-                        && d.Status != (int)StatusEnum.NoStatus
-                )
                 .Select(
                     doc =>
                         new Documente
