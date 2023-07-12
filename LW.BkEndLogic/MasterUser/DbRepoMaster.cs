@@ -26,11 +26,15 @@ namespace LW.BkEndLogic.MasterUser
             var useriCount = _context.Users.Count();
             var documenteCount = _context.Documente.Count();
             var puncteAcordateCount = _context.Documente
-                .Where(x => x.Status == 1)
+                .Where(x => x.Status == (int)StatusEnum.Approved)
                 .Sum(x => x.DiscountValue);
-            var puncteRetraseCount = _context.Tranzactii.Where(x => x.Type == 2).Sum(x => x.Amount);
+            var puncteRetraseCount = _context.Tranzactii
+                .Where(x => x.Type == (int)TranzactionTypeEnum.Withdraw)
+                .Sum(x => x.Amount);
             var puncteFacturateCount = 0;
-            var documenteRespinse = _context.Documente.Where(x => x.Status == 2).Count();
+            var documenteRespinse = _context.Documente
+                .Where(x => x.Status == (int)StatusEnum.Rejected)
+                .Count();
             return new
             {
                 firmeActiveCount,

@@ -23,6 +23,7 @@ using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
 using Syncfusion.Pdf.Interactive;
 using Microsoft.Extensions.Logging;
+using System.Runtime.InteropServices;
 
 namespace LW.DocProcLogic.FileManager
 {
@@ -32,6 +33,8 @@ namespace LW.DocProcLogic.FileManager
         Task<bool> OnFileRescan(FormFile formFile, Guid conexId, Guid documentId);
         Task<bool> OnFileProcessed(string blobName, string result);
         Task<Stream> GetFileStream(string identifier, Guid conexId);
+        Task<bool> DeleteBlobAndDocument(Guid fisierId, Guid documentId);
+        bool CheckDocExists(Guid conexId, Guid documentId);
     }
 
     public class FileManager : IFileManager
@@ -50,7 +53,7 @@ namespace LW.DocProcLogic.FileManager
         public async Task<Stream> GetFileStream(string identifier, Guid conexId)
         {
             var exists = _dbRepo.GetDocumentByBlobName(identifier);
-            var conexCont = _dbRepo.GetConexCont(conexId);
+            var conexCont = await _dbRepo.GetCommonEntity<ConexiuniConturi>(conexId);
             if (exists == null || conexCont == null)
             {
                 return null;
@@ -106,7 +109,9 @@ namespace LW.DocProcLogic.FileManager
         {
             //return false;
             var dbFile = _dbRepo.GetDocumentByBlobName(blobName);
-            var dbFirmaDisc = _dbRepo.GetFirmaDiscountById(dbFile.FirmaDiscountId ?? Guid.Empty);
+            var dbFirmaDisc = await _dbRepo.GetCommonEntity<FirmaDiscount>(
+                dbFile.FirmaDiscountId ?? Guid.Empty
+            );
             if (dbFile == null || dbFirmaDisc == null)
             {
                 return false;
@@ -168,7 +173,7 @@ namespace LW.DocProcLogic.FileManager
                 {
                     return false;
                 }
-                var document = _dbRepo.GetDocumentById(documentId);
+                var document = await _dbRepo.GetCommonEntity<Documente>(documentId);
                 var ocrObject = JsonConvert.DeserializeObject<JObject>(document.OcrDataJson);
                 JObject newDocNr = new JObject();
 
@@ -291,6 +296,46 @@ namespace LW.DocProcLogic.FileManager
             }
         }
 
+        public async Task<bool> DeleteBlobAndDocument(Guid fisierId, Guid documentId)
+        {
+            List<bool> deletedBools = new List<bool>();
+            string blobName = string.Empty;
+            try
+            {
+                var fisierInfo = await _dbRepo.GetCommonEntity<FisiereDocumente>(fisierId);
+                blobName = fisierInfo.Identifier;
+                deletedBools.Add(await _dbRepo.DeleteCommonEntity<FisiereDocumente>(fisierInfo));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+            }
+            try
+            {
+                var docInfo = await _dbRepo.GetCommonEntity<Documente>(documentId);
+                deletedBools.Add(await _dbRepo.DeleteCommonEntity<Documente>(docInfo));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+            }
+            try
+            {
+                var blobClient = new BlobClient(
+                    _config["Azure:Storage"],
+                    _config["Azure:ContainerName"],
+                    blobName
+                );
+                var response = await blobClient.DeleteAsync();
+                deletedBools.Add(response.Status >= 200 && response.Status < 300);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+            }
+            return deletedBools.All(x => x) && deletedBools.Count == 3;
+        }
+
         private SKBitmap ResizeImageMaintainAspectRatio(
             SKBitmap originalImage,
             int newWidth,
@@ -352,6 +397,11 @@ namespace LW.DocProcLogic.FileManager
             }
 
             return outputStream;
+        }
+
+        public bool CheckDocExists(Guid conexId, Guid documentId)
+        {
+            return _dbRepo.CheckDocExists(conexId, documentId);
         }
     }
 }
