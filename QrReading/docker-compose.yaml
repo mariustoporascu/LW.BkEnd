@@ -6,12 +6,3 @@ services:
       - ./QrReading:/home/site/wwwroot/QrReading
     ports:
       - "8080:80"
-    deploy:
-      resources:
-        limits:
-          cpus: '16'
-          memory: 6G
-        reservations:
-          cpus: '14'
-          memory: 4G
-    cpu_count: 16

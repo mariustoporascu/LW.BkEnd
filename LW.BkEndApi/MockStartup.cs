@@ -68,8 +68,8 @@ namespace LW.BkEndApi
 				options.MapInboundClaims = false;
 			});
 
-			services.AddTransient<ITokenService, TokenService>();
-			services.AddTransient<IEmailSender, EmailSender>();
+			services.AddScoped<ITokenService, TokenService>();
+			services.AddScoped<IEmailSender, EmailSender>();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
