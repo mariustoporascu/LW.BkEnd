@@ -2,7 +2,5 @@
 
 namespace LW.BkEndModel
 {
-	public class Role : IdentityRole<Guid>
-	{
-	}
+    public class Role : IdentityRole<Guid> { }
 }

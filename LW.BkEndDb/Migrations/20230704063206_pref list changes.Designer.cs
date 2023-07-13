@@ -4,6 +4,7 @@ using LW.BkEndDb;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LW.BkEndDb.Migrations
 {
     [DbContext(typeof(LwDBContext))]
-    partial class LwDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230704063206_pref list changes")]
+    partial class preflistchanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -277,6 +280,9 @@ namespace LW.BkEndDb.Migrations
                     b.Property<Guid?>("ConexId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("HybridId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("MyConexId")
                         .HasColumnType("uniqueidentifier");
 
@@ -290,6 +296,8 @@ namespace LW.BkEndDb.Migrations
                     SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("CIndex"));
 
                     b.HasIndex("ConexId");
+
+                    b.HasIndex("HybridId");
 
                     b.HasIndex("MyConexId");
 
@@ -656,6 +664,10 @@ namespace LW.BkEndDb.Migrations
                         .WithMany("PreferinteHybrid")
                         .HasForeignKey("ConexId");
 
+                    b.HasOne("LW.BkEndModel.Hybrid", null)
+                        .WithMany("PreferinteHybrid")
+                        .HasForeignKey("HybridId");
+
                     b.HasOne("LW.BkEndModel.ConexiuniConturi", "MyConexiuniConturi")
                         .WithMany()
                         .HasForeignKey("MyConexId");
@@ -770,6 +782,8 @@ namespace LW.BkEndDb.Migrations
             modelBuilder.Entity("LW.BkEndModel.Hybrid", b =>
                 {
                     b.Navigation("ConexiuniConturi");
+
+                    b.Navigation("PreferinteHybrid");
                 });
 
             modelBuilder.Entity("LW.BkEndModel.User", b =>
