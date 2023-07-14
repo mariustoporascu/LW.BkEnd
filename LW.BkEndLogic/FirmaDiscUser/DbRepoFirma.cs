@@ -22,7 +22,8 @@ namespace LW.BkEndLogic.FirmaDiscUser
                 return null;
             return _context.Documente
                 .Include(d => d.FisiereDocumente)
-                .Include(d => d.ConexiuniConturi.ProfilCont)
+                .Include(d => d.ConexiuniConturi)
+                .ThenInclude(c => c.ProfilCont)
                 .Where(
                     d =>
                         d.FirmaDiscountId == conex.FirmaDiscountId
