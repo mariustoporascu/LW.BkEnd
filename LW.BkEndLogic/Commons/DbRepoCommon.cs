@@ -114,7 +114,7 @@ namespace LW.BkEndLogic.Commons
         public IEnumerable<FirmaDiscount> GetAllFolders()
         {
             return _context.FirmaDiscount
-                .Where(x => x.IsActive)
+                .Where(x => x.IsActive && x.IsActiveSecondary)
                 .Select(
                     x =>
                         new FirmaDiscount
@@ -124,6 +124,7 @@ namespace LW.BkEndLogic.Commons
                             CuiNumber = x.CuiNumber,
                             DiscountPercent = x.DiscountPercent,
                             IsActive = x.IsActive,
+                            IsActiveSecondary = x.IsActiveSecondary,
                         }
                 )
                 .AsEnumerable();

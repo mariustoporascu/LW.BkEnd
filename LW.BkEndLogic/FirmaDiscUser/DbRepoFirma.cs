@@ -22,7 +22,8 @@ namespace LW.BkEndLogic.FirmaDiscUser
                 return null;
             return _context.Documente
                 .Include(d => d.FisiereDocumente)
-                .Include(d => d.ConexiuniConturi.ProfilCont)
+                .Include(d => d.ConexiuniConturi)
+                .ThenInclude(c => c.ProfilCont)
                 .Where(
                     d =>
                         d.FirmaDiscountId == conex.FirmaDiscountId
@@ -252,6 +253,31 @@ namespace LW.BkEndLogic.FirmaDiscUser
             return await _context.Hybrid.AnyAsync(
                 h => h.Name.ToLower() == name.ToLower() && h.FirmaDiscountId == firmaDiscountId
             );
+        }
+
+        public IEnumerable<Documente> GetAllDocuments(Guid conexId)
+        {
+            var conex = _context.ConexiuniConturi.Find(conexId);
+            if (conex == null)
+                return null;
+            return _context.Documente
+                .Include(d => d.FisiereDocumente)
+                .Include(d => d.ConexiuniConturi)
+                .ThenInclude(c => c.ProfilCont)
+                .Where(d => d.FirmaDiscountId == conex.FirmaDiscountId)
+                .Select(
+                    d =>
+                        new Documente
+                        {
+                            Id = d.Id,
+                            OcrDataJson = d.OcrDataJson,
+                            FirmaDiscountId = d.FirmaDiscountId,
+                            DiscountValue = d.DiscountValue,
+                            ConexiuniConturi = d.ConexiuniConturi,
+                            FisiereDocumente = d.FisiereDocumente,
+                        }
+                )
+                .AsEnumerable();
         }
     }
 }

@@ -38,8 +38,8 @@ namespace LW.BkEndApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet("getAllDocumenteWFP")]
-        public IActionResult GetAllDocumente()
+        [HttpGet("getAllDocumentsForApproval")]
+        public IActionResult GetAllDocumentsForApproval()
         {
             var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
 
@@ -50,16 +50,22 @@ namespace LW.BkEndApi.Controllers
                 return NoContent();
             }
 
-            return Ok(
-                JsonConvert.SerializeObject(
-                    documents,
-                    new JsonSerializerSettings
-                    {
-                        NullValueHandling = NullValueHandling.Ignore,
-                        ContractResolver = new CamelCasePropertyNamesContractResolver()
-                    }
-                )
-            );
+            return Ok(JsonConvert.SerializeObject(documents));
+        }
+
+        [HttpGet("getAllDocuments")]
+        public IActionResult GetAllDocuments()
+        {
+            var conexId = new Guid(User.Claims.FirstOrDefault(c => c.Type == "conexId").Value);
+
+            var documents = _dbRepoFirma.GetAllDocuments(conexId);
+
+            if (documents == null || documents.Count() == 0)
+            {
+                return NoContent();
+            }
+
+            return Ok(JsonConvert.SerializeObject(documents));
         }
 
         [HttpPost("updateDocStatus")]
@@ -293,16 +299,7 @@ namespace LW.BkEndApi.Controllers
                 return NoContent();
             }
 
-            return Ok(
-                JsonConvert.SerializeObject(
-                    data,
-                    new JsonSerializerSettings
-                    {
-                        NullValueHandling = NullValueHandling.Ignore,
-                        ContractResolver = new CamelCasePropertyNamesContractResolver()
-                    }
-                )
-            );
+            return Ok(JsonConvert.SerializeObject(data));
         }
 
         [HttpGet("getDashboardData")]
