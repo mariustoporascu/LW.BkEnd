@@ -109,16 +109,7 @@ namespace LW.BkEndApi.Controllers
                 return NoContent();
             }
 
-            return Ok(
-                JsonConvert.SerializeObject(
-                    data,
-                    new JsonSerializerSettings
-                    {
-                        NullValueHandling = NullValueHandling.Ignore,
-                        ContractResolver = new CamelCasePropertyNamesContractResolver()
-                    }
-                )
-            );
+            return Ok(JsonConvert.SerializeObject(data));
         }
 
         [HttpGet("getAllWithdrawals")]
@@ -133,16 +124,7 @@ namespace LW.BkEndApi.Controllers
                 return NoContent();
             }
 
-            return Ok(
-                JsonConvert.SerializeObject(
-                    data,
-                    new JsonSerializerSettings
-                    {
-                        NullValueHandling = NullValueHandling.Ignore,
-                        ContractResolver = new CamelCasePropertyNamesContractResolver()
-                    }
-                )
-            );
+            return Ok(JsonConvert.SerializeObject(data));
         }
 
         [HttpPost("addTranzaction")]
