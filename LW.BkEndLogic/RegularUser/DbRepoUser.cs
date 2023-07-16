@@ -32,21 +32,53 @@ namespace LW.BkEndLogic.RegularUser
 
         public IEnumerable<Documente> GetAllDocumenteOperatii(Guid conexId)
         {
+            return _context.Documente
+                .Include(d => d.FisiereDocumente)
+                .Where(
+                    d =>
+                        (d.ConexId == conexId || d.NextConexId == conexId)
+                        && d.Status == (int)StatusEnum.Approved
+                        && d.Tranzactii != null
+                        && !d.Tranzactii.Any(t => t.ConexId == conexId)
+                )
+                .Select(
+                    doc =>
+                        new Documente
+                        {
+                            Id = doc.Id,
+                            OcrDataJson = doc.OcrDataJson,
+                            Status = doc.Status,
+                            Uploaded = doc.Uploaded,
+                            StatusName = doc.StatusName,
+                            DiscountValue = doc.DiscountValue,
+                            IsInvoice = doc.IsInvoice,
+                            FirmaDiscountId = doc.FirmaDiscountId,
+                            FisiereDocumente = doc.FisiereDocumente
+                        }
+                )
+                .AsEnumerable();
+        }
+
+        public IEnumerable<Documente> GetAllDocumente(Guid conexId)
+        {
             int[] opsInts = new int[]
             {
-                (int)StatusEnum.Approved,
-                (int)StatusEnum.Rejected,
-                (int)StatusEnum.WaitingForPreApproval,
-                (int)StatusEnum.WaitingForApproval,
+                (int)StatusEnum.Processing,
+                (int)StatusEnum.FailedProcessing,
+                (int)StatusEnum.CompletedProcessing,
+                (int)StatusEnum.PartialyProcessed,
+                (int)StatusEnum.NoStatus,
             };
             return _context.Documente
                 .Include(d => d.FisiereDocumente)
                 .Where(
                     d =>
                         (d.ConexId == conexId || d.NextConexId == conexId)
-                        && opsInts.Contains(d.Status)
+                        && !opsInts.Contains(d.Status)
                         && d.Tranzactii != null
-                        && !d.Tranzactii.Any(t => t.ConexId == conexId)
+                        && !d.Tranzactii.Any(
+                            t => t.ConexId == conexId && t.Type == (int)TranzactionTypeEnum.Transfer
+                        )
                 )
                 .Select(
                     doc =>
