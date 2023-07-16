@@ -25,7 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\LW.DocProces\LW.DocProces.csproj" />
+	  <ProjectReference Include="..\LW.DocProcLogic\LW.DocProcLogic.csproj" />
 	</ItemGroup>
 
 </Project>

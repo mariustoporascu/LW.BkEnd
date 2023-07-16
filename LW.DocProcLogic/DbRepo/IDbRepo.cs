@@ -2,6 +2,7 @@
 using LW.BkEndModel;
 using LW.BkEndModel.Enums;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,11 @@ namespace LW.DocProcLogic.DbRepo
     {
         Documente? GetDocumentByBlobName(string blobName);
         bool CheckDocExists(Guid conexId, Guid documentId);
+        Task<bool> CheckDuplicateDocExists(
+            Guid firmaDiscountId,
+            Guid documentId,
+            JObject processedResult
+        );
         string? GetBlobFileType(string blobName);
         Task<bool> UpdateBlobStatus(string blobName, StatusEnum status);
         bool GetBlobType(string blobName);
@@ -101,6 +107,60 @@ namespace LW.DocProcLogic.DbRepo
         private async Task<bool> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> CheckDuplicateDocExists(
+            Guid firmaDiscountId,
+            Guid documentId,
+            JObject processedResult
+        )
+        {
+            int[] excludeStatus = new int[]
+            {
+                (int)StatusEnum.FailedProcessing,
+                (int)StatusEnum.DuplicateError,
+            };
+            var docNumber = processedResult["docNumber"]["value"].ToString();
+            var dateValue = processedResult["dataTranzactie"]["value"].ToString();
+            var totalValue = processedResult["total"]["value"].ToString();
+            var doc = _context.Documente
+                .Include(d => d.ConexiuniConturi)
+                .FirstOrDefault(
+                    d =>
+                        d.FirmaDiscountId == firmaDiscountId
+                        && !excludeStatus.Contains(d.Status)
+                        && d.Id != documentId
+                        && (
+                            d.OcrDataJson.Contains(docNumber)
+                            && !string.IsNullOrWhiteSpace(docNumber)
+                        )
+                        && (
+                            d.OcrDataJson.Contains(dateValue)
+                            && !string.IsNullOrWhiteSpace(dateValue)
+                        )
+                        && (
+                            d.OcrDataJson.Contains(totalValue)
+                            && !string.IsNullOrWhiteSpace(totalValue)
+                        )
+                );
+            if (doc == null)
+                return false;
+            if (doc.ConexiuniConturi.HybridId == null)
+                return true;
+            // Uploaded previously by hybrid, so give priority to normal user
+            // only if the hybrid user has not withdrawn the document
+            if (
+                !_context.Tranzactii.Any(
+                    t => t.DocumenteId == doc.Id && t.Type == (int)TranzactionTypeEnum.Withdraw
+                )
+            )
+            {
+                doc.Status = (int)StatusEnum.DuplicateError;
+                doc.StatusName = StatusEnum.DuplicateError.ToString();
+                await UpdateCommonEntity(doc);
+                return false;
+            }
+            return true;
         }
     }
 }

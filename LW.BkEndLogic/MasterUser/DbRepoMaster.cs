@@ -33,7 +33,14 @@ namespace LW.BkEndLogic.MasterUser
                 .Sum(x => x.Amount);
             var puncteFacturateCount = 0;
             var documenteRespinse = _context.Documente
-                .Where(x => x.Status == (int)StatusEnum.Rejected)
+                .Where(
+                    x =>
+                        new int[]
+                        {
+                            (int)StatusEnum.Rejected,
+                            (int)StatusEnum.DuplicateError
+                        }.Contains(x.Status)
+                )
                 .Count();
             return new
             {
@@ -53,6 +60,7 @@ namespace LW.BkEndLogic.MasterUser
             return _context.Documente
                 .Include(d => d.FisiereDocumente)
                 .Include(d => d.ConexiuniConturi.ProfilCont)
+                .Include(d => d.NextConexiuniConturi.ProfilCont)
                 .Select(
                     doc =>
                         new Documente
@@ -65,7 +73,9 @@ namespace LW.BkEndLogic.MasterUser
                             DiscountValue = doc.DiscountValue,
                             IsInvoice = doc.IsInvoice,
                             FirmaDiscountId = doc.FirmaDiscountId,
+                            NextConexId = doc.NextConexId,
                             ConexiuniConturi = doc.ConexiuniConturi,
+                            NextConexiuniConturi = doc.NextConexiuniConturi,
                             FisiereDocumente = doc.FisiereDocumente
                         }
                 )
@@ -87,6 +97,7 @@ namespace LW.BkEndLogic.MasterUser
                             CuiNumber = x.CuiNumber,
                             DiscountPercent = x.DiscountPercent,
                             IsActive = x.IsActive,
+                            IsActiveSecondary = x.IsActiveSecondary,
                         }
                 )
                 .AsEnumerable();
