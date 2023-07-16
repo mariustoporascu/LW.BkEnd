@@ -252,14 +252,21 @@ namespace LW.BkEndApi.Controllers
         }
 
         [HttpPut("updateFirmaStatus")]
-        public async Task<IActionResult> UpdateFirmaStatus(Guid firmaId)
+        public async Task<IActionResult> UpdateFirmaStatus(Guid firmaId, bool isSecondary)
         {
             var firmaDiscount = await _dbRepoCommon.GetCommonEntity<FirmaDiscount>(firmaId);
             if (firmaDiscount == null)
             {
                 return BadRequest(new { Message = "Firma not found", Error = true });
             }
-            firmaDiscount.IsActive = !firmaDiscount.IsActive;
+            if (isSecondary)
+            {
+                firmaDiscount.IsActiveSecondary = !firmaDiscount.IsActiveSecondary;
+            }
+            else
+            {
+                firmaDiscount.IsActive = !firmaDiscount.IsActive;
+            }
             var result = await _dbRepoCommon.UpdateCommonEntity(firmaDiscount);
             if (result == false)
             {
