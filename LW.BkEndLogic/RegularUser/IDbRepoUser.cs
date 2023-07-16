@@ -11,6 +11,7 @@ namespace LW.BkEndLogic.RegularUser
         object GetDashboardInfo(Guid conexId);
         Guid GetMyHybridId(Guid conexId);
         IEnumerable<Documente> GetAllDocumenteOperatii(Guid conexId);
+        IEnumerable<Documente> GetAllDocumente(Guid conexId);
         Task<bool> AddTranzaction(
             Guid conexId,
             Documente documente,

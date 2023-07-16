@@ -33,7 +33,14 @@ namespace LW.BkEndLogic.MasterUser
                 .Sum(x => x.Amount);
             var puncteFacturateCount = 0;
             var documenteRespinse = _context.Documente
-                .Where(x => x.Status == (int)StatusEnum.Rejected)
+                .Where(
+                    x =>
+                        new int[]
+                        {
+                            (int)StatusEnum.Rejected,
+                            (int)StatusEnum.DuplicateError
+                        }.Contains(x.Status)
+                )
                 .Count();
             return new
             {

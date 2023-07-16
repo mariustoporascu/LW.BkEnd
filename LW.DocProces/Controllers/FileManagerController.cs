@@ -11,10 +11,15 @@ namespace LW.DocProces.Controllers
     public class FileManagerController : Controller
     {
         private readonly IFileManager _fileManager;
+        private readonly ILogger<FileManagerController> _logger;
 
-        public FileManagerController(IFileManager fileManager)
+        public FileManagerController(
+            IFileManager fileManager,
+            ILogger<FileManagerController> logger
+        )
         {
             _fileManager = fileManager;
+            _logger = logger;
         }
 
         [Authorize]
@@ -93,13 +98,21 @@ namespace LW.DocProces.Controllers
         public async Task<IActionResult> GetFileStream(string identifier)
         {
             var conexId = Guid.Parse(User.Claims.FirstOrDefault(x => x.Type == "conexId").Value);
-            var fileStream = await _fileManager.GetFileStream(identifier, conexId);
-            if (fileStream == null)
+            try
             {
+                var fileStream = await _fileManager.GetFileStream(identifier, conexId);
+                if (fileStream == null)
+                {
+                    return NoContent();
+                }
+                fileStream.Seek(0, SeekOrigin.Begin);
+                return File(fileStream, "application/octet-stream");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
                 return NoContent();
             }
-            fileStream.Seek(0, SeekOrigin.Begin);
-            return File(fileStream, "application/octet-stream");
         }
 
         [Authorize]

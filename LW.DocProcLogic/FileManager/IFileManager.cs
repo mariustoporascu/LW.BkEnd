@@ -24,6 +24,9 @@ using Syncfusion.Pdf.Graphics;
 using Syncfusion.Pdf.Interactive;
 using Microsoft.Extensions.Logging;
 using System.Runtime.InteropServices;
+using Microsoft.VisualBasic;
+using System.Reflection.Metadata;
+using System.Xml.Linq;
 
 namespace LW.DocProcLogic.FileManager
 {
@@ -126,6 +129,17 @@ namespace LW.DocProcLogic.FileManager
                         dbFirmaDisc,
                         processedResult
                     );
+                    if (
+                        await _dbRepo.CheckDuplicateDocExists(
+                            (Guid)dbFile.FirmaDiscountId,
+                            dbFile.Id,
+                            JsonConvert.DeserializeObject<JObject>(dbFile.OcrDataJson)
+                        )
+                    )
+                    {
+                        dbFile.Status = (int)StatusEnum.DuplicateError;
+                        dbFile.StatusName = StatusEnum.DuplicateError.ToString();
+                    }
                 }
                 else
                 {
@@ -184,8 +198,23 @@ namespace LW.DocProcLogic.FileManager
 
                 ocrObject["docNumber"] = newDocNr;
                 document.OcrDataJson = JsonConvert.SerializeObject(ocrObject);
-                document.Status = (int)StatusEnum.WaitingForPreApproval;
-                document.StatusName = StatusEnum.WaitingForPreApproval.ToString();
+                if (
+                    await _dbRepo.CheckDuplicateDocExists(
+                        (Guid)document.FirmaDiscountId,
+                        document.Id,
+                        ocrObject
+                    )
+                )
+                {
+                    document.Status = (int)StatusEnum.DuplicateError;
+                    document.StatusName = StatusEnum.DuplicateError.ToString();
+                }
+                else
+                {
+                    document.Status = (int)StatusEnum.WaitingForPreApproval;
+                    document.StatusName = StatusEnum.WaitingForPreApproval.ToString();
+                }
+
                 return await _dbRepo.UpdateCommonEntity(document);
             }
             catch (Exception ex)
@@ -336,6 +365,12 @@ namespace LW.DocProcLogic.FileManager
             return deletedBools.All(x => x) && deletedBools.Count == 3;
         }
 
+        public bool CheckDocExists(Guid conexId, Guid documentId)
+        {
+            return _dbRepo.CheckDocExists(conexId, documentId);
+        }
+
+        #region Private Methods
         private SKBitmap ResizeImageMaintainAspectRatio(
             SKBitmap originalImage,
             int newWidth,
@@ -398,10 +433,6 @@ namespace LW.DocProcLogic.FileManager
 
             return outputStream;
         }
-
-        public bool CheckDocExists(Guid conexId, Guid documentId)
-        {
-            return _dbRepo.CheckDocExists(conexId, documentId);
-        }
+        #endregion
     }
 }

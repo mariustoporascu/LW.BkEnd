@@ -11,5 +11,6 @@
         FailedProcessing = 6,
         PartialyProcessed = 7,
         WaitingForPreApproval = 8,
+        DuplicateError = 9,
     }
 }
