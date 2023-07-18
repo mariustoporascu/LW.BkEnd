@@ -154,6 +154,7 @@ builder.Services.AddScoped<IDbRepoCommon, DbRepoCommon>();
 builder.Services.AddScoped<IDbRepoFirma, DbRepoFirma>();
 builder.Services.AddScoped<IDbRepoUser, DbRepoUser>();
 builder.Services.AddScoped<IDbRepoMaster, DbRepoMaster>();
+builder.Services.AddScoped<IAnafApiCall, AnafApiCall>();
 
 var app = builder.Build();
 

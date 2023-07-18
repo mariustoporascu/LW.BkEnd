@@ -21,10 +21,17 @@ namespace LW.BkEndLogic.MasterUser
 
         public object GetDashboardInfo()
         {
+            var invalidStatus = new int[]
+            {
+                (int)StatusEnum.Rejected,
+                (int)StatusEnum.DuplicateError
+            };
             var firmeActiveCount = _context.FirmaDiscount.Where(x => x.IsActive).Count();
             var firmeInactiveCount = _context.FirmaDiscount.Where(x => !x.IsActive).Count();
             var useriCount = _context.Users.Count();
-            var documenteCount = _context.Documente.Count();
+            var documenteCount = _context.Documente
+                .Where(d => !invalidStatus.Contains(d.Status))
+                .Count();
             var puncteAcordateCount = _context.Documente
                 .Where(x => x.Status == (int)StatusEnum.Approved)
                 .Sum(x => x.DiscountValue);
@@ -33,14 +40,7 @@ namespace LW.BkEndLogic.MasterUser
                 .Sum(x => x.Amount);
             var puncteFacturateCount = 0;
             var documenteRespinse = _context.Documente
-                .Where(
-                    x =>
-                        new int[]
-                        {
-                            (int)StatusEnum.Rejected,
-                            (int)StatusEnum.DuplicateError
-                        }.Contains(x.Status)
-                )
+                .Where(x => invalidStatus.Contains(x.Status))
                 .Count();
             return new
             {
@@ -151,7 +151,10 @@ namespace LW.BkEndLogic.MasterUser
 
         public bool FirmaDiscountExists(string cuiNumber)
         {
-            return _context.FirmaDiscount.Any(f => f.CuiNumber == cuiNumber);
+            return _context.FirmaDiscount.Any(
+                f =>
+                    f.CuiNumber.ToLower().Replace("ro", "") == cuiNumber.ToLower().Replace("ro", "")
+            );
         }
     }
 }

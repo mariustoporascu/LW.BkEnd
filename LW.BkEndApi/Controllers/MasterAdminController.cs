@@ -22,13 +22,15 @@ namespace LW.BkEndApi.Controllers
         private readonly IDbRepoMaster _dbRepoMaster;
         private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<User> _userManager;
+        private readonly IAnafApiCall _anafApiCall;
 
         public MasterAdminController(
             ILogger<MasterAdminController> logger,
             RoleManager<Role> roleManager,
             IDbRepoCommon dbRepoCommon,
             UserManager<User> userManager,
-            IDbRepoMaster dbRepoMaster
+            IDbRepoMaster dbRepoMaster,
+            IAnafApiCall anafApiCall
         )
         {
             _logger = logger;
@@ -36,6 +38,7 @@ namespace LW.BkEndApi.Controllers
             _roleManager = roleManager;
             _userManager = userManager;
             _dbRepoMaster = dbRepoMaster;
+            _anafApiCall = anafApiCall;
         }
 
         [HttpPut("create-role")]
@@ -228,7 +231,9 @@ namespace LW.BkEndApi.Controllers
                 || _dbRepoMaster.FirmaDiscountExists(firma.CuiNumber)
             )
             {
-                return BadRequest(new { Message = "Firma already exists", Error = true });
+                return BadRequest(
+                    new { Message = "Firma with same CUI already exists", Error = true }
+                );
             }
             var firmaDiscount = new FirmaDiscount
             {
@@ -277,7 +282,7 @@ namespace LW.BkEndApi.Controllers
             return Ok(new { Message = "Firma status has been updated", Error = false });
         }
 
-        [HttpPut("updateFirma")]
+        [HttpPost("updateFirma")]
         public async Task<IActionResult> UpdateFirma([FromBody] UpdateFirmaDiscountDTO firma)
         {
             var firmaDiscount = await _dbRepoCommon.GetCommonEntity<FirmaDiscount>(firma.Id);
@@ -290,7 +295,9 @@ namespace LW.BkEndApi.Controllers
                 && _dbRepoMaster.FirmaDiscountExists(firma.CuiNumber)
             )
             {
-                return BadRequest(new { Message = "Firma already exists", Error = true });
+                return BadRequest(
+                    new { Message = "Firma with same CUI already exists", Error = true }
+                );
             }
             firmaDiscount.Address = firma.Address;
             firmaDiscount.BankAccount = firma.BankAccount;
@@ -308,6 +315,31 @@ namespace LW.BkEndApi.Controllers
                 return BadRequest(new { Message = "Firma failed to be updated", Error = true });
             }
             return Ok(new { Message = "Firma has been updated", Error = false });
+        }
+
+        [HttpGet("get-details-anaf")]
+        public async Task<IActionResult> QueryUser([FromQuery] string query)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    return NoContent();
+                }
+                var result = await _anafApiCall.CheckCui(
+                    int.Parse(query.ToLower().Replace("ro", ""))
+                );
+                if (result == null)
+                {
+                    return NoContent();
+                }
+                return Ok(JsonConvert.SerializeObject(result));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
+                return NoContent();
+            }
         }
     }
 }
