@@ -69,7 +69,6 @@ namespace LW.BkEndLogic.MasterUser
                             OcrDataJson = doc.OcrDataJson,
                             Status = doc.Status,
                             Uploaded = doc.Uploaded,
-                            StatusName = doc.StatusName,
                             DiscountValue = doc.DiscountValue,
                             IsInvoice = doc.IsInvoice,
                             FirmaDiscountId = doc.FirmaDiscountId,
@@ -109,7 +108,6 @@ namespace LW.BkEndLogic.MasterUser
             if (document != null)
             {
                 document.Status = (int)status;
-                document.StatusName = Enum.GetName(typeof(StatusEnum), status);
                 return await UpdateCommonEntity(document);
             }
             return false;

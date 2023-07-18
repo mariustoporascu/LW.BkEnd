@@ -3,7 +3,6 @@ using LW.BkEndDb;
 using LW.BkEndLogic.Commons;
 using LW.BkEndLogic.Commons.Interfaces;
 using LW.BkEndLogic.FirmaDiscUser;
-using LW.BkEndLogic.HybridUser;
 using LW.BkEndLogic.MasterUser;
 using LW.BkEndLogic.RegularUser;
 using LW.BkEndModel;

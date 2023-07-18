@@ -1,5 +1,4 @@
-﻿using LW.DocProcLogic.Anaf;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
