@@ -122,7 +122,7 @@ namespace LW.DocProcLogic.ProcessOcrResult
                 {
                     value = "",
                     hasErrors = true,
-                    errorMessage = "CUI negasit"
+                    errorMessage = "CUI negasit sau nu apartine firmei"
                 };
                 // TO ENABLE IN PROD
                 otherErrors.Add(true);
@@ -231,17 +231,14 @@ namespace LW.DocProcLogic.ProcessOcrResult
             if (!hasDocNumberErrors && !otherErrors.Any(x => x))
             {
                 dbFile.Status = (int)StatusEnum.WaitingForApproval;
-                dbFile.StatusName = StatusEnum.WaitingForApproval.ToString();
             }
             else if (hasDocNumberErrors && !otherErrors.Any(x => x))
             {
                 dbFile.Status = (int)StatusEnum.PartialyProcessed;
-                dbFile.StatusName = StatusEnum.PartialyProcessed.ToString();
             }
             else
             {
                 dbFile.Status = (int)StatusEnum.FailedProcessing;
-                dbFile.StatusName = StatusEnum.FailedProcessing.ToString();
             }
         }
     }

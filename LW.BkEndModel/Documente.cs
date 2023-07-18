@@ -21,9 +21,6 @@ namespace LW.BkEndModel
         [JsonProperty("status")]
         public int Status { get; set; } = 0;
 
-        [JsonProperty("statusName")]
-        public string? StatusName { get; set; } = StatusEnum.NoStatus.ToString();
-
         [JsonProperty("discountValue")]
         [Column(TypeName = "decimal(18,2)")]
         public decimal DiscountValue { get; set; }

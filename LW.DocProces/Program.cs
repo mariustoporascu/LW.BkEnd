@@ -1,7 +1,6 @@
 using LW.BkEndDb;
 using LW.BkEndModel;
 using LW.DocProces;
-using LW.DocProcLogic.Anaf;
 using LW.DocProcLogic.DbRepo;
 using LW.DocProcLogic.FileManager;
 using LW.DocProcLogic.MicrosoftOcr;
@@ -125,7 +124,6 @@ builder.Services
         options.MapInboundClaims = false;
     });
 
-builder.Services.AddScoped<IAnafApiCall, AnafApiCall>();
 builder.Services.AddScoped<IDbRepo, DbRepo>();
 builder.Services.AddScoped<IFileManager, FileManager>();
 

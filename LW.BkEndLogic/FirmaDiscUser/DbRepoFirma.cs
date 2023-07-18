@@ -47,7 +47,6 @@ namespace LW.BkEndLogic.FirmaDiscUser
         public async Task<bool> UpdateDocStatusAsync(Documente documente, StatusEnum status)
         {
             documente.Status = (int)status;
-            documente.StatusName = Enum.GetName(typeof(StatusEnum), status);
             return await UpdateCommonEntity(documente);
         }
 
@@ -75,7 +74,6 @@ namespace LW.BkEndLogic.FirmaDiscUser
                             Id = doc.Id,
                             OcrDataJson = doc.OcrDataJson,
                             Status = doc.Status,
-                            StatusName = doc.StatusName,
                             FirmaDiscountId = doc.FirmaDiscountId,
                             Uploaded = doc.Uploaded,
                             DiscountValue = doc.DiscountValue,

@@ -138,7 +138,6 @@ namespace LW.DocProcLogic.FileManager
                     )
                     {
                         dbFile.Status = (int)StatusEnum.DuplicateError;
-                        dbFile.StatusName = StatusEnum.DuplicateError.ToString();
                     }
                 }
                 else
@@ -149,7 +148,6 @@ namespace LW.DocProcLogic.FileManager
             catch (Exception ex)
             {
                 dbFile.Status = (int)StatusEnum.FailedProcessing;
-                dbFile.StatusName = StatusEnum.FailedProcessing.ToString();
                 _logger.LogWarning(ex.Message);
             }
 
@@ -207,12 +205,10 @@ namespace LW.DocProcLogic.FileManager
                 )
                 {
                     document.Status = (int)StatusEnum.DuplicateError;
-                    document.StatusName = StatusEnum.DuplicateError.ToString();
                 }
                 else
                 {
                     document.Status = (int)StatusEnum.WaitingForPreApproval;
-                    document.StatusName = StatusEnum.WaitingForPreApproval.ToString();
                 }
 
                 return await _dbRepo.UpdateCommonEntity(document);

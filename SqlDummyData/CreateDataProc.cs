@@ -71,7 +71,6 @@ namespace SqlDummyData
                 var docs = docsFaker.Generate();
                 docs.FirmaDiscountId = firma.Id;
                 docs.Status = random.Next(0, 7);
-                docs.StatusName = Enum.GetName(typeof(StatusEnum), docs.Status);
                 docs.ConexId = conexUser.Id;
                 if (!await SaveEntity(docs, context))
                     continue;

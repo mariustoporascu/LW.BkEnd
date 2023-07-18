@@ -94,7 +94,6 @@ namespace LW.DocProcLogic.DbRepo
                 return false;
             }
             doc.Status = (int)status;
-            doc.StatusName = status.ToString();
             return await UpdateCommonEntity(doc);
         }
 
@@ -156,7 +155,6 @@ namespace LW.DocProcLogic.DbRepo
             )
             {
                 doc.Status = (int)StatusEnum.DuplicateError;
-                doc.StatusName = StatusEnum.DuplicateError.ToString();
                 await UpdateCommonEntity(doc);
                 return false;
             }
