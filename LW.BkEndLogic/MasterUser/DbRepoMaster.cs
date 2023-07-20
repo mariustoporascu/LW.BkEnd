@@ -59,8 +59,10 @@ namespace LW.BkEndLogic.MasterUser
         {
             return _context.Documente
                 .Include(d => d.FisiereDocumente)
-                .Include(d => d.ConexiuniConturi.ProfilCont)
-                .Include(d => d.NextConexiuniConturi.ProfilCont)
+                .Include(d => d.ConexiuniConturi)
+                .ThenInclude(c => c.ProfilCont)
+                .Include(d => d.NextConexiuniConturi)
+                .ThenInclude(c => c.ProfilCont)
                 .Select(
                     doc =>
                         new Documente
@@ -90,6 +92,7 @@ namespace LW.BkEndLogic.MasterUser
                         {
                             Id = x.Id,
                             Name = x.Name,
+                            NameAnaf = x.NameAnaf,
                             MainContactEmail = x.MainContactEmail,
                             MainContactName = x.MainContactName,
                             MainContactPhone = x.MainContactPhone,
@@ -128,7 +131,8 @@ namespace LW.BkEndLogic.MasterUser
         {
             return _context.Documente
                 .Include(d => d.FisiereDocumente)
-                .Include(d => d.ConexiuniConturi.ProfilCont)
+                .Include(d => d.ConexiuniConturi)
+                .ThenInclude(c => c.ProfilCont)
                 .Where(x => x.Status == (int)StatusEnum.WaitingForPreApproval)
                 .Select(
                     doc =>

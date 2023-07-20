@@ -65,6 +65,7 @@ namespace LW.DocProcLogic.FileManager
                 exists.FirmaDiscountId == conexCont.FirmaDiscountId
                 || exists.ConexiuniConturi.HybridId == conexCont.HybridId
                 || exists.ConexId == conexId
+                || exists.NextConexId == conexId
             )
             {
                 var blobClient = new BlobClient(

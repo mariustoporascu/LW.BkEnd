@@ -10,6 +10,9 @@ namespace LW.BkEndApi.Models
         [JsonProperty("name")]
         public string? Name { get; set; }
 
+        [JsonProperty("nameAnaf")]
+        public string? NameAnaf { get; set; }
+
         [JsonProperty("cuiNumber")]
         public string? CuiNumber { get; set; }
 

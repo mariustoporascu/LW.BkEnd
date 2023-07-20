@@ -147,10 +147,10 @@ namespace LW.DocProcLogic.DbRepo
             if (doc.ConexiuniConturi.HybridId == null)
                 return true;
             // Uploaded previously by hybrid, so give priority to normal user
-            // only if the hybrid user has not withdrawn the document
+            // only if the hybrid user has not transfered the document
             if (
                 !_context.Tranzactii.Any(
-                    t => t.DocumenteId == doc.Id && t.Type == (int)TranzactionTypeEnum.Withdraw
+                    t => t.DocumenteId == doc.Id && t.Type == (int)TranzactionTypeEnum.Transfer
                 )
             )
             {

@@ -17,6 +17,9 @@ namespace LW.BkEndModel
         [JsonProperty("type")]
         public int Type { get; set; } = 0;
 
+        [JsonProperty("status")]
+        public int Status { get; set; } = 0;
+
         [Column(TypeName = "decimal(18,2)")]
         [JsonProperty("amount")]
         public decimal Amount { get; set; }

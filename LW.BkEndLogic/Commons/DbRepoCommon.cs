@@ -121,6 +121,7 @@ namespace LW.BkEndLogic.Commons
                         {
                             Id = x.Id,
                             Name = x.Name,
+                            NameAnaf = x.NameAnaf,
                             CuiNumber = x.CuiNumber,
                             DiscountPercent = x.DiscountPercent,
                             IsActive = x.IsActive,
@@ -143,6 +144,7 @@ namespace LW.BkEndLogic.Commons
                         {
                             Id = x.Id,
                             Name = x.Name,
+                            NameAnaf = x.NameAnaf,
                             CuiNumber = x.CuiNumber,
                             DiscountPercent = x.DiscountPercent,
                             IsActive = x.IsActive,
