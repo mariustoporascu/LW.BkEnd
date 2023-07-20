@@ -574,7 +574,7 @@ namespace LW.BkEndApi.Controllers
                     "JWT",
                     refreshTokenId
                 );
-            return Ok("User logged out from this device");
+            return Ok(new { Message = "User logged out from this device" });
         }
     }
 }

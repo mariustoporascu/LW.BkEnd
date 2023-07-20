@@ -35,6 +35,7 @@ namespace LW.BkEndLogic.FirmaDiscUser
                         {
                             Id = d.Id,
                             OcrDataJson = d.OcrDataJson,
+                            Uploaded = d.Uploaded,
                             FirmaDiscountId = d.FirmaDiscountId,
                             DiscountValue = d.DiscountValue,
                             ConexiuniConturi = d.ConexiuniConturi,
@@ -262,6 +263,8 @@ namespace LW.BkEndLogic.FirmaDiscUser
                 .Include(d => d.FisiereDocumente)
                 .Include(d => d.ConexiuniConturi)
                 .ThenInclude(c => c.ProfilCont)
+                .Include(d => d.NextConexiuniConturi)
+                .ThenInclude(c => c.ProfilCont)
                 .Where(d => d.FirmaDiscountId == conex.FirmaDiscountId)
                 .Select(
                     d =>
@@ -269,9 +272,12 @@ namespace LW.BkEndLogic.FirmaDiscUser
                         {
                             Id = d.Id,
                             OcrDataJson = d.OcrDataJson,
+                            Status = d.Status,
+                            Uploaded = d.Uploaded,
                             FirmaDiscountId = d.FirmaDiscountId,
                             DiscountValue = d.DiscountValue,
                             ConexiuniConturi = d.ConexiuniConturi,
+                            NextConexiuniConturi = d.NextConexiuniConturi,
                             FisiereDocumente = d.FisiereDocumente,
                         }
                 )

@@ -18,6 +18,8 @@ namespace LW.BkEndLogic.RegularUser
         public IEnumerable<Tranzactii> GetAllTranzactiiWithDraw(Guid conexId)
         {
             return _context.Tranzactii
+                .Include(t => t.Documente)
+                .ThenInclude(d => d.FisiereDocumente)
                 .Where(d => d.ConexId == conexId && d.Type == (int)TranzactionTypeEnum.Withdraw)
                 .AsEnumerable();
         }
@@ -25,7 +27,9 @@ namespace LW.BkEndLogic.RegularUser
         public IEnumerable<Tranzactii> GetAllTranzactiiTransfer(Guid conexId)
         {
             return _context.Tranzactii
-                .Include(t => t.Documente.NextConexiuniConturi.ProfilCont)
+                .Include(t => t.Documente)
+                .ThenInclude(c => c.NextConexiuniConturi)
+                .ThenInclude(x => x.ProfilCont)
                 .Where(d => d.ConexId == conexId && d.Type == (int)TranzactionTypeEnum.Transfer)
                 .AsEnumerable();
         }
@@ -305,6 +309,10 @@ namespace LW.BkEndLogic.RegularUser
                 ConexId = conexId,
                 DocumenteId = documente.Id,
                 Type = (int)tranzactionType,
+                Status =
+                    tranzactionType == TranzactionTypeEnum.Withdraw
+                        ? (int)TranzactStatusEnum.WaitingForPayment
+                        : (int)TranzactStatusEnum.Transfered,
                 Amount = documente.DiscountValue,
             };
             if (tranzactionType == TranzactionTypeEnum.Transfer && nextConexId != null)

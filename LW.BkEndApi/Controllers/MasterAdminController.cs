@@ -247,6 +247,7 @@ namespace LW.BkEndApi.Controllers
                 DiscountPercent = firma.DiscountPercent,
                 NrRegCom = firma.NrRegCom,
                 Name = firma.Name,
+                NameAnaf = firma.NameAnaf,
             };
             var result = await _dbRepoCommon.AddCommonEntity(firmaDiscount);
             if (result == false)
@@ -309,6 +310,7 @@ namespace LW.BkEndApi.Controllers
             firmaDiscount.DiscountPercent = firma.DiscountPercent;
             firmaDiscount.NrRegCom = firma.NrRegCom;
             firmaDiscount.Name = firma.Name;
+            firmaDiscount.NameAnaf = firma.NameAnaf;
             var result = await _dbRepoCommon.UpdateCommonEntity(firmaDiscount);
             if (result == false)
             {

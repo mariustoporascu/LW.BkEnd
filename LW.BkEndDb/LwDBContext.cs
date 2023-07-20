@@ -103,6 +103,12 @@ namespace LW.BkEndDb
         {
             // Configure primary key as non-clustered
             builder.HasKey(cc => cc.Id).IsClustered(false);
+            // Configure foreign keys
+            builder
+                .HasOne(d => d.FisiereDocumente)
+                .WithOne(cc => cc.Documente)
+                .HasForeignKey<FisiereDocumente>(d => d.DocumenteId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Configure clustered index for the ClusteredIndex property
             builder.Property(cc => cc.CIndex).UseIdentityColumn();
